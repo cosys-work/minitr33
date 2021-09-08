@@ -5,12 +5,12 @@ const routes: Routes = [
   {
     path: "",
     pathMatch: "full",
-    loadChildren: () => import("./navi/navi.module").then(m => m.NaviModule)
+    redirectTo: "/init"
   }
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, { enableTracing: true })],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }
