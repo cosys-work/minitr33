@@ -17,6 +17,9 @@ specifiers:
   '@angular/service-worker': ~12.2.0
   '@codewithdan/observable-store': ^2.2.13
   '@cosys/func': ^0.3.0
+  '@ngx-formly/core': ^5.0.0
+  '@ngx-formly/material': ^5.0.0
+  '@ngx-formly/schematics': 5.10.22
   '@swimlane/ngx-charts': ^19.0.1
   '@swimlane/ngx-graph': ^7.2.0
   '@types/jasmine': ~3.8.0
@@ -47,6 +50,8 @@ dependencies:
   '@angular/service-worker': 12.2.4_2fe3b31fd212d7627f698f70674c3dc1
   '@codewithdan/observable-store': 2.2.13_rxjs@6.6.7
   '@cosys/func': 0.3.0
+  '@ngx-formly/core': 5.10.22_@angular+forms@12.2.4+rxjs@6.6.7
+  '@ngx-formly/material': 5.10.22_ebce448a755d3f98a38261ff2a8447d1
   '@swimlane/ngx-charts': 19.0.1_0afcd7f48b7c88bb4b4d6e423938fa3c
   '@swimlane/ngx-graph': 7.2.0_0afcd7f48b7c88bb4b4d6e423938fa3c
   rxdb: 10.0.3_rxjs@6.6.7
@@ -58,6 +63,7 @@ devDependencies:
   '@angular-devkit/build-angular': 12.2.4_6d1cd52a5e254413867aa7f204fb619b
   '@angular/cli': 12.2.4
   '@angular/compiler-cli': 12.2.4_5b488e45b0a97314a95e9a34480f35e9
+  '@ngx-formly/schematics': 5.10.22
   '@types/jasmine': 3.8.2
   '@types/node': 12.20.24
   jasmine-core: 3.8.0
@@ -1720,6 +1726,36 @@ packages:
       '@angular/compiler-cli': 12.2.4_5b488e45b0a97314a95e9a34480f35e9
       typescript: 4.3.5
       webpack: 5.50.0
+    dev: true
+
+  /@ngx-formly/core/5.10.22_@angular+forms@12.2.4+rxjs@6.6.7:
+    resolution: {integrity: sha512-HTgVN2xNf3TdPS10ayV4G7dvX1olHvggquhTUY/dzej1x03NVofDQulnPTxKEU1ObN92IQZNq3VL9pm3sBCR7A==}
+    peerDependencies:
+      '@angular/forms': '>=7.0.0'
+      rxjs: '>=6.3.0'
+    dependencies:
+      '@angular/forms': 12.2.4_cf887d031145d5606b4856a9417a9133
+      rxjs: 6.6.7
+      tslib: 1.14.1
+    dev: false
+
+  /@ngx-formly/material/5.10.22_ebce448a755d3f98a38261ff2a8447d1:
+    resolution: {integrity: sha512-k0umQZtcL3FA5LVoFSdBYIq4RpoPOWNUwPB/NI4Si6n9gS/k7rmaYZqj1LJUdh2lKh3uhZsIUJJHTYbASgIAEg==}
+    peerDependencies:
+      '@angular/material': '>=7.0.0'
+      '@ngx-formly/core': 5.10.22
+    dependencies:
+      '@angular/material': 12.2.4_97b73ced8d2a72d79659d9c11ad46a5b
+      '@ngx-formly/core': 5.10.22_@angular+forms@12.2.4+rxjs@6.6.7
+      tslib: 1.14.1
+    dev: false
+
+  /@ngx-formly/schematics/5.10.22:
+    resolution: {integrity: sha512-zoRtB0KIrJFkxDxav4IzUa0HxllIz/HWYu66RfgRJx80DtoWvaR/zeFabWkLwBluS/o+8HXU8+E0izUnMNjyug==}
+    dependencies:
+      '@angular-devkit/core': 12.2.4
+      '@angular-devkit/schematics': 12.2.4
+      '@schematics/angular': 12.2.4
     dev: true
 
   /@nodelib/fs.scandir/2.1.5:

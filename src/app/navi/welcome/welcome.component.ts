@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-welcome',
@@ -7,5 +7,5 @@ import { Component, OnInit } from '@angular/core';
 })
 export class WelcomeComponent {
 
-  title = 'proforma';
+  title = 'pro-forma';
 }

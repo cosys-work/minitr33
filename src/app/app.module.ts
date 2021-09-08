@@ -12,12 +12,14 @@ import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NaviModule } from './navi/navi.module';
-import { WelcomeModule } from './welcome/welcome.module';
+import { ReactiveFormsModule } from '@angular/forms';
+import { FormlyModule } from '@ngx-formly/core';
+import { FormlyMaterialModule } from '@ngx-formly/material';
 
 
 @NgModule({
   declarations: [
-    AppComponent,
+    AppComponent
   ],
   imports: [
     BrowserModule,
@@ -35,8 +37,10 @@ import { WelcomeModule } from './welcome/welcome.module';
     MatSidenavModule,
     MatIconModule,
     MatListModule,
-    NaviModule, 
-    WelcomeModule
+    NaviModule,
+    ReactiveFormsModule,
+    FormlyModule.forRoot({ extras: { lazyRender: true } }),
+    FormlyMaterialModule
   ],
   providers: [],
   bootstrap: [AppComponent]

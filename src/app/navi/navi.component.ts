@@ -1,16 +1,21 @@
-import { Component } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { Observable } from 'rxjs';
-import { map, shareReplay } from 'rxjs/operators';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatSidenav } from '@angular/material/sidenav';
+import { interval, Observable } from 'rxjs';
+import { first, map, shareReplay } from 'rxjs/operators';
+
+const SIDEBAR_COLLAPSE_TIME = 1000;
 
 @Component({
   selector: 'app-navi',
   templateUrl: './navi.component.html',
   styleUrls: ['./navi.component.scss']
 })
-export class NaviComponent {
+export class NaviComponent implements OnInit {
 
   sideNavExpanded = false;
+
+  @ViewChild('drawer', { static: false}) drawer!: MatSidenav;
 
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
@@ -25,5 +30,14 @@ export class NaviComponent {
   }
 
   constructor(private breakpointObserver: BreakpointObserver) {}
+
+  ngOnInit() {
+    interval(SIDEBAR_COLLAPSE_TIME).pipe(first()).subscribe(() => {
+      if (this.drawer.opened) {
+        this.drawer.toggle();
+      }
+    })
+
+  }
 
 }

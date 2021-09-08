@@ -1,25 +1,33 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-import { NaviRoutingModule } from './navi-routing.module';
-import { NaviComponent } from './navi.component';
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatIconModule } from '@angular/material/icon';
-import { MatListModule } from '@angular/material/list';
-
+import { NaviRoutingModule } from './navi-routing.module';
+import { NaviComponent } from './navi.component';
+import { WelcomeComponent } from './welcome/welcome.component';
+import { AutofocusDirective } from './autofocus.directive';
 
 @NgModule({
   declarations: [
-    NaviComponent
+    NaviComponent,
+    WelcomeComponent,
+    AutofocusDirective
   ],
   imports: [
     CommonModule,
     NaviRoutingModule,
+    FormsModule,
+    MatInputModule,
+    MatFormFieldModule,
     MatSidenavModule,
     MatToolbarModule,
     MatListModule,
-    MatIconModule
+    MatIconModule,
   ],
   exports: [
     NaviComponent
