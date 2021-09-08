@@ -10,11 +10,19 @@ import { map, shareReplay } from 'rxjs/operators';
 })
 export class NaviComponent {
 
+  sideNavExpanded = false;
+
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
       map(result => result.matches),
       shareReplay()
     );
+
+
+  toggleSideNav(_: Event) {
+    console.log("sideNav", this.sideNavExpanded);
+    this.sideNavExpanded = !this.sideNavExpanded;
+  }
 
   constructor(private breakpointObserver: BreakpointObserver) {}
 

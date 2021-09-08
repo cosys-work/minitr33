@@ -12,6 +12,7 @@ import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NaviModule } from './navi/navi.module';
+import { WelcomeModule } from './welcome/welcome.module';
 
 
 @NgModule({
@@ -34,7 +35,8 @@ import { NaviModule } from './navi/navi.module';
     MatSidenavModule,
     MatIconModule,
     MatListModule,
-    NaviModule
+    NaviModule, 
+    WelcomeModule
   ],
   providers: [],
   bootstrap: [AppComponent]
