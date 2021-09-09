@@ -10,6 +10,7 @@ specifiers:
   '@angular/compiler': ~12.2.0
   '@angular/compiler-cli': ~12.2.0
   '@angular/core': ~12.2.0
+  '@angular/flex-layout': ^12.0.0-beta.34
   '@angular/forms': ~12.2.0
   '@angular/material': 12.2.4
   '@angular/platform-browser': ~12.2.0
@@ -51,6 +52,7 @@ dependencies:
   '@angular/common': 12.2.4_@angular+core@12.2.4+rxjs@6.6.7
   '@angular/compiler': 12.2.4
   '@angular/core': 12.2.4_rxjs@6.6.7+zone.js@0.11.4
+  '@angular/flex-layout': 12.0.0-beta.34_8b17c308598dc38d2d55a5cee4ff6799
   '@angular/forms': 12.2.4_cf887d031145d5606b4856a9417a9133
   '@angular/material': 12.2.4_97b73ced8d2a72d79659d9c11ad46a5b
   '@angular/platform-browser': 12.2.4_1456d0f6caaa82c4761090c5c241bf69
@@ -393,6 +395,23 @@ packages:
       rxjs: 6.6.7
       tslib: 2.3.1
       zone.js: 0.11.4
+    dev: false
+
+  /@angular/flex-layout/12.0.0-beta.34_8b17c308598dc38d2d55a5cee4ff6799:
+    resolution: {integrity: sha512-nLwKovXpyG+/U3Lbmfwt+q4ARupxtbPmFTZD0Y8oItFAV6/Oh9l+QQsNQa2VhOHAOrVagyDwcEM+SePtB5EmrQ==}
+    peerDependencies:
+      '@angular/cdk': ^12.0.0
+      '@angular/common': '>=12.0.0'
+      '@angular/core': '>=12.0.0'
+      '@angular/platform-browser': '>=12.0.0'
+      rxjs: ^6.0.0
+    dependencies:
+      '@angular/cdk': 12.2.4_b5b752d1db8755e77840d66450bc0656
+      '@angular/common': 12.2.4_@angular+core@12.2.4+rxjs@6.6.7
+      '@angular/core': 12.2.4_rxjs@6.6.7+zone.js@0.11.4
+      '@angular/platform-browser': 12.2.4_1456d0f6caaa82c4761090c5c241bf69
+      rxjs: 6.6.7
+      tslib: 2.3.1
     dev: false
 
   /@angular/forms/12.2.4_cf887d031145d5606b4856a9417a9133:

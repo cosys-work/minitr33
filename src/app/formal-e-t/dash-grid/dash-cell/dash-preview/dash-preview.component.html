@@ -1,5 +1,15 @@
-<form [formGroup]="form" (ngSubmit)="onSubmit(model)">
-    <formly-form [form]="form" [fields]="fields" [model]="model"></formly-form>
-    <button type="submit" matButton>Submit</button>
-    <button type="reset">Reset</button>
-</form>
+<mat-card class="mat-elevation-z0">
+    <div
+        class="bounds"
+    >
+    <form [formGroup]="form">
+        <formly-form
+          [form]="form"
+          [model]="model"
+          [fields]="fields">
+        </formly-form>
+        <button type="submit" mat-raised-button color="primary">Submit</button>
+        <button type="reset" mat-raised-button color="disabled">Reset</button>
+    </form>
+    </div>
+</mat-card>

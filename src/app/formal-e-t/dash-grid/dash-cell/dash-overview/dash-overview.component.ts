@@ -32,7 +32,7 @@ export class DashOverviewComponent implements OnInit {
       manipulation: {
         enabled: true
       },
-      height: '250px',
+      height: '230px',
       width: '1800px',
       clickToUse: true
     };
