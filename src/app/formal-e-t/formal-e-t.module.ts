@@ -26,6 +26,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormlyModule } from '@ngx-formly/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { FlexLayoutType } from '../flex-layouting.component';
 
 const COMPS = [
   FormEtaComponent,
@@ -61,8 +62,7 @@ const COMPS = [
     MatInputModule,
     MatRadioModule,
     MatSelectModule,
-    FlexLayoutModule, 
-    FormlyModule.forChild(),
+    FormlyModule.forChild()
   ],
   exports: [
     ...COMPS

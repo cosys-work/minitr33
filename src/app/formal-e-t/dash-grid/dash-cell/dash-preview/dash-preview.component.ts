@@ -1,6 +1,30 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { FieldType, FormlyFieldConfig } from '@ngx-formly/core';
+import { FormlyFieldConfig } from '@ngx-formly/core';
+
+const nameField = {
+  key: 'name',
+  type: 'input',
+  className: 'col-a',
+  templateOptions: {
+    label: 'Name',
+    placeholder: 'Enter name',
+    required: true,
+    minLength: 3,
+    maxLength: 10,
+  }
+};
+
+const emailField = {
+  key: 'email',
+  type: 'input',
+  className: 'col-b',
+  templateOptions: {
+    label: 'Email address',
+    placeholder: 'Enter email',
+    required: false,
+  }
+}
 
 @Component({
   selector: 'app-dash-preview',
@@ -13,25 +37,15 @@ export class DashPreviewComponent implements OnInit {
   model = { };
   fields: FormlyFieldConfig[] = [
     {
-      key: 'name',
-      type: 'input',
+      type: 'flex-layout',
       templateOptions: {
-        label: 'Name',
-        placeholder: 'Enter name',
-        required: true,
-        minLength: 3,
-        maxLength: 10,
-      }
-    },
-    {
-      key: 'email',
-      type: 'input',
-      templateOptions: {
-        label: 'Email address',
-        placeholder: 'Enter email',
-        required: true,
-      }
-    },
+        fxLayout: 'row',
+      },
+      fieldGroup: [
+        nameField,
+        emailField
+      ]
+    }
   ];
 
   onSubmit(model: any) {

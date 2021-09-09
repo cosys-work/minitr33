@@ -15,9 +15,27 @@ import { FieldType } from '@ngx-formly/core';
     </div>
   `,
   styles: [
-      `.content {
+      `
+      .content {
           min-width: 100px;
-      }`
+      }
+
+      .bounds {
+          background-color:#ddd;
+          height: 100%;
+      }
+
+      .col-a {
+          width: 45%;
+          margin: 2.5%;
+      }
+
+      .col-b {
+          width: 45%;
+          margin: 2.5%;
+      }
+      
+      `
     ]
 })
 export class FlexLayoutType extends FieldType {

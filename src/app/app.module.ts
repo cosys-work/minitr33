@@ -1,5 +1,6 @@
 import { LayoutModule } from '@angular/cdk/layout';
 import { NgModule } from '@angular/core';
+import { FlexLayoutModule } from '@angular/flex-layout';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -15,12 +16,14 @@ import { FormlyMaterialModule } from '@ngx-formly/material';
 import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { FlexLayoutType } from './flex-layouting.component';
 import { NaviModule } from './navi/navi.module';
 
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    FlexLayoutType
   ],
   imports: [
     BrowserModule,
@@ -39,8 +42,17 @@ import { NaviModule } from './navi/navi.module';
     MatIconModule,
     MatListModule,
     NaviModule,
+    FlexLayoutModule,
     ReactiveFormsModule,
-    FormlyModule.forRoot({ extras: { lazyRender: true } }),
+    FormlyModule.forRoot({ 
+      extras: { 
+        lazyRender: true 
+      },       
+      types: [{
+        name: 'flex-layout', 
+        component: FlexLayoutType
+      }] 
+    }),
     FormlyMaterialModule,
     RouterModule
   ],
