@@ -20,11 +20,6 @@ import { FieldType } from '@ngx-formly/core';
           min-width: 100px;
       }
 
-      .bounds {
-          background-color:#ddd;
-          height: 100%;
-      }
-
       .col-a {
           width: 45%;
           margin: 2.5%;

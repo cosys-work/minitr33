@@ -20,7 +20,7 @@ const emailField = {
   type: 'input',
   className: 'col-b',
   templateOptions: {
-    label: 'Email address',
+    label: 'Email',
     placeholder: 'Enter email',
     required: false,
   }

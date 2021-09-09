@@ -13,18 +13,18 @@ export class DashGridComponent {
     map(({ matches }) => {
       if (matches) {
         return [
-          { title: 'Form Overview', cols: 1, rows: 1 },
-          { title: 'Comp Content', cols: 1, rows: 1 },
+          { title: 'Field Content', cols: 1, rows: 1 },
           { title: 'Form Preview', cols: 1, rows: 1 },
-          { title: 'Comp Logic', cols: 1, rows: 1 }
+          { title: 'Field Logic', cols: 1, rows: 1 }, 
+          { title: 'Form Overview', cols: 1, rows: 1 },
         ];
       }
 
       return [
-        { title: 'Form Overview', cols: 2, rows: 1 },
-        { title: 'Comp Content', cols: 1, rows: 1 },
+        { title: 'Field Content', cols: 1, rows: 1 },
         { title: 'Form Preview', cols: 1, rows: 2 },
-        { title: 'Comp Logic', cols: 1, rows: 1 }
+        { title: 'Field Logic', cols: 1, rows: 1 },
+        { title: 'Form Overview', cols: 2, rows: 1 },
       ];
     })
   );

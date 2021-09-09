@@ -39,6 +39,15 @@
             "scripts": [
               "./node_modules/vis-network/dist/vis-network.min.js"
             ],
+            "allowedCommonJsDependencies": [
+              "@codewithdan/observable-store",
+              "three-forcegraph",
+              "@swimlane/ngx-graph",
+              "dagre",
+              "webcola",
+              "ngraph.forcelayout",
+              "ngraph.graph"
+            ],
             "serviceWorker": true,
             "ngswConfigPath": "ngsw-config.json"
           },
