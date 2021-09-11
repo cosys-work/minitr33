@@ -1,37 +1,76 @@
 <mat-grid-list cols="2" rowHeight="4:1">
     <mat-grid-tile>
-        <mat-form-field appearance="standard">
-            <mat-label>Key</mat-label>
-            <input matInput placeholder="Placeholder">
-            <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
-            <mat-hint>Name referring to this value</mat-hint>
-        </mat-form-field>
-    </mat-grid-tile>
-    <mat-grid-tile>
-        <mat-form-field appearance="standard">
-            <mat-label>Type</mat-label>
-            <mat-select [formControl]="inpControl" required>
-                <mat-option>--</mat-option>
-                <mat-option *ngFor="let inp of inps" [value]="inp">
-                  {{inp | titlecase}}
-                </mat-option>
-              </mat-select>
-              <mat-error *ngIf="inpControl.hasError('required')">Please choose a type</mat-error>
-            <mat-hint>The type of the input component</mat-hint>
-        </mat-form-field>
-    </mat-grid-tile>
-    <mat-grid-tile>
-        <mat-form-field appearance="standard">
+        <mat-form-field class="full-width" appearance="standard">
             <mat-label>Label</mat-label>
-            <input matInput placeholder="Placeholder" required>
-            <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
+            <input 
+                name="label"
+                matInput 
+                placeholder="Placeholder" 
+                required
+                type="text"
+                #labelInput
+                (keyup)="onLabelChange(labelInput.value)"
+            >
+            <mat-icon matSuffix>label_important</mat-icon>
             <mat-hint>Name seen by the user</mat-hint>
         </mat-form-field>
     </mat-grid-tile>
     <mat-grid-tile>
-        <mat-form-field appearance="standard">
+        <mat-form-field class="full-width" appearance="fill">
+            <mat-chip-list #chipLists aria-label="Type selection">
+              <mat-chip
+                *ngFor="let inp of types"
+                [selectable]="selectable"
+                [removable]="removable"
+                (removed)="remove(inp)">
+                {{inp | titlecase}}
+                <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+              </mat-chip>
+              <input
+                name="type"
+                required
+                placeholder="Select type..."
+                #typeInput
+                [formControl]="typeCtrl"
+                [matAutocomplete]="auto"
+                [matChipInputFor]="chipLists"
+                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                (matChipInputTokenEnd)="add($event)">
+            </mat-chip-list>
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+              <mat-option *ngFor="let type of filteredTypes | async" [value]="type">
+                {{type | titlecase}}
+              </mat-option>
+            </mat-autocomplete>
+            <mat-error *ngIf="inpControl.hasError('required')">Please choose a type</mat-error>
+            <mat-hint>The type of the input component</mat-hint>
+          </mat-form-field>
+    </mat-grid-tile>
+    <mat-grid-tile>
+        <mat-form-field class="full-width" appearance="standard">
+            <mat-label>Description</mat-label>
+            <input 
+                name="description"
+                matInput 
+                placeholder="Some details.."
+                #descInput
+                (keyup)="onDescChange(descInput.value)"
+            >
+            <mat-icon matSuffix>contact_support</mat-icon>
+            <mat-hint>Explanation about this value</mat-hint>
+        </mat-form-field>
+    </mat-grid-tile>
+    <mat-grid-tile>
+        <mat-form-field class="full-width" appearance="standard">
             <mat-label>Placeholder</mat-label>
-            <input matInput placeholder="Placeholder">
+            <input 
+                matInput 
+                name="placeholder"
+                placeholder="Placeholder"
+                #placeInput
+                (keyup)="onPlaceChange(placeInput.value)"
+            >
+            <mat-icon matSuffix>outlined_flag</mat-icon>
             <mat-hint>Example value seen before typing</mat-hint>
         </mat-form-field>
     </mat-grid-tile>

@@ -1,4 +1,5 @@
 import { Injectable } from "@angular/core";
+import { FEdge, FGraph, FNode } from "../shared/f-graph.model";
 
 
 @Injectable({
@@ -6,63 +7,49 @@ import { Injectable } from "@angular/core";
 })
 export class SeedInitService {
 
-  private readonly nodes = [];
-  private readonly edges = [];
+  private readonly nodes: FNode[] = [];
+  private readonly edges: FEdge[] = [];
 
-  public nodeMaker(iz: number) {
+  public nodeMaker(iz: number): FNode {
     const node = (ix: number) => ({
       id: `${ix}`,
-      label: `Label ${ix}`,
+      label: `Node ${ix}`,
       title: `Title ${ix}`,
       tag: `Tag ${ix}`
     });
-    const nodeWithId = (iy: number) => {
-      const nodeIdd = node(iy);
-      return {
-        nodeId: nodeIdd,
-        ...nodeIdd
-      };
-    };
-    return nodeWithId(iz);
+    return node(iz);
   }
 
-  public edgeMaker(iz: number) {
+  public edgeMaker(iz: number): FEdge {
     const edge =
       (ix: number) => (
         {
-          from: `${ix}`,
-          to: `${ix + 1}`,
-          at: `${ix} => ${ix+1}`,
-          ...this.nodeMaker(ix)
+          from: `${ix}`, // every edge is 'from' one origin node 
+          to: `${ix + 1}`, // every edge goes 'to' the next node by default
+          origin: this.nodeMaker(ix), // every edge 'has' one origin node in the 'from' field
+          label: `${ix}..${ix+1}` // every edge is labeled with origin..destination
         });
-    const edgeWithDi = (iy: number) => {
-      const edgeY = edge(iy);
-      return  {
-        nodeDi: new Array(edgeY),
-        ...edgeY,
-      };
-    }
-    return edgeWithDi(iz);
+    return edge(iz);
   }
 
-  public seedNodes() {
-    return Array(5)
+  public seedNodes(): FNode[] {
+    return Array(2)
       .fill(1 )
       .map((_, i) => this.nodeMaker(i));
   }
 
-  public seedEdges() {
-    return Array(5)
+  public seedEdges(): FEdge[] {
+    return Array(2)
       .fill(1 )
       .map((_, i) => this.edgeMaker(i));
   }
 
 
-  public makeGraph(nodes: any, edges: any) {
+  public makeGraph(nodes: any, edges: any): FGraph {
     return ({ edges, nodes });
   }
 
-  public makeDefault() {
+  public makeDefault(): FGraph {
     return this.makeGraph(
       this.seedNodes(),
       this.seedEdges()
@@ -73,7 +60,7 @@ export class SeedInitService {
     return (!!this.edges?.length && !!this.nodes?.length);
   }
 
-  get graph() {
+  get graph(): FGraph {
     return this.isInitialized ?
       this.makeGraph(this.nodes, this.edges) :
       this.makeDefault();

@@ -1,7 +1,7 @@
 import { LayoutModule } from '@angular/cdk/layout';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -27,6 +27,9 @@ import { FormEtaComponent } from './form-eta/form-eta.component';
 import { FormalETRoutingModule } from './formal-e-t-routing.module';
 import { GraForceComponent } from './gra-force/gra-force.component';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { SharedModule } from '../shared/shared.module';
+import { FlexLayoutType } from './flex-layouting.component';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 
 const COMPS = [
@@ -37,7 +40,8 @@ const COMPS = [
   DashContentComponent,
   DashLogicComponent,
   DashPreviewComponent,
-  GraForceComponent
+  GraForceComponent,
+  FlexLayoutType
 ]
 
 @NgModule({
@@ -56,6 +60,7 @@ const COMPS = [
     LayoutModule,
     NgxGraphModule,
     FormlyMaterialModule,
+    FormsModule,
     ReactiveFormsModule,
     MatCheckboxModule,
     MatButtonModule,
@@ -66,7 +71,13 @@ const COMPS = [
     MatChipsModule,
     MatCommonModule,
     MatAutocompleteModule,
-    FormlyModule.forChild()
+    SharedModule,
+    FlexLayoutModule,
+    FormlyModule.forChild({ 
+      extras: { 
+        lazyRender: true 
+      }
+    }),
   ],
   exports: [
     ...COMPS

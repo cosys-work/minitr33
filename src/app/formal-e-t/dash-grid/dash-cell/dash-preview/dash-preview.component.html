@@ -1,15 +1,23 @@
-<mat-card class="mat-elevation-z0">
-    <div
-        class="bounds"
-    >
-    <form [formGroup]="form">
-        <formly-form
-          [form]="form"
-          [model]="model"
-          [fields]="fields">
-        </formly-form>
-        <button type="submit" mat-raised-button color="primary">Submit</button>
-        <button type="reset" mat-raised-button color="disabled">Reset</button>
-    </form>
+<mat-card class="mat-elevation-z0 outer-shell">
+    <div class="grow-container">
+        <div
+            class="container"
+        >
+        <form [formGroup]="form" (ngSubmit)="onSubmit(form)">
+            <formly-form
+              [model]="model"
+              [fields]="fields"
+              [form]="form"
+            ></formly-form>
+            <div
+              class="button-row"
+              style="display:flex; flex-direction: row; justify-content: space-between;"
+            >
+              <button mat-raised-button type="reset" color="link">Clear</button>
+              <button class="right-submit" mat-raised-button color="primary">Submit</button>
+            </div>
+          </form>
+          <!-- <app-form-debug [form]="form.value" [model]="model"></app-form-debug> -->
+        </div>
     </div>
 </mat-card>

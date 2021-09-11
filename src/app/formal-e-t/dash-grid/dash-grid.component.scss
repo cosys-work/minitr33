@@ -10,11 +10,44 @@
   bottom: 15px;
 }
 
-.more-button {
+.rightest-button {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+}
+
+
+.righter-button {
+  position: absolute;
+  bottom: 10px;
+  right: 75px;
+}
+
+.rightest-top-button {
   position: absolute;
   top: 5px;
   right: 10px;
 }
+
+.righter-top-button {
+  position: absolute;
+  top: 5px;
+  right: 55px;
+}
+
+.right-top-button {
+  position: absolute;
+  top: 5px;
+  right: 100px;
+}
+
+
+.leftest-button {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+}
+
 
 .dashboard-card-content {
   text-align: center;

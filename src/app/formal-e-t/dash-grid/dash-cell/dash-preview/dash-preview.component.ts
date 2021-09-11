@@ -1,30 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
+import { emailField, emptyField, FieldRefs, nameField, refsToField } from 'src/app/shared/field.model';
+import { FormalField } from 'src/app/shared/shared.model';
+import { FieldRefsStoreService } from 'src/app/store/field-refs-store.service';
+import { DashChangesService, FieldId } from '../dash-content/dash-changes.service';
 
-const nameField = {
-  key: 'name',
-  type: 'input',
-  className: 'col-a',
-  templateOptions: {
-    label: 'Name',
-    placeholder: 'Enter name',
-    required: true,
-    minLength: 3,
-    maxLength: 10,
-  }
-};
-
-const emailField = {
-  key: 'email',
-  type: 'input',
-  className: 'col-b',
-  templateOptions: {
-    label: 'Email',
-    placeholder: 'Enter email',
-    required: false,
-  }
-}
 
 @Component({
   selector: 'app-dash-preview',
@@ -35,18 +16,58 @@ export class DashPreviewComponent implements OnInit {
 
   form = new FormGroup({});
   model = { };
-  fields: FormlyFieldConfig[] = [
-    {
-      type: 'flex-layout',
-      templateOptions: {
-        fxLayout: 'row',
-      },
-      fieldGroup: [
-        nameField,
-        emailField
-      ]
-    }
+
+  buff: FormalField = emptyField();
+  
+  fieldGroup = [
+    nameField,
+    emailField
   ];
+
+  field = {
+    fieldGroupClassName: 'display-flex',
+    fieldGroup: this.fieldGroup
+  };
+
+  fields: FormlyFieldConfig[] = [
+    { key: 'id'},
+    this.field,
+    this.buff
+  ];
+
+  constructor(
+    private contents: DashChangesService, 
+    private fieldRefs: FieldRefsStoreService
+  ) {
+    const it = [
+      this.fieldRefs.states[0], 
+      this.fieldRefs.states[1]
+    ].map((s: FieldRefs) => refsToField(s));
+    this.fieldGroup = [...this.fieldGroup, ...it];
+    this.fields = [...this.fields];
+    this.buff.className = "flex-2";
+
+    this.contents.stream.subscribe((v) => {
+      console.log("v", v);
+      switch (v.id) {
+        case FieldId.type:
+          this.buff.type = v.value.trim();
+          break;
+        case FieldId.label:
+          this.buff.templateOptions.label = v.value.trim();
+          this.buff.key = v.value.trim().toLowerCase().replace(/ /g, "_");
+          break;
+        case FieldId.placeholder:
+          this.buff.templateOptions.placeholder = v.value.trim();
+          break;
+        case FieldId.description:
+          break;
+        default:
+          break;
+      };
+      this.fields = [...this.fields];
+    });
+  }
 
   onSubmit(model: any) {
     console.log(model, model === this.model, this.model);

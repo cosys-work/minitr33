@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { Breakpoints, BreakpointObserver } from '@angular/cdk/layout';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-dash-grid',
@@ -29,5 +30,24 @@ export class DashGridComponent {
     })
   );
 
+  saved = new BehaviorSubject(false);
+  nexted = new BehaviorSubject(false);
+
   constructor(private breakpointObserver: BreakpointObserver) {}
+
+  onSave(_: Event) {
+    this.saved.next(true);
+  }
+
+  onShare(_: Event) {
+    this.saved.next(false);
+  }
+
+  onNext(_: Event) {
+    this.nexted.next(true);
+  }
+
+  onPrev(_: Event) {
+    this.nexted.next(false);
+  }
 }

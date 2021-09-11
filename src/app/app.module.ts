@@ -11,19 +11,17 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { ServiceWorkerModule } from '@angular/service-worker';
-import { FormlyModule } from '@ngx-formly/core';
 import { FormlyMaterialModule } from '@ngx-formly/material';
 import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { FlexLayoutType } from './flex-layouting.component';
 import { NaviModule } from './navi/navi.module';
+import { SharedModule } from './shared/shared.module';
 
 
 @NgModule({
   declarations: [
-    AppComponent,
-    FlexLayoutType
+    AppComponent
   ],
   imports: [
     BrowserModule,
@@ -44,15 +42,7 @@ import { NaviModule } from './navi/navi.module';
     NaviModule,
     FlexLayoutModule,
     ReactiveFormsModule,
-    FormlyModule.forRoot({ 
-      extras: { 
-        lazyRender: true 
-      },       
-      types: [{
-        name: 'flex-layout', 
-        component: FlexLayoutType
-      }] 
-    }),
+    SharedModule,
     FormlyMaterialModule,
     RouterModule
   ],

@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core";
-import { GrafStore, Graph } from "src/app/store/graf-store.service";
+import { FGraph } from "src/app/shared/f-graph.model";
+import { GrafStore } from "src/app/store/graf-store.service";
 
 interface OnAble {
   on: (selector: string, cb: (params: unknown) => void) => void
@@ -56,7 +57,7 @@ export class DashOverviewComponent implements OnInit {
     });
   }
 
-  getTreeData(): Graph {
+  getTreeData(): FGraph {
     const grafState = this.grafStore.state;
     const nodes = grafState.nodes;
     const edges = grafState.edges;
