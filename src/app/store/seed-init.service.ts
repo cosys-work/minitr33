@@ -8,8 +8,6 @@ import { makeFormalField } from "../shared/field.model";
 })
 export class SeedInitService {
 
-  private nodes!: FNode;
-
   public nodeMaker(iz: number): FNode {
     function node(ix: number) {
       return ({
@@ -41,7 +39,9 @@ export class SeedInitService {
           origin: this.nodeMaker(ix), // every edge 'has' one origin node in the 'from' field
           label: `${ix}..${ix+1}` // every edge is labeled with origin..destination
         });
-    return edge(iy);
+    const edgeWithNode = edge(iy);
+    console.log("edgeWithNode", edgeWithNode);
+    return edgeWithNode;
   }
 
   public seedEdges(): FEdge[] {

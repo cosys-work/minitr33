@@ -4,7 +4,6 @@ import { FormlyFieldConfig } from '@ngx-formly/core';
 import { FieldId } from 'src/app/shared/field.model';
 import { FormalField } from 'src/app/shared/shared.model';
 import { FormCursorStoreService } from 'src/app/store/form-cursor-store.service';
-import { FormStructStoreService } from 'src/app/store/form-struct-store.service';
 import { GrafStore } from 'src/app/store/graf-store.service';
 import { DashChangesService } from '../dash-content/dash-changes.service';
 
@@ -36,14 +35,10 @@ export class DashPreviewComponent implements OnInit {
 
   constructor(
     private changes: DashChangesService, 
-    private formStructStore: FormStructStoreService,
     private cursorStore: FormCursorStoreService,
     private grafStore: GrafStore
   ) {
-    this.fieldGroup = this.formStructStore.state;
-    console.log("fields Before", this.fieldGroup);
-    this.field.fieldGroup = this.fieldGroup;
-    console.log("fieldGroup After", this.fieldGroup);
+    this.fieldGroup = this.grafStore.edges.map(e => e.origin.field);
 
     this.initialize();
 
@@ -57,12 +52,17 @@ export class DashPreviewComponent implements OnInit {
 
   initialize() {
     this.fieldGroup.forEach((_, i) => {
-      this.fieldGroup[i].type = this.changes.type;
-      this.fieldGroup[i].templateOptions.label = this.changes.label;
-      this.fieldGroup[i].key = keyMaker(this.changes.label);
-      this.fieldGroup[i].templateOptions.placeholder = this.changes.placeholder;
-      this.fieldGroup[i].templateOptions.description = this.changes.description;
+      console.log("initing", i);
+      const cur = this.grafStore.nodes[i].field;
+      this.fieldGroup[i].type = cur.type;
+      this.fieldGroup[i].templateOptions.label = cur.key;
+      this.fieldGroup[i].key = keyMaker(cur.key);
+      this.fieldGroup[i].templateOptions.placeholder = cur.templateOptions.placeholder;
+      this.fieldGroup[i].templateOptions.description = cur.templateOptions.label;
+      console.log("fgi",this.fieldGroup[i], cur);
     })
+    this.field.fieldGroup = this.fieldGroup;
+    this.fields = [...this.fields];
   }
 
   updateAtCursor(cursor: number) {
@@ -72,7 +72,6 @@ export class DashPreviewComponent implements OnInit {
       console.log("cont values", v);
       switch (v.id) {
         case FieldId.type:
-          console.log("type type type");
           this.fieldGroup[cursor].type = v.value.trim();
           break;
         case FieldId.label:
@@ -90,10 +89,10 @@ export class DashPreviewComponent implements OnInit {
           console.log("woah");
           break;
       };
-      this.field.fieldGroup = this.fieldGroup;
-      this.fields = [...this.fields];
-      console.log("cursor fields post", this.fields);
     });
+    this.field.fieldGroup = this.fieldGroup;
+    this.fields = [...this.fields];
+    console.log("cursor fields post", this.fields);
   }
 
   onSubmit(model: any) {

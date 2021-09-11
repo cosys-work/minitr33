@@ -69,9 +69,7 @@ export class DashOverviewComponent implements OnInit {
   }
 
   getTreeData(): FGraph {
-    const grafState = this.grafStore.state;
-    const nodes = grafState.nodes;
-    const edges = grafState.edges;
+    const { nodes, edges } = this.grafStore.state;
     return ({
       nodes,
       edges
