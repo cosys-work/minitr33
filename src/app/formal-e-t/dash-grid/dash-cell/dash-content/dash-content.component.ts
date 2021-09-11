@@ -26,25 +26,22 @@ export class DashContentComponent implements AfterViewInit {
   placeCtrl = new FormControl();
 
   filteredTypes: Observable<string[]>;
-  types: string[] = ['input'];
+  types!: string[];
   allTypes: string[] = [
-    'input'
+    "text",
+    "number",
+    "email",
+    "password",
+    "time",
+    "date",
+    "tel",
+    "url",
+    "search",
+    "datetime-local",
+    "month",    
+    "week",
+    "color"
   ];
-
-      // "text",
-    // "number",
-    // "email",
-    // "password",
-    // "time",
-    // "date",
-    // "tel",
-    // "url",
-    // "search",
-    // "datetime-local",
-    // "month",    
-    // "week",
-    // "color"
-
 
   @ViewChild('typeInput') typeInput!: ElementRef<HTMLInputElement>;
   @ViewChild('labelInput') labelInput!: ElementRef<HTMLInputElement>;
@@ -59,7 +56,7 @@ export class DashContentComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.changes.typeStrm.subscribe(t => this.typeInput.nativeElement.value = t.value);
+    this.changes.typeStrm.subscribe(t =>  this.types = this.allTypes = [t.value]);
     this.changes.labelStrm.subscribe(t => this.labelInput.nativeElement.value = t.value);
     this.changes.descStrm.subscribe(t => this.descInput.nativeElement.value = t.value);
     this.changes.placeStrm.subscribe(t => this.placeInput.nativeElement.value = t.value);

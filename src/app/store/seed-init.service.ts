@@ -8,27 +8,34 @@ import { makeFormalField } from "../shared/field.model";
 })
 export class SeedInitService {
 
+  private nodes!: FNode;
+
   public nodeMaker(iz: number): FNode {
-    const node = (ix: number) => ({
-      id: `${ix}`,
-      label: `Label ${ix}`,
-      title: `Description ${ix}`,
-      tag: `Placeholder ${ix}`
-    });
-    const nodeWithField = (iy: number) => {
-      const ode = node(iy);
+    function node(ix: number) {
       return ({
-        ...node(iy), 
-        ...makeFormalField(ode.label, ode.tag, ode.title)
-      }); // makeFormalField label=label, placeholder=tag, description=title
+        id: `${ix}`,
+        label: `Label ${ix}`,
+        title: `Description ${ix}`,
+        tag: `Placeholder ${ix}`
+      });
     };
-    return nodeWithField(iz);
+    function nodeWithField(iy: number): FNode {
+      const ode = node(iy);
+      // makeFormalField label=label, placeholder=tag, description=title
+      const field = makeFormalField(ode.label, ode.tag, ode.title);
+      console.log("makeFormalField", field);
+      return ({
+        ...ode, 
+        field 
+      }); 
+    };
+    const nwf = nodeWithField(iz);
+    console.log("nodeWithField", nwf);
+    return nwf;
   }
 
   public edgeMaker(iy: number): FEdge {
-    const edge =
-      (ix: number) => (
-        {
+    const edge = (ix: number) => ({
           from: `${ix}`, // every edge is 'from' one origin node, c.f. origin below
           to: `${ix + 1}`, // every edge goes 'to' the next node by default
           origin: this.nodeMaker(ix), // every edge 'has' one origin node in the 'from' field
@@ -37,15 +44,9 @@ export class SeedInitService {
     return edge(iy);
   }
 
-  public seedNodes(): FNode[] {
-    return Array(2)
-      .fill(1 )
-      .map((_, i) => this.nodeMaker(i));
-  }
-
   public seedEdges(): FEdge[] {
     return Array(2)
-      .fill(1 )
+      .fill(1)
       .map((_, i) => this.edgeMaker(i));
   }
 
@@ -54,9 +55,11 @@ export class SeedInitService {
   }
 
   private makeDefault(): FGraph {
+    const seedEdges = this.seedEdges();
+    const seedNodes = seedEdges.map(v => v.origin);
     return this.makeGraph(
-      this.seedNodes(),
-      this.seedEdges()
+      seedNodes,
+      seedEdges
     );
   }
 

@@ -44,7 +44,7 @@ export function fieldMaker(
 };
 
 
-export const emptyField = () => fieldMaker("A", "input", "Label", "C", "D");
+export const emptyField = () => fieldMaker("key", "input", "label", "placeholder", "className");
 
 export function refsToField(refs: Required<FieldRefs>): FormalField {  
   return fieldMaker(refs.label, refs.type, refs.description, refs.placeholder, 'flex-1');

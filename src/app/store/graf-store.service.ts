@@ -4,12 +4,12 @@ import {Observable, ReplaySubject} from "rxjs";
 
 import {Injectable} from "@angular/core";
 import { SeedInitService } from "./seed-init.service";
-import { FEdge, FGraph } from "../shared/f-graph.model";
+import { FEdge, FGraph, FNode } from "../shared/f-graph.model";
 
-export enum Actions {
-  INIT="INIT",
-  REINIT="REINIT",
-  EDIT="EDIT"
+enum Actions {
+  INIT="INIT_GRAF",
+  REINIT="REINIT_GRAF",
+  EDIT="EDIT_GRAF"
 }
 
 const bufferSize = 100;
@@ -24,6 +24,7 @@ export class GrafStore extends ObservableStore<FGraph> {
   constructor(private seed: SeedInitService) {
     super({ trackStateHistory: true });
     this.setState(this.seed.graph, Actions.INIT);
+    console.log("core state", this.getState(true));
     this.updateStoreStream();
   }
 
@@ -31,15 +32,17 @@ export class GrafStore extends ObservableStore<FGraph> {
     this.storeStream.next(this.getState(true));
   }
 
-  get state() {
-    return this.getState(true);
+  get state(): FGraph {
+    const { nodes, edges} = this.getState(true);
+    console.log("getting core state", nodes, edges);
+    return ({ nodes, edges });
   }
 
-  get nodes() {
+  get nodes(): FNode[] {
     return this.state.nodes;
   }
 
-  get edges() {
+  get edges(): FEdge[] {
     return this.state.edges;
   }
 

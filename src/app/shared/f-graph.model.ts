@@ -8,7 +8,7 @@ export interface FNode {
     label: string;
     title: string;
     tag: string;
-    field?: FormalField;
+    field: FormalField;
 }
 
 /**
