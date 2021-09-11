@@ -6,7 +6,7 @@ import {Injectable} from "@angular/core";
 import { SeedInitService } from "./seed-init.service";
 import { FEdge, FGraph } from "../shared/f-graph.model";
 
-enum Actions {
+export enum Actions {
   INIT="INIT",
   REINIT="REINIT",
   EDIT="EDIT"

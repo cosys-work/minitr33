@@ -47,7 +47,7 @@ export function fieldMaker(
 export const emptyField = () => fieldMaker("A", "input", "Label", "C", "D");
 
 export function refsToField(refs: Required<FieldRefs>): FormalField {  
-  return fieldMaker(refs.label, refs.type, refs.label, refs.placeholder, 'flex-1');
+  return fieldMaker(refs.label, refs.type, refs.description, refs.placeholder, 'flex-1');
 }
 
 export function makeFormalField(
@@ -58,6 +58,23 @@ export function makeFormalField(
 ): FormalField {
   return refsToField(fieldRefs(label, placeholder, description, type));
 }
+
+export enum FieldId {
+  label = "label",
+  type = "type",
+  description = "description",
+  placeholder = "placeholder"
+}
+
+export interface FieldType {
+  id: FieldId;
+  value: string;
+}
+
+export const fieldType: (id: FieldId, value: string) => FieldType 
+  = (id: FieldId, value: string) => ({id, value});
+
+
 
 export const nameField: FormalField = {
   key: 'name',

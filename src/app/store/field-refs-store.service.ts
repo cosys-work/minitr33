@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ObservableStore } from '@codewithdan/observable-store';
 import { fieldRefs, FieldRefs } from '../shared/field.model';
-import { GrafStore } from './graf-store.service';
+import { Actions, GrafStore } from './graf-store.service';
 
 
 @Injectable({
@@ -16,7 +16,7 @@ export class FieldRefsStoreService extends ObservableStore<Array<FieldRefs>> {
     const labels: FieldRefs[] = this.graphStore.nodes
       .map(n => fieldRefs(n.label, n.tag, n.title));
     
-    this.setState(labels);
+    this.setState(labels, Actions.INIT);
   }
 
   get states(): FieldRefs[] {
@@ -24,6 +24,6 @@ export class FieldRefsStoreService extends ObservableStore<Array<FieldRefs>> {
   }
 
   set addField(fRef: FieldRefs) {
-    this.setState([...this.states, fRef]);
+    this.setState([...this.states, fRef], Actions.EDIT);
   }
 }

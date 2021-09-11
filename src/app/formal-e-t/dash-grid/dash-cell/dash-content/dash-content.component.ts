@@ -1,5 +1,5 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipInputEvent } from '@angular/material/chips';
@@ -12,7 +12,7 @@ import { DashChangesService } from './dash-changes.service';
   templateUrl: './dash-content.component.html',
   styleUrls: ['./dash-content.component.scss']
 })
-export class DashContentComponent {
+export class DashContentComponent implements AfterViewInit {
   inpControl = new FormControl('', Validators.required);
   selectFormControl = new FormControl('', Validators.required);
 
@@ -47,12 +47,22 @@ export class DashContentComponent {
 
 
   @ViewChild('typeInput') typeInput!: ElementRef<HTMLInputElement>;
+  @ViewChild('labelInput') labelInput!: ElementRef<HTMLInputElement>;
+  @ViewChild('descInput') descInput!: ElementRef<HTMLInputElement>;
+  @ViewChild('placeInput') placeInput!: ElementRef<HTMLInputElement>;
 
   constructor(private changes: DashChangesService) {
     this.filteredTypes = this.typeCtrl.valueChanges.pipe(
       startWith(null),
       map((type: string | null) => type ? this._filter(type) : this.allTypes.slice())
     );
+  }
+
+  ngAfterViewInit(): void {
+    this.changes.typeStrm.subscribe(t => this.typeInput.nativeElement.value = t.value);
+    this.changes.labelStrm.subscribe(t => this.labelInput.nativeElement.value = t.value);
+    this.changes.descStrm.subscribe(t => this.descInput.nativeElement.value = t.value);
+    this.changes.placeStrm.subscribe(t => this.placeInput.nativeElement.value = t.value);
   }
 
   onLabelChange(label: string) {

@@ -1,54 +1,54 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, merge, Observable } from 'rxjs';
+import { BehaviorSubject, merge, noop, Observable, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter } from 'rxjs/operators';
-
-export enum FieldId {
-  label = "label",
-  type = "type",
-  description = "description",
-  placeholder = "placeholder"
-}
-
-export interface FieldType {
-  id: FieldId;
-  value: string;
-}
-
-export const fieldType: (id: FieldId, value: string) => FieldType 
-  = (id: FieldId, value: string) => ({id, value});
+import { FieldId, FieldRefs, fieldType, FieldType } from 'src/app/shared/field.model';
+import { FieldRefsStoreService } from 'src/app/store/field-refs-store.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DashChangesService {
 
-  private labelChanges = new BehaviorSubject<FieldType>(fieldType(FieldId.label, ""));
-  private typeChanges = new BehaviorSubject<FieldType>(fieldType(FieldId.type, ""));
-  private descChanges = new BehaviorSubject<FieldType>(fieldType(FieldId.description, ""));
-  private placeChanges = new BehaviorSubject<FieldType>(fieldType(FieldId.placeholder, ""));
+  private labelChanges!: BehaviorSubject<FieldType>;
+  private typeChanges!: BehaviorSubject<FieldType>;
+  private descChanges!: BehaviorSubject<FieldType>;
+  private placeChanges!: BehaviorSubject<FieldType>;
+
+  constructor(private fieldRefsStore: FieldRefsStoreService) {
+    const refs: FieldRefs = this.fieldRefsStore.states[0];
+    this.label = refs.label;
+    this.type = refs.type;
+    this.description = refs.description;
+    this.placeholder = refs.placeholder;
+  }
 
   set label(label: string) {
-    this.labelChanges.next(fieldType(FieldId.label, label));
+    const labelField = fieldType(FieldId.label, label);
+    this.labelChanges ? this.labelChanges.next(labelField) : this.labelChanges = new BehaviorSubject(labelField);
   }
 
   set type(type: string) {
-    this.typeChanges.next(fieldType(FieldId.type, type));
+    const typeField = fieldType(FieldId.type, type);
+    this.typeChanges ? this.typeChanges.next(typeField) : this.typeChanges = new BehaviorSubject(typeField);
   }
 
   set description(description: string) {
-    this.descChanges.next(fieldType(FieldId.description, description));
+    const descField = fieldType(FieldId.description, description);
+    this.descChanges ? this.descChanges.next(descField) : this.descChanges = new BehaviorSubject(descField);
   }
 
   set placeholder(placeholder: string) {
-    this.placeChanges.next(fieldType(FieldId.placeholder, placeholder));
+    const placeField = fieldType(FieldId.placeholder, placeholder);
+    this.placeChanges ? this.placeChanges.next(placeField) : this.placeChanges = new BehaviorSubject(placeField);
   }
 
   private debounceObs(bSub: BehaviorSubject<FieldType>): Observable<FieldType> {
-    return bSub.pipe(
+    const dummy = (new Subject<FieldType>()).asObservable;
+    return bSub ? bSub.pipe(
       filter(v => v.value !== ""),
       debounceTime(300),
       distinctUntilChanged()
-    );
+    ) : dummy();
   }
 
   get labelStrm() {

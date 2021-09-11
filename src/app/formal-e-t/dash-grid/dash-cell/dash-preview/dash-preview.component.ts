@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
-import { emailField, emptyField, FieldRefs, nameField, refsToField } from 'src/app/shared/field.model';
+import { emailField, emptyField, FieldId, FieldRefs, nameField, refsToField } from 'src/app/shared/field.model';
 import { FormalField } from 'src/app/shared/shared.model';
 import { FieldRefsStoreService } from 'src/app/store/field-refs-store.service';
-import { DashChangesService, FieldId } from '../dash-content/dash-changes.service';
+import { DashChangesService } from '../dash-content/dash-changes.service';
 
 
 @Component({
@@ -63,6 +63,7 @@ export class DashPreviewComponent implements OnInit {
           this.buff.templateOptions.placeholder = v.value.trim();
           break;
         case FieldId.description:
+          this.buff.templateOptions.description = v.value.trim();
           break;
         default:
           break;

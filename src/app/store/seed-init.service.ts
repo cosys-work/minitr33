@@ -8,15 +8,12 @@ import { makeFormalField } from "../shared/field.model";
 })
 export class SeedInitService {
 
-  private readonly nodes: FNode[] = [];
-  private readonly edges: FEdge[] = [];
-
   public nodeMaker(iz: number): FNode {
     const node = (ix: number) => ({
       id: `${ix}`,
-      label: `Field ${ix}`,
-      title: `Title ${ix}`,
-      tag: `Tag ${ix}`
+      label: `Label ${ix}`,
+      title: `Description ${ix}`,
+      tag: `Placeholder ${ix}`
     });
     const nodeWithField = (iy: number) => {
       const ode = node(iy);
@@ -28,7 +25,7 @@ export class SeedInitService {
     return nodeWithField(iz);
   }
 
-  public edgeMaker(iz: number): FEdge {
+  public edgeMaker(iy: number): FEdge {
     const edge =
       (ix: number) => (
         {
@@ -37,7 +34,7 @@ export class SeedInitService {
           origin: this.nodeMaker(ix), // every edge 'has' one origin node in the 'from' field
           label: `${ix}..${ix+1}` // every edge is labeled with origin..destination
         });
-    return edge(iz);
+    return edge(iy);
   }
 
   public seedNodes(): FNode[] {
@@ -52,26 +49,19 @@ export class SeedInitService {
       .map((_, i) => this.edgeMaker(i));
   }
 
-
   public makeGraph(nodes: any, edges: any): FGraph {
     return ({ edges, nodes });
   }
 
-  public makeDefault(): FGraph {
+  private makeDefault(): FGraph {
     return this.makeGraph(
       this.seedNodes(),
       this.seedEdges()
     );
   }
 
-  get isInitialized(): boolean {
-    return (!!this.edges?.length && !!this.nodes?.length);
-  }
-
   get graph(): FGraph {
-    return this.isInitialized ?
-      this.makeGraph(this.nodes, this.edges) :
-      this.makeDefault();
+    return this.makeDefault();
   }
 
 }
