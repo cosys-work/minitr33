@@ -11,11 +11,19 @@ export class FieldRefsStoreService extends ObservableStore<Array<FieldRefs>> {
 
   constructor(private graphStore: GrafStore) { 
     super({trackStateHistory: true});
-    const labels: FieldRefs[] = this.graphStore.nodes.map(n => fieldRefs(n.label, n.tag, n.title));
+
+
+    const labels: FieldRefs[] = this.graphStore.nodes
+      .map(n => fieldRefs(n.label, n.tag, n.title));
+    
     this.setState(labels);
   }
 
   get states(): FieldRefs[] {
     return this.getState(true);
+  }
+
+  set addField(fRef: FieldRefs) {
+    this.setState([...this.states, fRef]);
   }
 }

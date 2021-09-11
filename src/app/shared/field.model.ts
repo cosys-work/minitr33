@@ -7,17 +7,19 @@ export interface FieldRefs {
   placeholder: string;
 }
 
-export const fieldRefs: (
+export function fieldRefs(
   label: string,
   placeholder: string,
-  description: string
-) => FieldRefs 
-= (label: string, placeholder: string, description: string) => ({
-  label,
-  placeholder,
-  description,
-  type: 'input',
-});
+  description: string,
+  type: string = 'input'
+): FieldRefs {
+  return ({
+    label,
+    placeholder,
+    description,
+    type,
+  });
+}
 
 export function fieldMaker(
     key: string, 
@@ -28,15 +30,15 @@ export function fieldMaker(
 ): FormalField {
 
     const templateOptions = {
-    label,
-    placeholder
+      label,
+      placeholder
     };
 
     return ({
-    key,
-    type,
-    className,
-    templateOptions
+      key,
+      type,
+      className,
+      templateOptions
     });
 
 };
@@ -46,6 +48,15 @@ export const emptyField = () => fieldMaker("A", "input", "Label", "C", "D");
 
 export function refsToField(refs: Required<FieldRefs>): FormalField {  
   return fieldMaker(refs.label, refs.type, refs.label, refs.placeholder, 'flex-1');
+}
+
+export function makeFormalField(
+  label: string,
+  placeholder: string,
+  description: string,
+  type: string = "input"
+): FormalField {
+  return refsToField(fieldRefs(label, placeholder, description, type));
 }
 
 export const nameField: FormalField = {

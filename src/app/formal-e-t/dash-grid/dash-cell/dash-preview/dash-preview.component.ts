@@ -39,10 +39,12 @@ export class DashPreviewComponent implements OnInit {
     private contents: DashChangesService, 
     private fieldRefs: FieldRefsStoreService
   ) {
+
     const it = [
       this.fieldRefs.states[0], 
       this.fieldRefs.states[1]
     ].map((s: FieldRefs) => refsToField(s));
+    
     this.fieldGroup = [...this.fieldGroup, ...it];
     this.fields = [...this.fields];
     this.buff.className = "flex-2";

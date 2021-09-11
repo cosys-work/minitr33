@@ -4,7 +4,7 @@ import {Observable, ReplaySubject} from "rxjs";
 
 import {Injectable} from "@angular/core";
 import { SeedInitService } from "./seed-init.service";
-import { FGraph } from "../shared/f-graph.model";
+import { FEdge, FGraph } from "../shared/f-graph.model";
 
 enum Actions {
   INIT="INIT",
@@ -43,13 +43,18 @@ export class GrafStore extends ObservableStore<FGraph> {
     return this.state.edges;
   }
 
+  set delete(fez: FEdge) {
+    const edges: FEdge[] = this.edges.filter(e => e.origin.id === fez.origin.id);
+    this.edit(edges); // updates stream too
+  }
+
   set reset(gDef: FGraph) {
     this.setState(gDef, Actions.REINIT);
     this.updateStoreStream();
   }
 
-  set edit(part: Partial<FGraph>) {
-    const newState = { ...this.getState(true), ...part };
+  edit(edges: FGraph['edges']) {
+    const newState: FGraph = { ...this.state, edges };
     this.setState(newState, Actions.EDIT);
     this.updateStoreStream();
   }
