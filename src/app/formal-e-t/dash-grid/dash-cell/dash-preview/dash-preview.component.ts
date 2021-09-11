@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { FormlyFieldConfig } from '@ngx-formly/core';
+import { FieldType, FormlyFieldConfig } from '@ngx-formly/core';
+import { merge } from 'rxjs';
+import { filter, map, switchMap, withLatestFrom } from 'rxjs/operators';
 import { FieldId } from 'src/app/shared/field.model';
 import { FormalField } from 'src/app/shared/shared.model';
 import { FormCursorStoreService } from 'src/app/store/form-cursor-store.service';
@@ -33,6 +35,9 @@ export class DashPreviewComponent implements OnInit {
     this.field,
   ];
 
+  cursor: number = 0;
+  change: any = { id: 0 };
+
   constructor(
     private changes: DashChangesService, 
     private cursorStore: FormCursorStoreService,
@@ -41,13 +46,8 @@ export class DashPreviewComponent implements OnInit {
     this.fieldGroup = this.grafStore.edges.map(e => e.origin.field);
 
     this.initialize();
+    this.updateAtCursor();
 
-    this.cursorStore.current.subscribe(v => {
-      if (v <= this.fieldGroup.length) {
-        console.log("updating cursor");
-        this.updateAtCursor(v);
-      }
-    });
   }
 
   initialize() {
@@ -65,34 +65,41 @@ export class DashPreviewComponent implements OnInit {
     this.fields = [...this.fields];
   }
 
-  updateAtCursor(cursor: number) {
-    
-    this.fieldGroup[cursor].className = "flex-2";
-    this.changes.stream.subscribe((v) => {
-      console.log("cont values", v);
-      switch (v.id) {
+  updateAtCursor() {
+
+    merge(
+      this.cursorStore.current,
+      this.changes.stream
+    ).subscribe(a => {
+      this.cursor = typeof a === "number" ? a : this.cursor;
+      this.change = typeof a !== "number" ? a : this.change;
+
+      console.log("cont values", this.change);
+      if (this.change?.id) {
+      switch (this.change.id) {
         case FieldId.type:
-          this.fieldGroup[cursor].type = v.value.trim();
+          this.fieldGroup[this.cursor].type = this.change.value.trim();
           break;
         case FieldId.label:
-          this.fieldGroup[cursor].templateOptions.label = v.value.trim();
-          this.fieldGroup[cursor].key = keyMaker(v.value);
-          console.log("trimmy trimmy trimmy", this.fieldGroup[cursor].key);
+          this.fieldGroup[this.cursor].templateOptions.label = this.change.value.trim();
+          this.fieldGroup[this.cursor].key = keyMaker(this.change.value);
+          console.log("trimmy trimmy trimmy", this.fieldGroup[this.cursor].key);
           break;
         case FieldId.placeholder:
-          this.fieldGroup[cursor].templateOptions.placeholder = v.value.trim();
+          this.fieldGroup[this.cursor].templateOptions.placeholder = this.change.value.trim();
           break;
         case FieldId.description:
-          this.fieldGroup[cursor].templateOptions.description = v.value.trim();
+          this.fieldGroup[this.cursor].templateOptions.description = this.change.value.trim();
           break;
         default:
           console.log("woah");
           break;
-      };
+      }
+      this.field.fieldGroup = this.fieldGroup;
+      this.fields = [...this.fields];
+      console.log("cursor fields post", this.fields);
+    };
     });
-    this.field.fieldGroup = this.fieldGroup;
-    this.fields = [...this.fields];
-    console.log("cursor fields post", this.fields);
   }
 
   onSubmit(model: any) {

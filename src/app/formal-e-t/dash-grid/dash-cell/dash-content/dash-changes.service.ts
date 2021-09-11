@@ -89,7 +89,7 @@ export class DashChangesService {
     return this.debounceObs(this.placeChanges);
   }
 
-  get stream() {
+  get stream(): Observable<FieldType> {
     return merge(this.labelStrm, this.descStrm, this.typeStrm, this.placeStrm);
   }
 
