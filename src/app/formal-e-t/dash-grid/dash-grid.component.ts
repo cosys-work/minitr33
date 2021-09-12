@@ -1,7 +1,9 @@
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Component } from '@angular/core';
-import { map } from 'rxjs/operators';
-import { Breakpoints, BreakpointObserver } from '@angular/cdk/layout';
 import { BehaviorSubject } from 'rxjs';
+import { map, take } from 'rxjs/operators';
+import { FormCursorStoreService } from 'src/app/store/form-cursor-store.service';
+import { GrafStore } from 'src/app/store/graf-store.service';
 
 @Component({
   selector: 'app-dash-grid',
@@ -33,7 +35,11 @@ export class DashGridComponent {
   saved = new BehaviorSubject(false);
   nexted = new BehaviorSubject(false);
 
-  constructor(private breakpointObserver: BreakpointObserver) {}
+  constructor(
+    private breakpointObserver: BreakpointObserver,
+    private cursorStore: FormCursorStoreService,
+    private grafStore: GrafStore
+  ) {}
 
   onSave(_: Event) {
     this.saved.next(true);
@@ -44,10 +50,25 @@ export class DashGridComponent {
   }
 
   onNext(_: Event) {
+    const currentTotal = this.grafStore.edges.length;
+    //take 1 so that nexting the cursorStore does not trigger the subscribed actions again
+    this.cursorStore.current.pipe(take(1)).subscribe(idx => {
+      if (idx + 1 >= currentTotal) {
+        this.grafStore.addEdge();
+      }
+      this.cursorStore.next();
+    });
     this.nexted.next(true);
   }
 
   onPrev(_: Event) {
-    this.nexted.next(false);
+    //take 2 so that the second one can disable prev button if there's no previous node anymore
+    this.cursorStore.current.pipe(take(2)).subscribe(idx => {
+      if (idx <= 0) {
+        this.nexted.next(false);
+        return;
+      }
+      this.cursorStore.prev();
+    });
   }
 }

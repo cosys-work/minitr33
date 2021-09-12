@@ -20,12 +20,13 @@ export class DashChangesService {
     private cursorStore: FormCursorStoreService
   ) {
     this.cursorStore.current.subscribe(cursor => {
-      const refs: FieldRefs = this.fieldRefsStore.state[cursor];
-      this.label = refs.label;
-      this.type = refs.type;
-      this.description = refs.description;
-      this.placeholder = refs.placeholder;
-    })
+      if (cursor >= 0 && cursor <= this.fieldRefsStore.state.length) {
+        const refs: FieldRefs = this.fieldRefsStore.state[cursor];
+        this.label = refs.label;
+        this.type = refs.type;
+        this.description = refs.description;
+        this.placeholder = refs.placeholder;
+    }});
   }
 
   set label(label: string) {

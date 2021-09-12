@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ObservableStore } from '@codewithdan/observable-store';
 import { fieldRefs, FieldRefs } from '../shared/field.model';
+import { FormCursorStoreService } from './form-cursor-store.service';
 import { GrafStore } from './graf-store.service';
 
 export interface FieldContainer {
@@ -19,14 +20,18 @@ enum Actions {
 export class FieldRefsStoreService extends ObservableStore<FieldContainer> {
 
   constructor(
-    private graphStore: GrafStore
+    private graphStore: GrafStore,
+    private cursorStore: FormCursorStoreService
   ) { 
     super({trackStateHistory: true});
+    this.cursorStore.rxtiv().subscribe(fCursor => {
+      this.updateRefs();
+    })
+  }
 
+  updateRefs() {
     const refs = this.graphStore.nodes.map(n => fieldRefs(n.label, n.tag, n.title));
     const cont = { refs };
-    
-    console.log("labels", cont);
     this.setState(cont, Actions.INIT);
   }
 

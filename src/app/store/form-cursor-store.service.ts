@@ -46,6 +46,12 @@ export class FormCursorStoreService extends ObservableStore<FCursor> {
     this.updateStoreStream();
   }
 
+  prev() {
+    const {index, next} = this.getState(true);
+    this.setState({index: index - 1, next: next - 1}, Actions.EDIT);
+    this.updateStoreStream();
+  }
+
   rxtiv(): Observable<FCursor> {
     return this.cursorStream.asObservable();
   }
