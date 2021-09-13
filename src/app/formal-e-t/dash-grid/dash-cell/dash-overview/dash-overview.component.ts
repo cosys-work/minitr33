@@ -1,74 +1,57 @@
-import { Component, OnInit } from "@angular/core";
+import { AfterContentInit, Component } from "@angular/core";
+import { ClusterNode, Layout } from "@swimlane/ngx-graph";
 import { FGraph } from "src/app/shared/f-graph.model";
-import { FormCursorStoreService } from "src/app/store/form-cursor-store.service";
 import { GrafStore } from "src/app/store/graf-store.service";
-
-interface OnAble {
-  on: (selector: string, cb: (params: unknown) => void) => void
-}
-
-interface Noded {
-  nodes: string[];
-}
-
-declare const vis: any;
+import { curveBundle } from "d3-shape";
+import { Subject } from "rxjs";
 
 @Component({
   selector: 'app-dash-overview',
   templateUrl: './dash-overview.component.html',
   styleUrls: ['./dash-overview.component.scss']
 })
-export class DashOverviewComponent implements OnInit {
+export class DashOverviewComponent implements AfterContentInit {
 
-  public network!: OnAble;
+  graphData: FGraph = { nodes: [], edges: []};
+
+  layout: string | Layout = 'dagreCluster';
+  clusters: ClusterNode[] = [];
+
+  curve = curveBundle.beta(1);
+
+  draggingEnabled: boolean = false;
+  panningEnabled: boolean = true;
+  zoomEnabled: boolean = true;
+
+  zoomSpeed: number = 0.1;
+  minZoomLevel: number = 0.1;
+  maxZoomLevel: number = 4.0;
+  panOnZoom: boolean = true;
+
+  autoZoom: boolean = true;
+  autoCenter: boolean = true; 
+
+  update$: Subject<boolean> = new Subject();
+  center$: Subject<boolean> = new Subject();
+  zoomToFit$: Subject<boolean> = new Subject();
 
   constructor(
     private grafStore: GrafStore,
-    private formCursor: FormCursorStoreService
   ) {}
 
-  ngOnInit() {
-    this.loadVisTree(this.getTreeData());
-  }
-
-  loadVisTree(treeData: unknown) {
-    const options = {
-      interaction: {
-        hover: true,
-      },
-      manipulation: {
-        enabled: true
-      },
-      height: '230px',
-      width: '1800px',
-      clickToUse: true
-    };
-    const container = document.getElementsByClassName("network")[0];
-    const fCursor = this.formCursor;
-
-    this.network = new vis.Network(container, treeData, options);
-
-    this.network.on("deselectNode", function (params: unknown) {
-      console.log('deselectNode Event:', params);
-      fCursor.jump(0);
-    });
-
-    this.network.on("deselectEdge", function(params: unknown) {
-      console.log('deselectEdge event:', params);
-    });
-    
-    this.network.on("selectNode", function (params: unknown) {
-      console.log('selectNode event', params);
-      const par = params as Noded;
-      fCursor.jump(parseInt(par.nodes[0]))
-    });
-
-    this.network.on("selectEdge", function (params: unknown) {
-      console.log('selectEdge event', params);
+  ngAfterContentInit() {
+    this.updateGraph();
+    this.grafStore.rxtiv().subscribe(_ => {
+      this.updateGraph();
     });
   }
 
-  getTreeData(): FGraph {
+  updateGraph() {
+    const {nodes, edges} = this.treeData();
+    this.graphData = { nodes, edges };
+  }
+
+  treeData(): FGraph {
     const { nodes, edges } = this.grafStore.state;
     return ({
       nodes,

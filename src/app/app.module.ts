@@ -18,7 +18,6 @@ import { AppComponent } from './app.component';
 import { NaviModule } from './navi/navi.module';
 import { SharedModule } from './shared/shared.module';
 
-
 @NgModule({
   declarations: [
     AppComponent

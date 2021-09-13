@@ -15,9 +15,9 @@ export interface FNode {
  * Each edge contains a `FNode`
 */
 export interface FEdge {
-    from?: string;
+    source: string;
     origin: FNode;
-    to: string | string[];
+    target: string;
     label: string;
 }
 

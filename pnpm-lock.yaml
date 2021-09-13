@@ -27,11 +27,14 @@ specifiers:
   '@types/d3-dispatch': ^3.0.1
   '@types/d3-drag': ^3.0.1
   '@types/d3-dsv': ^3.0.0
+  '@types/d3-shape': ^3.0.2
   '@types/d3-timer': ^3.0.0
   '@types/jasmine': ~3.8.0
   '@types/node': ^12.11.1
   '@types/three': ^0.131.0
+  '@types/vis': ^4.21.22
   d3-dsv: ^3.0.1
+  d3-shape: ^3.0.1
   jasmine-core: ~3.8.0
   karma: ~6.3.0
   karma-chrome-launcher: ~3.1.0
@@ -65,7 +68,9 @@ dependencies:
   '@ngx-formly/material': 5.10.22_ebce448a755d3f98a38261ff2a8447d1
   '@swimlane/ngx-charts': 19.0.1_0afcd7f48b7c88bb4b4d6e423938fa3c
   '@swimlane/ngx-graph': 7.2.0_0afcd7f48b7c88bb4b4d6e423938fa3c
+  '@types/vis': 4.21.22
   d3-dsv: 3.0.1
+  d3-shape: 3.0.1
   rxdb: 10.0.3_rxjs@6.6.7
   rxjs: 6.6.7
   tslib: 2.3.1
@@ -80,6 +85,7 @@ devDependencies:
   '@types/d3-dispatch': 3.0.1
   '@types/d3-drag': 3.0.1
   '@types/d3-dsv': 3.0.0
+  '@types/d3-shape': 3.0.2
   '@types/d3-timer': 3.0.0
   '@types/jasmine': 3.8.2
   '@types/node': 12.20.24
@@ -2052,7 +2058,6 @@ packages:
 
   /@types/d3-path/2.0.1:
     resolution: {integrity: sha512-6K8LaFlztlhZO7mwsZg7ClRsdLg3FJRzIIi6SZXDWmmSJc2x8dd2VkESbLXdk3p8cuvz71f36S0y8Zv2AxqvQw==}
-    dev: false
 
   /@types/d3-selection/3.0.1:
     resolution: {integrity: sha512-aJ1d1SCUtERHH65bB8NNoLpUOI3z8kVcfg2BGm4rMMUwuZF4x6qnIEKjT60Vt0o7gP/a/xkRVs4D9CpDifbyRA==}
@@ -2063,6 +2068,12 @@ packages:
     dependencies:
       '@types/d3-path': 2.0.1
     dev: false
+
+  /@types/d3-shape/3.0.2:
+    resolution: {integrity: sha512-5+ButCmIfNX8id5seZ7jKj3igdcxx+S9IDBiT35fQGTLZUfkFgTv+oBH34xgeoWDKpWcMITSzBILWQtBoN5Piw==}
+    dependencies:
+      '@types/d3-path': 2.0.1
+    dev: true
 
   /@types/d3-timer/3.0.0:
     resolution: {integrity: sha512-HNB/9GHqu7Fo8AQiugyJbv6ZxYz58wef0esl4Mv828w1ZKpAshw/uFWVDUcIB9KKFeFKoxS3cHY07FFgtTRZ1g==}
@@ -2200,6 +2211,12 @@ packages:
   /@types/three/0.131.0:
     resolution: {integrity: sha512-4VCtsDi6mIId96GcGKG91e2Y6VwU2T0u/YB7vCFJh1kXik93arxn7l9tVZHo1LXOtgCJJDdC+e1fwf2Vu/4ySw==}
     dev: true
+
+  /@types/vis/4.21.22:
+    resolution: {integrity: sha512-6RW+5yc0kOmZSfPjn7Kjjda7q96rtgvjNk9AFV52B1GA382oEYuP0p8yX00d2xbVWQbmmm+Uhinj9cRqW90NiA==}
+    dependencies:
+      moment: 2.29.1
+    dev: false
 
   /@types/webpack-sources/0.1.9:
     resolution: {integrity: sha512-bvzMnzqoK16PQIC8AYHNdW45eREJQMd6WG/msQWX5V2+vZmODCOPb4TJcbgRljTZZTwTM4wUMcsI8FftNA7new==}
@@ -3811,6 +3828,13 @@ packages:
 
   /d3-shape/2.1.0:
     resolution: {integrity: sha512-PnjUqfM2PpskbSLTJvAzp2Wv4CZsnAgTfcVRTwW03QR3MkXF8Uo7B1y/lWkAsmbKwuecto++4NlsYcvYpXpTHA==}
+    dependencies:
+      d3-path: 2.0.0
+    dev: false
+
+  /d3-shape/3.0.1:
+    resolution: {integrity: sha512-HNZNEQoDhuCrDWEc/BMbF/hKtzMZVoe64TvisFLDp2Iyj0UShB/E6/lBsLlJTfBMbYgftHj90cXJ0SEitlE6Xw==}
+    engines: {node: '>=12'}
     dependencies:
       d3-path: 2.0.0
     dev: false
@@ -6415,6 +6439,10 @@ packages:
     dependencies:
       clone: 2.1.2
       deep-equal: 1.1.1
+    dev: false
+
+  /moment/2.29.1:
+    resolution: {integrity: sha512-kHmoybcPV8Sqy59DwNDY3Jefr64lK/by/da0ViFcuA4DH0vQg5Q6Ze5VimxkfQNSC+Mls/Kx53s7TjP1RhFEDQ==}
     dev: false
 
   /ms/2.0.0:

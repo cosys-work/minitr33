@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ObservableStore } from '@codewithdan/observable-store';
+import { merge } from 'rxjs';
+import { switchAll } from 'rxjs/operators';
 import { fieldRefs, FieldRefs } from '../shared/field.model';
 import { FormCursorStoreService } from './form-cursor-store.service';
 import { GrafStore } from './graf-store.service';
@@ -24,7 +26,11 @@ export class FieldRefsStoreService extends ObservableStore<FieldContainer> {
     private cursorStore: FormCursorStoreService
   ) { 
     super({trackStateHistory: true});
-    this.cursorStore.rxtiv().subscribe(fCursor => {
+
+    merge(
+      this.graphStore.rxtiv(),
+      this.cursorStore.rxtiv()  
+    ).subscribe(_ => {
       this.updateRefs();
     })
   }
