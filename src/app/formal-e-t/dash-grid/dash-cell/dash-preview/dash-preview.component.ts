@@ -48,19 +48,23 @@ export class DashPreviewComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     const form = this.formlyFormElem = document.querySelector('formly-form')!;
     this.cursorStore.current.subscribe((c) => {
+      
       const fields = () =>
         form.querySelectorAll('mat-form-field') as NodeListOf<HTMLElement>;
 
-      function updateFields() {
-        fields().forEach((field) => (field.style.boxShadow = ''));
-        fields()[c].style.boxShadow =
+      function updateFieldMarker() {
+        const feld = fields();
+        feld.forEach((field) => (field.style.boxShadow = ''));
+        if (!feld[c]) return;
+        feld[c].style.boxShadow =
           '0 -5px 3px -3px purple, 0 5px 3px -3px purple';
       }
+
       const feld = fields();
       if (feld.length <= c) {
-        setTimeout(updateFields, 500);
+        setTimeout(updateFieldMarker, 500);
       } else {
-        updateFields();
+        updateFieldMarker();
       }
     });
   }

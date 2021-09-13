@@ -22,10 +22,12 @@ export class DashChangesService {
     this.cursorStore.current.subscribe(cursor => {
       if (cursor >= 0 && cursor <= this.fieldRefsStore.state.length) {
         const refs: FieldRefs = this.fieldRefsStore.state[cursor];
-        this.label = refs.label;
-        this.type = refs.type;
-        this.description = refs.description;
-        this.placeholder = refs.placeholder;
+        if (refs) {        
+          this.label = refs.label;
+          this.type = refs.type;
+          this.description = refs.description;
+          this.placeholder = refs.placeholder;
+        }
     }});
   }
 

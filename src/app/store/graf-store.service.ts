@@ -1,3 +1,4 @@
+import { E, P } from "@angular/cdk/keycodes";
 import { Injectable } from "@angular/core";
 import { ObservableStore } from "@codewithdan/observable-store";
 import { Observable, Subject } from "rxjs";
@@ -41,9 +42,37 @@ export class GrafStore extends ObservableStore<FGraph> {
     return edges;
   }
 
-  set markRemoved(fez: FEdge) {
-    const edges: FEdge[] = this.edges.filter(e => e.origin.id === fez.origin.id);
-    this.newEdges = edges; // updates stream too
+  set delNodeEdgePair(fez: FEdge) {
+    if (!fez) return;
+    if (!this.edges.length) return;
+
+    const edgeToRemoveArr: FEdge[] = this.edges.filter(e => {
+      console.log("edge premove", e, fez);
+      return e.label === fez.label;
+    });
+    
+    if (!edgeToRemoveArr.length) return;
+
+    const edgeToRemove = edgeToRemoveArr[0];
+    const nodeToRemove = edgeToRemove.origin;
+
+    const eIndex = this.edges.findIndex(e => e.origin.id === edgeToRemove.origin.id);
+    const nIndex = this.nodes.findIndex(n => n.id === nodeToRemove.id);
+
+    const nextNode = this.nodes[nIndex + 1] ?? null;
+
+    const allEdgesBefore = this.edges.slice(0, eIndex);
+    const allEdgesAfter = this.edges.slice(eIndex + 1);
+
+    const prevEdgeToModify = this.edges[eIndex - 1] ?? null;
+    if (prevEdgeToModify) {
+      allEdgesBefore[allEdgesBefore.length - 1].target = nextNode?.id;
+    }
+
+    // else we are removing the root node, no edits needed 
+    // other than yeeting off the current node-edge pair ofc
+    // nodes are pruned off automatically by the structure
+    this.newEdges = [...allEdgesBefore, ...allEdgesAfter];    
   }
 
   set newGraph(gDef: FGraph) {

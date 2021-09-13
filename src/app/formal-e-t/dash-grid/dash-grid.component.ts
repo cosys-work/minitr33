@@ -1,7 +1,7 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Component } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { map, take } from 'rxjs/operators';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { map, take, tap } from 'rxjs/operators';
 import { FormCursorStoreService } from 'src/app/store/form-cursor-store.service';
 import { GrafStore } from 'src/app/store/graf-store.service';
 
@@ -11,6 +11,10 @@ import { GrafStore } from 'src/app/store/graf-store.service';
   styleUrls: ['./dash-grid.component.scss']
 })
 export class DashGridComponent {
+
+  fieldCursor: Observable<number> = this.cursorStore.current;
+  maxCursor: () => number = () => this.grafStore.edges.length - 1;
+
   /** Based on the screen size, switch from standard to one column per row */
   cards = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
     map(({ matches }) => {
@@ -45,8 +49,16 @@ export class DashGridComponent {
     this.saved.next(true);
   }
 
-  onShare(_: Event) {
-    this.saved.next(false);
+  onDelete(_: Event) {
+    const tempC = { c: 0};
+    this.cursorStore.current.pipe(
+      take(1),
+      tap(c => tempC.c = c),
+      map(c => this.grafStore.edges[c])
+    ).subscribe(edgeToRemove => {
+      this.grafStore.delNodeEdgePair = edgeToRemove;
+      this.curseRedeemer(tempC.c);
+    });
   }
 
   onNext(_: Event) {
@@ -60,14 +72,22 @@ export class DashGridComponent {
     this.nexted.next(true);
   }
 
-  onPrev(_: Event) {
+  curseRedeemer(idx: number) {
+    if (idx > 0) {
+      this.cursorStore.prev();
+    }
+    if (idx === 1) {
+      this.nexted.next(false);
+    }
+  }
+
+  handlePreving() {
     this.cursorStore.current.pipe(take(1)).subscribe(idx => {
-      if (idx > 0) {
-        this.cursorStore.prev();
-      }
-      if (idx === 1) {
-        this.nexted.next(false);
-      }
+      this.curseRedeemer(idx);
     });
+  }
+ 
+  onPrev(_: Event) {
+    this.handlePreving();
   }
 }
