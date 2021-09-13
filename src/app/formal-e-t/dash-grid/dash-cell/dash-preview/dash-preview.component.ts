@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { merge } from 'rxjs';
@@ -17,7 +17,7 @@ const keyMaker = (key: string) => {
   templateUrl: './dash-preview.component.html',
   styleUrls: ['./dash-preview.component.scss'],
 })
-export class DashPreviewComponent implements OnInit {
+export class DashPreviewComponent implements AfterViewInit {
   form = new FormGroup({});
   model = {};
 
@@ -33,6 +33,8 @@ export class DashPreviewComponent implements OnInit {
   cursor: number = 0;
   change: any = { id: 0 };
 
+  formlyFormElem!: Element;
+
   constructor(
     private changes: DashChangesService,
     private cursorStore: FormCursorStoreService,
@@ -43,18 +45,37 @@ export class DashPreviewComponent implements OnInit {
     this.updateWhenGraphUpdates();
   }
 
+  ngAfterViewInit(): void {
+    const form = this.formlyFormElem = document.querySelector('formly-form')!;
+    this.cursorStore.current.subscribe((c) => {
+      const fields = () =>
+        form.querySelectorAll('mat-form-field') as NodeListOf<HTMLElement>;
+
+      function updateFields() {
+        fields().forEach((field) => (field.style.boxShadow = ''));
+        fields()[c].style.boxShadow =
+          '0 -5px 3px -3px purple, 0 5px 3px -3px purple';
+      }
+      const feld = fields();
+      if (feld.length <= c) {
+        setTimeout(updateFields, 500);
+      } else {
+        updateFields();
+      }
+    });
+  }
+
   coreUpdateMecha() {
     this.fieldGroup = this.grafStore.edges.map((e) => e.origin.field);
     this.initialize();
   }
 
   updateWhenGraphUpdates() {
-    this.grafStore.rxtiv().subscribe(_ => this.coreUpdateMecha())
+    this.grafStore.rxtiv().subscribe((_) => this.coreUpdateMecha());
   }
 
   initialize() {
     this.fieldGroup.forEach((_, i) => {
-      console.log('initing', i);
       const cur = this.grafStore.nodes[i].field;
       this.fieldGroup[i].type = cur.type;
       this.fieldGroup[i].templateOptions.label = cur.key;
@@ -63,7 +84,6 @@ export class DashPreviewComponent implements OnInit {
         cur.templateOptions.placeholder;
       this.fieldGroup[i].templateOptions.description =
         cur.templateOptions.label;
-      console.log('fgi', this.fieldGroup[i], cur);
     });
     this.field.fieldGroup = this.fieldGroup;
     this.fields = [...this.fields];
@@ -71,7 +91,6 @@ export class DashPreviewComponent implements OnInit {
 
   updateWhenContentUpdates() {
     merge(this.cursorStore.current, this.changes.stream).subscribe((a) => {
-      
       this.cursor = typeof a === 'number' ? a : this.cursor;
       this.change = typeof a !== 'number' ? a : this.change;
 
@@ -106,6 +125,4 @@ export class DashPreviewComponent implements OnInit {
   onSubmit(model: any) {
     console.log(model, model === this.model, this.model);
   }
-
-  ngOnInit(): void {}
 }

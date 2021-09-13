@@ -25,7 +25,6 @@ export class NaviComponent implements OnInit {
 
 
   toggleSideNav(_: Event) {
-    console.log("sideNav", this.sideNavExpanded);
     this.sideNavExpanded = !this.sideNavExpanded;
   }
 

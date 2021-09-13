@@ -51,7 +51,6 @@ export class DashGridComponent {
 
   onNext(_: Event) {
     const currentTotal = this.grafStore.edges.length;
-    //take 1 so that nexting the cursorStore does not trigger the subscribed actions again
     this.cursorStore.current.pipe(take(1)).subscribe(idx => {
       if (idx + 1 >= currentTotal) {
         this.grafStore.addEdge();
@@ -62,14 +61,12 @@ export class DashGridComponent {
   }
 
   onPrev(_: Event) {
-    //take 1 so that the second one can disable prev button if there's no previous node anymore
     this.cursorStore.current.pipe(take(1)).subscribe(idx => {
       if (idx > 0) {
         this.cursorStore.prev();
       }
       if (idx === 1) {
         this.nexted.next(false);
-        return;
       }
     });
   }

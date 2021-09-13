@@ -4,7 +4,7 @@
             class="container"
         >
         <form [formGroup]="form" (ngSubmit)="onSubmit(form)">
-            <formly-form
+            <formly-form class="formly-form"
               [model]="model"
               [fields]="fields"
               [form]="form"
@@ -13,7 +13,7 @@
               class="button-row"
               style="display:flex; flex-direction: row; justify-content: space-between;"
             >
-              <button mat-raised-button type="reset" color="link">Clear</button>
+              <button class="left-clear" mat-raised-button type="reset" color="link">Clear</button>
               <button class="right-submit" mat-raised-button color="primary">Submit</button>
             </div>
           </form>

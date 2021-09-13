@@ -63,22 +63,18 @@ export class DashContentComponent implements AfterViewInit {
   }
 
   onLabelChange(label: string) {
-    console.log("l", label);
     this.changes.label = label;
   };
 
   onTypeChange(type: string) {
-    console.log("t", type);
     this.changes.type = type;
   };
 
   onDescChange(desc: string) {
-    console.log("d", desc);
     this.changes.description = desc;
   };
 
   onPlaceChange(place: string) {
-    console.log("p", place);
     this.changes.placeholder = place;
   };
 

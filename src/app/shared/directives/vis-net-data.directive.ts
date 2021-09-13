@@ -24,12 +24,11 @@ export class VisNetDataDirective implements OnChanges {
 
   constructor(private el: ElementRef, private cursor: FormCursorStoreService) {}
 
-  ngOnChanges(changes: SimpleChanges): void {
-    console.log('changes on dir', changes);
+  ngOnChanges(_: SimpleChanges): void {
+    
   }
 
   @Input() set appVisNetData(graphData: FGraph) {
-    console.log('graph data ', graphData);
     this.netData = graphData;
     const options = {
       interaction: {
@@ -49,22 +48,20 @@ export class VisNetDataDirective implements OnChanges {
       const fCursor = this.cursor;
 
       this.network.on('deselectNode', function (params: unknown) {
-        console.log('deselectNode Event:', params);
         fCursor.jump(0);
       });
 
       this.network.on('deselectEdge', function (params: unknown) {
-        console.log('deselectEdge event:', params);
+        //
       });
 
       this.network.on('selectNode', function (params: unknown) {
-        console.log('selectNode event', params);
         const par = params as Noded;
         fCursor.jump(parseInt(par.nodes[0]));
       });
 
       this.network.on('selectEdge', function (params: unknown) {
-        console.log('selectEdge event', params);
+        //
       });
     }
   }

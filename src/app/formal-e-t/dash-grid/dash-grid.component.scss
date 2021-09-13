@@ -16,6 +16,10 @@
   right: 10px;
 }
 
+.rightest-button:hover {
+  box-shadow: 1px 1px 1px 1px red;
+}
+
 
 .righter-button {
   position: absolute;
@@ -34,6 +38,11 @@
   top: 5px;
   right: 55px;
 }
+
+.rightest-top-button:hover, .righter-top-button:hover {
+  box-shadow: 1px 1px 1px 1px green;
+}
+
 
 .right-top-button {
   position: absolute;

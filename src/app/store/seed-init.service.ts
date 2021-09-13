@@ -21,15 +21,12 @@ export class SeedInitService {
       const ode = node(iy);
       // makeFormalField label=label, placeholder=tag, description=title
       const field = makeFormalField(ode.label, ode.tag, ode.title);
-      console.log("makeFormalField", field);
       return ({
         ...ode, 
         field 
       }); 
     };
-    const nwf = nodeWithField(iz);
-    console.log("nodeWithField", nwf);
-    return nwf;
+    return nodeWithField(iz);
   }
 
   public edgeMaker(iy: number): FEdge {
@@ -39,9 +36,7 @@ export class SeedInitService {
           origin: this.nodeMaker(ix), // every edge 'has' one origin node in the 'from' field
           label: `${ix}..${ix+1}` // every edge is labeled with origin..destination
         });
-    const edgeWithNode = edge(iy);
-    console.log("edgeWithNode", edgeWithNode);
-    return edgeWithNode;
+    return edge(iy);
   }
 
   public seedEdges(): FEdge[] {
