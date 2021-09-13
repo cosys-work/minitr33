@@ -62,13 +62,15 @@ export class DashGridComponent {
   }
 
   onPrev(_: Event) {
-    //take 2 so that the second one can disable prev button if there's no previous node anymore
-    this.cursorStore.current.pipe(take(2)).subscribe(idx => {
-      if (idx <= 0) {
+    //take 1 so that the second one can disable prev button if there's no previous node anymore
+    this.cursorStore.current.pipe(take(1)).subscribe(idx => {
+      if (idx > 0) {
+        this.cursorStore.prev();
+      }
+      if (idx === 1) {
         this.nexted.next(false);
         return;
       }
-      this.cursorStore.prev();
     });
   }
 }
