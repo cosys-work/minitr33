@@ -50,14 +50,12 @@ export class DashGridComponent {
   }
 
   onDelete(_: Event) {
-    const tempC = { c: 0};
     this.cursorStore.current.pipe(
       take(1),
-      tap(c => tempC.c = c),
       map(c => this.grafStore.edges[c])
     ).subscribe(edgeToRemove => {
       this.grafStore.delNodeEdgePair = edgeToRemove;
-      this.curseRedeemer(tempC.c);
+      this.curseRedeemer(this.grafStore.edges.length);
     });
   }
 

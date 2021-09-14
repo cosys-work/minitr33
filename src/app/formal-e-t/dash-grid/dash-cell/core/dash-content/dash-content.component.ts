@@ -5,7 +5,8 @@ import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
-import { DashChangesService } from './dash-changes.service';
+import { DashChangesService } from '../dash-changes.service';
+
 
 @Component({
   selector: 'app-dash-content',

@@ -6,7 +6,7 @@ import { FieldId } from 'src/app/shared/field.model';
 import { FormalField } from 'src/app/shared/shared.model';
 import { FormCursorStoreService } from 'src/app/store/form-cursor-store.service';
 import { GrafStore } from 'src/app/store/graf-store.service';
-import { DashChangesService } from '../dash-content/dash-changes.service';
+import { DashChangesService } from '../../core/dash-changes.service';
 
 const keyMaker = (key: string) => {
   return key.trim().toLowerCase().replace(/ /g, '_');
@@ -46,9 +46,9 @@ export class DashPreviewComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    const form = this.formlyFormElem = document.querySelector('formly-form')!;
+    const form = (this.formlyFormElem = document.querySelector('formly-form')!);
     this.cursorStore.current.subscribe((c) => {
-      
+      console.log('attempting highlight', c);
       const fields = () =>
         form.querySelectorAll('mat-form-field') as NodeListOf<HTMLElement>;
 
@@ -61,11 +61,7 @@ export class DashPreviewComponent implements AfterViewInit {
       }
 
       const feld = fields();
-      if (feld.length <= c) {
-        setTimeout(updateFieldMarker, 500);
-      } else {
-        updateFieldMarker();
-      }
+      setTimeout(updateFieldMarker, 500);
     });
   }
 

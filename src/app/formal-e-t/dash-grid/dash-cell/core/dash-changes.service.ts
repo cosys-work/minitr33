@@ -15,6 +15,12 @@ export class DashChangesService {
   private descChanges!: BehaviorSubject<FieldType>;
   private placeChanges!: BehaviorSubject<FieldType>;
 
+  private tr8Changes!: BehaviorSubject<FieldType>;
+  private relChanges!: BehaviorSubject<FieldType>;
+  private minChanges!: BehaviorSubject<FieldType>;
+  private maxChanges!: BehaviorSubject<FieldType>;
+
+
   constructor(
     private fieldRefsStore: FieldRefsStoreService,
     private cursorStore: FormCursorStoreService
@@ -29,6 +35,42 @@ export class DashChangesService {
           this.placeholder = refs.placeholder;
         }
     }});
+  }
+
+  set traits(traits: string) {
+    const traitField = fieldType(FieldId.traits, traits);
+    this.tr8Changes ? this.tr8Changes.next(traitField) : this.tr8Changes = new BehaviorSubject(traitField);
+  }
+
+  get traits(): string {
+    return this.labelChanges.value.value;
+  }
+
+  set relations(relations: string) {
+    const relField = fieldType(FieldId.relations, relations);
+    this.relChanges ? this.relChanges.next(relField) : this.relChanges = new BehaviorSubject(relField);
+  }
+
+  get relations(): string {
+    return this.relChanges.value.value;
+  }
+
+  set max(max: string) {
+    const maxField = fieldType(FieldId.max, max);
+    this.maxChanges ? this.maxChanges.next(maxField): this.maxChanges = new BehaviorSubject(maxField);
+  }
+
+  get max(): string {
+    return this.maxChanges.value.value;
+  }
+
+  set min(min: string) {
+    const minField = fieldType(FieldId.min, min);
+    this.minChanges ? this.minChanges.next(minField): this.minChanges = new BehaviorSubject(minField);
+  }
+
+  get min(): string {
+    return this.minChanges.value.value;
   }
 
   set label(label: string) {
@@ -92,8 +134,33 @@ export class DashChangesService {
     return this.debounceObs(this.placeChanges);
   }
 
+  get maxStrm() {
+    return this.debounceObs(this.maxChanges);
+  }
+
+  get minStrm() {
+    return this.debounceObs(this.minChanges);
+  }
+
+  get tr8sStrm() {
+    return this.debounceObs(this.tr8Changes);
+  }
+
+  get relsStrm() {
+    return this.debounceObs(this.relChanges);
+  }
+
   get stream(): Observable<FieldType> {
-    return merge(this.labelStrm, this.descStrm, this.typeStrm, this.placeStrm);
+    return merge(
+      this.labelStrm, 
+      this.descStrm, 
+      this.typeStrm, 
+      this.placeStrm,
+      this.maxStrm,
+      this.minStrm,
+      this.tr8sStrm,
+      this.relsStrm
+    );
   }
 
 }

@@ -1,17 +1,18 @@
-import {COMMA, ENTER} from '@angular/cdk/keycodes';
-import {Component, ElementRef, ViewChild} from '@angular/core';
-import {FormControl} from '@angular/forms';
-import {MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
-import {MatChipInputEvent} from '@angular/material/chips';
-import {Observable} from 'rxjs';
-import {map, startWith} from 'rxjs/operators';
+import { COMMA, ENTER } from '@angular/cdk/keycodes';
+import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { MatChipInputEvent } from '@angular/material/chips';
+import { Observable } from 'rxjs';
+import { map, startWith } from 'rxjs/operators';
+import { DashChangesService } from '../dash-changes.service';
 
 @Component({
   selector: 'app-dash-logic',
   templateUrl: './dash-logic.component.html',
   styleUrls: ['./dash-logic.component.scss']
 })
-export class DashLogicComponent {
+export class DashLogicComponent implements AfterViewInit {
 
   selectable = true;
   removable = true;
@@ -29,10 +30,13 @@ export class DashLogicComponent {
   allTraits: string[] = ['Disabled', 'Required', 'Hidden', 'Bounded'];
 
   @ViewChild('traitInput') traitInput!: ElementRef<HTMLInputElement>;
-
   @ViewChild('keyInput') keyInput!: ElementRef<HTMLInputElement>;
+  @ViewChild('minInput') minInput!: ElementRef<HTMLInputElement>;
+  @ViewChild('maxInput') maxInput!: ElementRef<HTMLInputElement>;
 
-  constructor() {
+  constructor(
+    private changes: DashChangesService
+  ) {
     this.filteredTraits = this.traitCtrl.valueChanges.pipe(
         startWith(null),
         map((tr8: string | null) => tr8 ? this._filterTraits(tr8) : this.allTraits.slice()));
@@ -40,6 +44,13 @@ export class DashLogicComponent {
     this.filteredKeys = this.keyCtrl.valueChanges.pipe(
         startWith(null),
         map((key: string | null) => key ? this._filterKeys(key) : this.allKeys.slice()));
+  }
+
+  ngAfterViewInit(): void {
+    this.changes.tr8sStrm.subscribe(t =>  this.traits = [t.value]);
+    this.changes.relsStrm.subscribe(t => this.keys = [t.value]);
+    this.changes.minStrm.subscribe(t => this.minInput.nativeElement.value = t.value);
+    this.changes.maxStrm.subscribe(t => this.maxInput.nativeElement.value = t.value);
   }
 
   addTrait(event: MatChipInputEvent): void {
@@ -91,8 +102,6 @@ export class DashLogicComponent {
     this.keyInput.nativeElement.value = '';
     this.keyCtrl.setValue(null);
   }
-
-
 
   private _filterKeys(value: string): string[] {
     const filterValue = value.toLowerCase();

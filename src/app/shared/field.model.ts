@@ -5,6 +5,10 @@ export interface FieldRefs {
   description: string;
   type: string;
   placeholder: string;
+  traits: string;
+  relations: string;
+  min: string;
+  max: string; 
 }
 
 export function fieldRefs(
@@ -13,11 +17,21 @@ export function fieldRefs(
   description: string,
   type: string = 'input'
 ): FieldRefs {
+
+  const traits = "";
+  const relations = "";
+  const min = "";
+  const max = "";
+
   return ({
     label,
     placeholder,
     description,
     type,
+    traits,
+    relations,
+    min, 
+    max
   });
 }
 
@@ -47,7 +61,8 @@ export function fieldMaker(
 export const emptyField = () => fieldMaker("key", "input", "label", "placeholder", "className");
 
 export function refsToField(refs: Required<FieldRefs>): FormalField {  
-  return fieldMaker(refs.label, refs.type, refs.description, refs.placeholder, 'flex-1');
+  return fieldMaker(
+    refs.label, refs.type, refs.description, refs.placeholder, 'flex-1');
 }
 
 export function makeFormalField(
@@ -63,7 +78,12 @@ export enum FieldId {
   label = "label",
   type = "type",
   description = "description",
-  placeholder = "placeholder"
+  placeholder = "placeholder",
+
+  traits = "trait",
+  relations = "relation",
+  min = "min",
+  max = "max"
 }
 
 export interface FieldType {

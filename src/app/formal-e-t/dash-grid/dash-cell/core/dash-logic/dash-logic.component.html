@@ -56,7 +56,7 @@
     <mat-grid-tile>
       <mat-form-field class="example-chip-list" appearance="standard">
           <mat-label>Min</mat-label>
-          <input matInput type="number" placeholder="0">
+          <input matInput #minInput type="text" placeholder="0">
           <mat-icon matSuffix>call_received</mat-icon>
           <mat-hint>Minimum value or size</mat-hint>
       </mat-form-field>
@@ -64,7 +64,7 @@
   <mat-grid-tile>
     <mat-form-field class="example-chip-list" appearance="standard">
         <mat-label>Max</mat-label>
-        <input matInput type="number" placeholder="100">
+        <input matInput #maxInput type="text" placeholder="100">
         <mat-icon matSuffix>call_made</mat-icon>
         <mat-hint>Maximum value or size</mat-hint>
     </mat-form-field>
