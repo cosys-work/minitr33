@@ -14,6 +14,7 @@ export class DashChangesService {
   private typeChanges!: BehaviorSubject<FieldType>;
   private descChanges!: BehaviorSubject<FieldType>;
   private placeChanges!: BehaviorSubject<FieldType>;
+  private idChanges!: BehaviorSubject<FieldType>
 
   private tr8Changes!: BehaviorSubject<FieldType>;
   private relChanges!: BehaviorSubject<FieldType>;
@@ -89,6 +90,15 @@ export class DashChangesService {
 
   get type(): string {
     return this.typeChanges.value.value;
+  }
+
+  get id(): string {
+    return this.idChanges.value.value;
+  }
+
+  set id(id: string) {
+    const idField = fieldType(FieldId.id, id);
+    this.descChanges ? this.descChanges.next(idField) : this.descChanges = new BehaviorSubject(idField);
   }
 
   set description(description: string) {

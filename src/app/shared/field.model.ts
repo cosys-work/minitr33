@@ -79,6 +79,7 @@ export enum FieldId {
   type = "type",
   description = "description",
   placeholder = "placeholder",
+  id = "id",
 
   traits = "trait",
   relations = "relation",

@@ -3,8 +3,10 @@ import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipInputEvent } from '@angular/material/chips';
-import { Observable } from 'rxjs';
+import { MatRadioChange } from '@angular/material/radio';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
+import { GrafStore } from 'src/app/store/graf-store.service';
 import { DashChangesService } from '../dash-changes.service';
 
 
@@ -21,12 +23,48 @@ export class DashContentComponent implements AfterViewInit {
   removable = true;
   separatorKeysCodes: number[] = [ENTER, COMMA];
 
-  strLabels = ["label", "placeholder", "description", "id"];
-  
+  strLabels = ["label", "description", "placeholder", "id"];
+  optLabels = ["type", "options", "pattern", "attributes"];
+
+
   typeCtrl = new FormControl();
-  labelCtrl = new FormControl();
-  descCtrl = new FormControl();
-  placeCtrl = new FormControl();
+  inpCtrl = new FormControl();
+
+  state = {
+    current: "label",
+    label: {
+      label: "Label",
+      placeholder: "Eg: First Name",
+      description: "Short Name of the Field",
+      value: ""
+    },
+    placeholder: {
+      label: "Placeholder",
+      placeholder: "Eg: John Doe",
+      description: "Simple example value",
+      value: ""
+    },
+    description: {
+      label: "Description",
+      placeholder: "Eg: Please fill in your first name",
+      description: "Some hints about the field",
+      value: ""
+    },
+    id: {
+      label: "Id",
+      placeholder: "Eg: 42",
+      description: "A unique hidden id",
+      value: ""
+    }
+  }
+  
+  strLab = new BehaviorSubject(this.state.label.label);
+  strPlace = new BehaviorSubject(this.state.label.placeholder);
+  strDesc = new BehaviorSubject(this.state.label.description);
+  strId = new BehaviorSubject(this.state.label.label);
+  
+  
+
 
   filteredTypes: Observable<string[]>;
   type = 'input';
@@ -42,6 +80,7 @@ export class DashContentComponent implements AfterViewInit {
     'slider',
     'autocomplete'
   ];
+
   
 
   @ViewChild('typeInput') typeInput!: ElementRef<HTMLInputElement>;
@@ -49,7 +88,8 @@ export class DashContentComponent implements AfterViewInit {
   @ViewChild('descInput') descInput!: ElementRef<HTMLInputElement>;
   @ViewChild('placeInput') placeInput!: ElementRef<HTMLInputElement>;
 
-  constructor(private changes: DashChangesService) {
+  constructor(private changes: DashChangesService, private graf: GrafStore) {
+    
     this.filteredTypes = this.typeCtrl.valueChanges.pipe(
       startWith(null),
       map((type: string | null) => type ? this._filter(type) : this.allTypes.slice())
@@ -58,9 +98,38 @@ export class DashContentComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     this.changes.typeStrm.subscribe(t =>  this.type = t.value);
-    this.changes.labelStrm.subscribe(t => this.labelInput.nativeElement.value = t.value);
-    this.changes.descStrm.subscribe(t => this.descInput.nativeElement.value = t.value);
-    this.changes.placeStrm.subscribe(t => this.placeInput.nativeElement.value = t.value);
+    this.changes.labelStrm.subscribe(t => this.state.label.value = t.value);
+    this.changes.descStrm.subscribe(t => this.state.description.value = t.value);
+    this.changes.placeStrm.subscribe(t => this.state.placeholder.value = t.value);
+  }
+
+  selectStrField(event: MatRadioChange) {
+    this.state.current = event.source.value;
+    switch (this.state.current) {
+      case "label":
+        this.strLab.next(this.state.label.label);
+        this.strPlace.next(this.state.label.placeholder);
+        this.strDesc.next(this.state.label.description);
+        break;
+      case "placeholder":
+        this.strLab.next("Placeholder");
+        this.strPlace.next("Eg: John Doe");
+        this.strDesc.next("Simple example value");
+        break;      
+      case "description":
+        this.strLab.next("Description");
+        this.strPlace.next("Eg: Please fill in your first name");
+        this.strDesc.next("Some hints about the field");
+        break;
+      case "id":
+        this.strLab.next("Id");
+        this.strPlace.next("Eg: 42");
+        this.strDesc.next("A unique hidden id");
+        break;
+      default:
+        break;
+    }
+    console.log("strfield click", event, event.source.value);
   }
 
   onLabelChange(label: string) {
@@ -75,8 +144,23 @@ export class DashContentComponent implements AfterViewInit {
     this.changes.description = desc;
   };
 
-  onPlaceChange(place: string) {
-    this.changes.placeholder = place;
+  onInpChange(changed: string) {
+    switch (this.state.current) {
+      case "label":
+        this.changes.label = changed;
+        break;
+      case "placeholder":
+        this.changes.placeholder = changed;
+        break;      
+      case "description":
+        this.changes.description = changed;
+        break;
+      case "id":
+        this.changes.id = changed;
+        break;
+      default:
+        break;
+    }
   };
 
   add(event: MatChipInputEvent): void {

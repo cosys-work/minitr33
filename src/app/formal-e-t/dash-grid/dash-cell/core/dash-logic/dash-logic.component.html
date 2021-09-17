@@ -1,10 +1,11 @@
 <mat-grid-list cols="2" rowHeight="4:1">
   <mat-grid-tile fxLayout="row" fxLayoutAlign="start center" >
-    <mat-radio-group class="example-chip-list">
+    <mat-radio-group class="example-chip-list" (change)="selectBoolField($event)">
       <mat-radio-button
         *ngFor="let labeled of boolLabels"
         class="example-margin"
         [value]="labeled"
+        [checked]="labeled === 'required'"
       >
         <span>{{ labeled | titlecase }}</span>
       </mat-radio-button>
@@ -23,7 +24,7 @@
           <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
         </mat-chip>
         <input
-          placeholder="New trait..."
+          placeholder="Custom rule..."
           #traitInput
           [formControl]="traitCtrl"
           [matAutocomplete]="autoCtrl"
@@ -46,13 +47,14 @@
     </mat-form-field>
   </mat-grid-tile>
   <mat-grid-tile fxLayout="row" fxLayoutAlign="start center" >
-    <mat-radio-group>
+    <mat-radio-group (change)="selectNumField($event)">
       <mat-radio-button
-        *ngFor="let strLab of numLabels"
+        *ngFor="let numF of numLabels"
         class="example-margin"
-        [value]="strLab"
+        [value]="numF"
+        [checked]="numF === 'tabindex'"
       >
-        <span>{{ strLab | titlecase }}</span>
+        <span>{{ numF | titlecase }}</span>
       </mat-radio-button>
     </mat-radio-group>
   </mat-grid-tile>
@@ -60,16 +62,16 @@
     <mat-form-field class="example-chip-list" appearance="fill">
       <mat-chip-list #chipList multiple aria-label="Key selection">
         <mat-chip
-          *ngFor="let key of keys"
+          *ngFor="let key of numTraits"
           [selectable]="selectable"
           [removable]="removable"
-          (removed)="removeKey(key)"
+          (removed)="removeKey(key.toString())"
         >
           {{ key }}
           <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
         </mat-chip>
         <input
-          placeholder="New relation..."
+          placeholder="Custom rule..."
           #keyInput
           [formControl]="keyCtrl"
           [matAutocomplete]="autoKeys"

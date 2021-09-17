@@ -3,6 +3,7 @@ import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipInputEvent } from '@angular/material/chips';
+import { MatRadioChange } from '@angular/material/radio';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { DashChangesService } from '../dash-changes.service';
@@ -24,15 +25,14 @@ export class DashLogicComponent implements AfterViewInit {
   keys: string[] = ['Name'];
   allKeys: string[] = ['Name', 'Email', 'Phone', 'Count'];
 
-  boolLabels = ["disabled", "hidden", "readonly", "required"];
-  
-  numLabels = ["max", "min", "step", "tabindex"]
-  optLabels = ["type", "options", "pattern", "attributes"];
+  boolLabels = [ "required", "disabled", "hidden", "readonly",];
+  numLabels = ["tabindex", "maximum", "minimum", "step"];
 
   traitCtrl = new FormControl();
   filteredTraits!: Observable<string[]>;
-  traits: string[] = ['Bounded'];
-  allTraits: string[] = ['Disabled', 'Required', 'Hidden', 'Bounded'];
+  traits: string[] = ['false'];
+  numTraits: number[] = [0];
+  allTraits: string[] = ['true', 'Required', 'Hidden', 'Bounded'];
 
   @ViewChild('traitInput') traitInput!: ElementRef<HTMLInputElement>;
   @ViewChild('keyInput') keyInput!: ElementRef<HTMLInputElement>;
@@ -67,8 +67,12 @@ export class DashLogicComponent implements AfterViewInit {
     this.traitCtrl.setValue(null);
   }
 
-  selectBoolField(event: Event, val: any) {
-    console.log("boolfield click", event, val);
+  selectBoolField(event: MatRadioChange) {
+    console.log("boolfield click", event);
+  }
+
+  selectNumField(event: MatRadioChange) {
+    console.log("numfield click", event);
   }
 
   removeTrait(tr8: string): void {
