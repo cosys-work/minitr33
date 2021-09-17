@@ -18,7 +18,7 @@
 
     <mat-form-field class="full-width" appearance="standard">
       <mat-label>{{ boostrLab | async }}</mat-label>
-      <mat-select (selectionChange)="onBoolFieldChange($event)" #boolSelecta>
+      <mat-select (selectionChange)="onBoolFieldChange($event)" [(value)]="boostate.transient">
         <mat-option value="false">False</mat-option>
         <mat-option value="true">True</mat-option>
       </mat-select>

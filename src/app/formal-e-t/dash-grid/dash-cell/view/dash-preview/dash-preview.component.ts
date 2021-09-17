@@ -137,13 +137,13 @@ export class DashPreviewComponent implements AfterViewInit {
           case FieldId.tabindex: //13
             this.fieldGroup[this.cursor].templateOptions.tabindex = this.change.value;
             break;
-          case FieldId.required: //13
+          case FieldId.required: //14
             this.fieldGroup[this.cursor].templateOptions.required = this.change.value;
             break;
-          case FieldId.disabled: //13
+          case FieldId.disabled: //15
             this.fieldGroup[this.cursor].templateOptions.disabled = this.change.value;
             break;
-          case FieldId.hidden: //13
+          case FieldId.hidden: //16
             this.fieldGroup[this.cursor].templateOptions.hidden = this.change.value;
             break;
           default:

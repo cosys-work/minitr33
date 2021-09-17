@@ -21,8 +21,6 @@ export class DashLogicComponent implements AfterViewInit {
   removable = true;
   separatorKeysCodes: number[] = [ENTER, COMMA];
 
-
-
   keyCtrl = new FormControl();
   filteredKeys!: Observable<string[]>;
   keys: string[] = ['Name'];
@@ -62,6 +60,7 @@ export class DashLogicComponent implements AfterViewInit {
 
   boostate = {
     current: "required",
+    transient: "false",
     required: {
       label: "Required",
       placeholder: "false",
@@ -104,7 +103,8 @@ export class DashLogicComponent implements AfterViewInit {
 
   @ViewChild('traitInput') traitInput!: ElementRef<HTMLInputElement>;
   @ViewChild('keyInput') keyInput!: ElementRef<HTMLInputElement>;
-  @ViewChild('boolSelecta') boolSelecta!: ElementRef<HTMLSelectElement>;
+  @ViewChild('boolSelectFalse') boolSelectFalse!: ElementRef<HTMLOptionElement>;
+  @ViewChild('boolSelectTrue') boolSelectTrue!: ElementRef<HTMLOptionElement>;
   @ViewChild('maInput') maInput!: ElementRef<HTMLInputElement>;
 
   constructor(
@@ -177,26 +177,26 @@ export class DashLogicComponent implements AfterViewInit {
         this.boostrLab.next(this.boostate.required.label);
         this.boostrPlace.next(this.boostate.required.placeholder);
         this.boostrDesc.next(this.boostate.required.description);
-        this.boolSelecta.nativeElement.value = String(this.changes.required) ?? "";
+        this.boostate.transient = String(this.changes.required) ?? "";
         break;
       case this.boolLabels[1]: //disabled
         console.log("disabled ma", this.boolLabels[0]);
         this.boostrLab.next(this.boostate.disabled.label);
         this.boostrPlace.next(this.boostate.disabled.placeholder);
         this.boostrDesc.next(this.boostate.disabled.description);
-        this.boolSelecta.nativeElement.value = String(this.changes.disabled) ?? "";
+        this.boostate.transient = String(this.changes.disabled) ?? "";
         break;      
       case this.boolLabels[2]: //hidden
         this.boostrLab.next(this.boostate.hidden.label);
         this.boostrPlace.next(this.boostate.hidden.placeholder);
         this.boostrDesc.next(this.boostate.hidden.description);
-        this.boolSelecta.nativeElement.value = String(this.changes.hidden) ?? "";
+        this.boostate.transient = String(this.changes.hidden) ?? "";
         break;
       case this.boolLabels[3]: //readonly
         this.boostrLab.next(this.boostate.readonly.label);
         this.boostrPlace.next(this.boostate.readonly.placeholder);
         this.boostrDesc.next(this.boostate.readonly.description);
-        this.boolSelecta.nativeElement.value = String(this.changes.readonly) ?? "";
+        this.boostate.transient = String(this.changes.readonly) ?? "";
         break;
       default:
         break;
