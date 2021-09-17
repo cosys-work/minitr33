@@ -41,7 +41,7 @@ export class DashChangesService {
           this.type = refs.type;
           this.description = refs.description;
           this.placeholder = refs.placeholder;
-          console.log("id ma pugyo", refs, cursor);
+        
           this.id = refs.id;
           this.options = refs.options;
           this.attributes = refs.attributes;

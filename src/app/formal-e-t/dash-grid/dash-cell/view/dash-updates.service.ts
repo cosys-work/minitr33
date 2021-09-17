@@ -34,10 +34,6 @@ export class DashUpdatesService {
           break;
         case FieldId.description:
           break;
-        case FieldId.traits:
-          break;
-        case FieldId.relations:
-          break;
         case FieldId.max:
           break;
         case FieldId.min:

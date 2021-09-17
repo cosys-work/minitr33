@@ -81,7 +81,7 @@ export function fieldMaker(
     const [_, typeAA] = type.split(",");
     const [minLength, maxLength, rows, cols] = [min, max, 0, 0];
     const templateOptions: TemplateOptions = {
-      type: typeAA,
+      type: typeAA ?? "text",
       label,
       placeholder,
       pattern,

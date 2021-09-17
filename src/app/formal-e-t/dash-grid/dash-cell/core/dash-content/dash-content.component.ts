@@ -24,18 +24,18 @@ export class DashContentComponent implements AfterViewInit {
   separatorKeysCodes: number[] = [ENTER, COMMA];
 
   allTypes: string[] = [
-    "input:text",
-    "input:number",
-    "input:email",
-    "input:password",
-    "input:time",
-    "input:date",
-    "input:tel",
-    "input:url",
-    "input:datetime-local",
-    "input:month",    
-    "input:week",
-    "input:color",
+    "input,text",
+    "input,number",
+    "input,email",
+    "input,password",
+    "input,time",
+    "input,date",
+    "input,tel",
+    "input,url",
+    "input,datetime-local",
+    "input,month",    
+    "input,week",
+    "input,color",
     'textarea',
     'checkbox',
     'radio',
@@ -48,10 +48,9 @@ export class DashContentComponent implements AfterViewInit {
   ];
 
   strLabels = ["label", "description", "placeholder", "id"];
-  curStrVal = this.strLabels[0];
+  
   optLabels = ["type", "options", "pattern", "attributes"];
-  curOptVal = this.optLabels[0];
-
+  
   typeCtrl = new FormControl();
   inpCtrl = new FormControl();
 
@@ -116,17 +115,10 @@ export class DashContentComponent implements AfterViewInit {
   strDesc = new BehaviorSubject(this.state.label.description);
   strId = new BehaviorSubject(this.state.label.label);
   
-  
-
-
   filteredTypes: Observable<string[]>;
   type = 'input';
 
-  
-
   @ViewChild('typeInput') typeInput!: ElementRef<HTMLInputElement>;
-  @ViewChild('labelInput') labelInput!: ElementRef<HTMLInputElement>;
-  @ViewChild('descInput') descInput!: ElementRef<HTMLInputElement>;
   @ViewChild('maInput') maInput!: ElementRef<HTMLInputElement>;
 
   constructor(private changes: DashChangesService, private graf: GrafStore) {
@@ -179,7 +171,6 @@ export class DashContentComponent implements AfterViewInit {
       default:
         break;
     }
-    console.log("strfield click", event, event.source.value);
   }
 
   onTypeChange(changed: string) {
@@ -200,7 +191,6 @@ export class DashContentComponent implements AfterViewInit {
       default:
         break;
     }
-    console.log("changed", changed);
   };
 
   onInpChange(changed: string) {
@@ -220,7 +210,6 @@ export class DashContentComponent implements AfterViewInit {
       default:
         break;
     }
-    console.log("changed", changed);
   };
 
   add(event: MatChipInputEvent): void {

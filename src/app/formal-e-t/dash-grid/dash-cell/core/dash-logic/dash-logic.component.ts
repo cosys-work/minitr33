@@ -101,10 +101,7 @@ export class DashLogicComponent implements AfterViewInit {
   boostrPlace = new BehaviorSubject(this.boostate.required.placeholder);
   boostrDesc = new BehaviorSubject(this.boostate.required.description);
 
-  @ViewChild('traitInput') traitInput!: ElementRef<HTMLInputElement>;
   @ViewChild('keyInput') keyInput!: ElementRef<HTMLInputElement>;
-  @ViewChild('boolSelectFalse') boolSelectFalse!: ElementRef<HTMLOptionElement>;
-  @ViewChild('boolSelectTrue') boolSelectTrue!: ElementRef<HTMLOptionElement>;
   @ViewChild('maInput') maInput!: ElementRef<HTMLInputElement>;
 
   constructor(
@@ -113,14 +110,7 @@ export class DashLogicComponent implements AfterViewInit {
   ) {
     this.cursor.current.subscribe(c => {
       this.numTraits = [c];
-    })
-    this.filteredTraits = this.traitCtrl.valueChanges.pipe(
-        startWith(null),
-        map((tr8: string | null) => tr8 ? this._filterTraits(tr8) : this.allTraits.slice()));
-
-    this.filteredKeys = this.keyCtrl.valueChanges.pipe(
-        startWith(null),
-        map((key: string | null) => key ? this._filterKeys(key) : this.allKeys.slice()));
+    });
   }
 
   ngAfterViewInit(): void {
@@ -135,22 +125,13 @@ export class DashLogicComponent implements AfterViewInit {
     this.changes.stepStrm.subscribe(t => this.state.step.value = t.value);
   }
 
-  addTrait(event: MatChipInputEvent): void {
-    const value = (event.value || '').trim();
-    if (value) {
-      this.traits = value;
-    }
-    event.chipInput!.clear();
-    this.traitCtrl.setValue(null);
-  }
-
   selectBoolField(event: MatRadioChange) {
     this.boostate.current = event.source.value;
     this.onBoolFieldSelect(event.source.value);
   }
 
   onBoolFieldChange(changed: MatSelectChange) {
-    console.log("changing soon boofield", changed);
+    
     switch (this.boostate.current) {
       case "required":
         this.changes.required = changed.value;
@@ -167,20 +148,20 @@ export class DashLogicComponent implements AfterViewInit {
       default:
         break;
     }
-    console.log("changed boofield", changed);
+    
   }
 
   onBoolFieldSelect(changed: string) {
     switch (this.boostate.current) {
       case this.boolLabels[0]: //"required":
-        console.log("required ma", this.boolLabels[0]);
+        
         this.boostrLab.next(this.boostate.required.label);
         this.boostrPlace.next(this.boostate.required.placeholder);
         this.boostrDesc.next(this.boostate.required.description);
         this.boostate.transient = String(this.changes.required) ?? "";
         break;
       case this.boolLabels[1]: //disabled
-        console.log("disabled ma", this.boolLabels[0]);
+        
         this.boostrLab.next(this.boostate.disabled.label);
         this.boostrPlace.next(this.boostate.disabled.placeholder);
         this.boostrDesc.next(this.boostate.disabled.description);
@@ -201,27 +182,27 @@ export class DashLogicComponent implements AfterViewInit {
       default:
         break;
     }
-    console.log("changed", changed);
+    
   };
 
 
   onNumFieldSelect(changed: string) {
     switch (this.state.current) {
       case "tabindex": //"tabindex":
-        console.log("tabindexma");
+        
         this.strLab.next(this.state.tabindex.label);
         this.strPlace.next(this.state.tabindex.placeholder);
         this.strDesc.next(this.state.tabindex.description);
         this.maInput.nativeElement.value = this.changes.label;
         break;
       case "maximum": //maximum
-      console.log("maxma");
+      
         this.strLab.next(this.state.maximum.label);
         this.strPlace.next(this.state.maximum.placeholder);
         this.strDesc.next(this.state.maximum.description);
         break;      
       case "minimum": //minimum
-      console.log("minma");
+
         this.strLab.next(this.state.minimum.label);
         this.strPlace.next(this.state.minimum.placeholder);
         this.strDesc.next(this.state.minimum.description);
@@ -234,7 +215,6 @@ export class DashLogicComponent implements AfterViewInit {
       default:
         break;
     }
-    console.log("changed", changed);
   };
 
   onNumFieldChange(changed: string) {
@@ -254,59 +234,11 @@ export class DashLogicComponent implements AfterViewInit {
       default:
         break;
     }
-    console.log("changed nufield", changed);
   }
-
 
   selectNumField(event: MatRadioChange) {
     this.state.current = event.source.value;
     this.onNumFieldSelect(event.value);
   }
 
-  removeTrait(tr8: string): void {
-    const index = this.traits.indexOf(tr8);
-    if (index >= 0) {
-      this.traits.slice(index, 1);
-    }
-  }
-
-  selectedTrait(event: MatAutocompleteSelectedEvent): void {
-    this.traits = event.option.viewValue;
-    this.traitInput.nativeElement.value = '';
-    this.traitCtrl.setValue(null);
-  }
-
-  private _filterTraits(value: string): string[] {
-    const filterValue = value.toLowerCase();
-    return this.allTraits.filter(tr8 => tr8.toLowerCase().includes(filterValue));
-  }
-
-  addKey(event: MatChipInputEvent): void {
-    const value = (event.value || '').trim();
-    if (value) {
-      this.keys = [...this.keys, value];
-    }
-    event.chipInput!.clear();
-    this.keyCtrl.setValue(null);
-  }
-
-
-  removeKey(keyWee: string): void {
-    const index = this.keys.indexOf(keyWee);
-    if (index >= 0) {
-      this.keys = [...this.keys.slice(0, index), ...this.keys.slice(index + 1)];
-      console.log("keeWee", index, this.keys);
-    }
-  }
-
-  selectedKey(event: MatAutocompleteSelectedEvent): void {
-    this.keys = [...this.keys, event.option.viewValue];
-    this.keyInput.nativeElement.value = '';
-    this.keyCtrl.setValue(null);
-  }
-
-  private _filterKeys(value: string): string[] {
-    const filterValue = value.toLowerCase();
-    return this.allKeys.filter(key => key.toLowerCase().includes(filterValue));
-  }
 }
