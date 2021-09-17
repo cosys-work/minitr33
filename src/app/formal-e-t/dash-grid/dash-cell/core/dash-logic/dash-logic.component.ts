@@ -15,7 +15,7 @@ import { DashChangesService } from '../dash-changes.service';
 export class DashLogicComponent implements AfterViewInit {
 
   selectable = true;
-  removable = true;
+  removable = false;
   separatorKeysCodes: number[] = [ENTER, COMMA];
 
 
@@ -23,6 +23,11 @@ export class DashLogicComponent implements AfterViewInit {
   filteredKeys!: Observable<string[]>;
   keys: string[] = ['Name'];
   allKeys: string[] = ['Name', 'Email', 'Phone', 'Count'];
+
+  boolLabels = ["disabled", "hidden", "readonly", "required"];
+  
+  numLabels = ["max", "min", "step", "tabindex"]
+  optLabels = ["type", "options", "pattern", "attributes"];
 
   traitCtrl = new FormControl();
   filteredTraits!: Observable<string[]>;
@@ -62,15 +67,19 @@ export class DashLogicComponent implements AfterViewInit {
     this.traitCtrl.setValue(null);
   }
 
+  selectBoolField(event: Event, val: any) {
+    console.log("boolfield click", event, val);
+  }
+
   removeTrait(tr8: string): void {
     const index = this.traits.indexOf(tr8);
     if (index >= 0) {
-      this.traits.splice(index, 1);
+      this.traits.slice(index, 1);
     }
   }
 
   selectedTrait(event: MatAutocompleteSelectedEvent): void {
-    this.traits.push(event.option.viewValue);
+    this.traits = [...this.traits, event.option.viewValue];
     this.traitInput.nativeElement.value = '';
     this.traitCtrl.setValue(null);
   }
@@ -83,7 +92,7 @@ export class DashLogicComponent implements AfterViewInit {
   addKey(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
     if (value) {
-      this.keys.push(value);
+      this.keys = [...this.keys, value];
     }
     event.chipInput!.clear();
     this.keyCtrl.setValue(null);
@@ -93,12 +102,13 @@ export class DashLogicComponent implements AfterViewInit {
   removeKey(keyWee: string): void {
     const index = this.keys.indexOf(keyWee);
     if (index >= 0) {
-      this.keys.splice(index, 1);
+      this.keys = [...this.keys.slice(0, index), ...this.keys.slice(index + 1)];
+      console.log("keeWee", index, this.keys);
     }
   }
 
   selectedKey(event: MatAutocompleteSelectedEvent): void {
-    this.keys.push(event.option.viewValue);
+    this.keys = [...this.keys, event.option.viewValue];
     this.keyInput.nativeElement.value = '';
     this.keyCtrl.setValue(null);
   }

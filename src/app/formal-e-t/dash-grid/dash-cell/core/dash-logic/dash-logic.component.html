@@ -1,72 +1,91 @@
 <mat-grid-list cols="2" rowHeight="4:1">
-    <mat-grid-tile>
-        <mat-form-field class="example-chip-list" appearance="fill">
-            <mat-chip-list #traitChips multiple aria-label="Trait selection">
-              <mat-chip
-                *ngFor="let trait of traits"
-                [selectable]="selectable"
-                [removable]="removable"
-                (removed)="removeTrait(trait)">
-                {{trait}}
-                <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
-              </mat-chip>
-              <input
-                placeholder="New trait..."
-                #traitInput
-                [formControl]="traitCtrl"
-                [matAutocomplete]="autoCtrl"
-                [matChipInputFor]="traitChips"
-                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                (matChipInputTokenEnd)="addTrait($event)">
-            </mat-chip-list>
-            <mat-autocomplete #autoCtrl="matAutocomplete" (optionSelected)="selectedTrait($event)">
-              <mat-option *ngFor="let trait of filteredTraits | async" [value]="trait">
-                {{trait}}
-              </mat-option>
-            </mat-autocomplete>
-          </mat-form-field>
-    </mat-grid-tile>
-    <mat-grid-tile>
-        <mat-form-field class="example-chip-list" appearance="fill">
-            <mat-chip-list #chipList multiple aria-label="Key selection">
-              <mat-chip
-                *ngFor="let key of keys"
-                [selectable]="selectable"
-                [removable]="removable"
-                (removed)="removeKey(key)">
-                {{key}}
-                <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
-              </mat-chip>
-              <input
-                placeholder="New relation..."
-                #keyInput
-                [formControl]="keyCtrl"
-                [matAutocomplete]="autoKeys"
-                [matChipInputFor]="chipList"
-                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                (matChipInputTokenEnd)="addKey($event)">
-            </mat-chip-list>
-            <mat-autocomplete #autoKeys="matAutocomplete" (optionSelected)="selectedKey($event)">
-              <mat-option *ngFor="let key of filteredKeys | async" [value]="key">
-                {{key}}
-              </mat-option>
-            </mat-autocomplete>
-          </mat-form-field>
-    </mat-grid-tile>
-    <mat-grid-tile>
-      <mat-form-field class="example-chip-list" appearance="standard">
-          <mat-label>Min</mat-label>
-          <input matInput #minInput type="text" placeholder="0">
-          <mat-icon matSuffix>call_received</mat-icon>
-          <mat-hint>Minimum value or size</mat-hint>
-      </mat-form-field>
+  <mat-grid-tile fxLayout="row" fxLayoutAlign="start center" >
+    <mat-radio-group class="example-chip-list">
+      <mat-radio-button
+        *ngFor="let labeled of boolLabels"
+        class="example-margin"
+        [value]="labeled"
+      >
+        <span>{{ labeled | titlecase }}</span>
+      </mat-radio-button>
+    </mat-radio-group>
   </mat-grid-tile>
   <mat-grid-tile>
-    <mat-form-field class="example-chip-list" appearance="standard">
-        <mat-label>Max</mat-label>
-        <input matInput #maxInput type="text" placeholder="100">
-        <mat-icon matSuffix>call_made</mat-icon>
-        <mat-hint>Maximum value or size</mat-hint>
+    <mat-form-field class="example-chip-list" appearance="fill">
+      <mat-chip-list #traitChips multiple aria-label="Trait selection">
+        <mat-chip
+          *ngFor="let trait of traits"
+          [selectable]="selectable"
+          [removable]="removable"
+          (removed)="removeTrait(trait)"
+        >
+          {{ trait }}
+          <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+        </mat-chip>
+        <input
+          placeholder="New trait..."
+          #traitInput
+          [formControl]="traitCtrl"
+          [matAutocomplete]="autoCtrl"
+          [matChipInputFor]="traitChips"
+          [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+          (matChipInputTokenEnd)="addTrait($event)"
+        />
+      </mat-chip-list>
+      <mat-autocomplete
+        #autoCtrl="matAutocomplete"
+        (optionSelected)="selectedTrait($event)"
+      >
+        <mat-option
+          *ngFor="let trait of filteredTraits | async"
+          [value]="trait"
+        >
+          {{ trait }}
+        </mat-option>
+      </mat-autocomplete>
     </mat-form-field>
-</mat-grid-tile>
+  </mat-grid-tile>
+  <mat-grid-tile fxLayout="row" fxLayoutAlign="start center" >
+    <mat-radio-group>
+      <mat-radio-button
+        *ngFor="let strLab of numLabels"
+        class="example-margin"
+        [value]="strLab"
+      >
+        <span>{{ strLab | titlecase }}</span>
+      </mat-radio-button>
+    </mat-radio-group>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <mat-form-field class="example-chip-list" appearance="fill">
+      <mat-chip-list #chipList multiple aria-label="Key selection">
+        <mat-chip
+          *ngFor="let key of keys"
+          [selectable]="selectable"
+          [removable]="removable"
+          (removed)="removeKey(key)"
+        >
+          {{ key }}
+          <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+        </mat-chip>
+        <input
+          placeholder="New relation..."
+          #keyInput
+          [formControl]="keyCtrl"
+          [matAutocomplete]="autoKeys"
+          [matChipInputFor]="chipList"
+          [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+          (matChipInputTokenEnd)="addKey($event)"
+        />
+      </mat-chip-list>
+      <mat-autocomplete
+        #autoKeys="matAutocomplete"
+        (optionSelected)="selectedKey($event)"
+      >
+        <mat-option *ngFor="let key of filteredKeys | async" [value]="key">
+          {{ key }}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+  </mat-grid-tile>
 </mat-grid-list>

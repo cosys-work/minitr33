@@ -30,6 +30,14 @@ import { FlexLayoutType } from './flex-layouting.component';
 import { FormEtaComponent } from './form-eta/form-eta.component';
 import { FormalETRoutingModule } from './formal-e-t-routing.module';
 import { GraForceComponent } from './gra-force/gra-force.component';
+import { FormlyMatCheckboxModule } from '@ngx-formly/material/checkbox';
+import { FormlyMatFormFieldModule } from '@ngx-formly/material/form-field';
+import { FormlyMatInputModule } from '@ngx-formly/material/input';
+import { FormlyMatMultiCheckboxModule } from '@ngx-formly/material/multicheckbox';
+import { FormlyMatRadioModule } from '@ngx-formly/material/radio';
+import { FormlyMatSelectModule } from '@ngx-formly/material/select';
+import { FormlyMatTextAreaModule } from '@ngx-formly/material/textarea';
+import { FormlyAutocompleteComponent } from './form-fields/formly-autocomplete/formly-autocomplete.component';
 
 
 const COMPS = [
@@ -41,12 +49,13 @@ const COMPS = [
   DashLogicComponent,
   DashPreviewComponent,
   GraForceComponent,
-  FlexLayoutType
+  FlexLayoutType,
+  FormlyAutocompleteComponent
 ];
 
 @NgModule({
   declarations: [
-    ...COMPS
+    ...COMPS,
   ],
   imports: [
     CommonModule,
@@ -76,8 +85,23 @@ const COMPS = [
     FormlyModule.forChild({ 
       extras: { 
         lazyRender: true 
-      }
+      },
+      types: [{
+        name: 'autocomplete',
+        component: FormlyAutocompleteComponent,
+        wrappers: ['form-field'],
+      }],
+      validationMessages: [
+        { name: 'required', message: 'This field is required' },
+      ],
     }),
+    FormlyMatCheckboxModule,
+    FormlyMatFormFieldModule,
+    FormlyMatInputModule,
+    FormlyMatMultiCheckboxModule,
+    FormlyMatRadioModule,
+    FormlyMatSelectModule,
+    FormlyMatTextAreaModule
   ],
   exports: [
     ...COMPS

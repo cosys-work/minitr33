@@ -15,7 +15,7 @@ export function fieldRefs(
   label: string,
   placeholder: string,
   description: string,
-  type: string = 'input'
+  type: string,
 ): FieldRefs {
 
   const traits = "";

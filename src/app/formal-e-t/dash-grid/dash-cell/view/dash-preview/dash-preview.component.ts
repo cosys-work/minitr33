@@ -1,6 +1,6 @@
 import { AfterViewInit, Component } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { FormlyFieldConfig } from '@ngx-formly/core';
+import { Field, FormlyFieldConfig } from '@ngx-formly/core';
 import { merge } from 'rxjs';
 import { FieldId } from 'src/app/shared/field.model';
 import { FormalField } from 'src/app/shared/shared.model';
@@ -48,7 +48,6 @@ export class DashPreviewComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     const form = (this.formlyFormElem = document.querySelector('formly-form')!);
     this.cursorStore.current.subscribe((c) => {
-      console.log('attempting highlight', c);
       const fields = () =>
         form.querySelectorAll('mat-form-field') as NodeListOf<HTMLElement>;
 
@@ -61,7 +60,7 @@ export class DashPreviewComponent implements AfterViewInit {
       }
 
       const feld = fields();
-      setTimeout(updateFieldMarker, 500);
+      setTimeout(updateFieldMarker, 250);
     });
   }
 
@@ -77,7 +76,7 @@ export class DashPreviewComponent implements AfterViewInit {
   initialize() {
     this.fieldGroup.forEach((_, i) => {
       const cur = this.grafStore.nodes[i].field;
-      this.fieldGroup[i].type = cur.type;
+      this.fieldGroup[i].type = cur.type.toLowerCase();
       this.fieldGroup[i].templateOptions.label = cur.key;
       this.fieldGroup[i].key = keyMaker(cur.key);
       this.fieldGroup[i].templateOptions.placeholder =
@@ -97,7 +96,7 @@ export class DashPreviewComponent implements AfterViewInit {
       if (this.change?.id && this.cursor < this.fieldGroup.length) {
         switch (this.change.id) {
           case FieldId.type:
-            this.fieldGroup[this.cursor].type = this.change.value.trim();
+            this.fieldGroup[this.cursor].type = this.change.value.trim().toLowerCase();
             break;
           case FieldId.label:
             this.fieldGroup[this.cursor].templateOptions.label =
@@ -111,6 +110,14 @@ export class DashPreviewComponent implements AfterViewInit {
           case FieldId.description:
             this.fieldGroup[this.cursor].templateOptions.description =
               this.change.value.trim();
+            break;
+          case FieldId.traits:
+            break;
+          case FieldId.relations:
+            break;
+          case FieldId.max:
+            break;
+          case FieldId.min:
             break;
           default:
             console.log('woah');

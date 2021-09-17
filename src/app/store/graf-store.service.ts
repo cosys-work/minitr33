@@ -47,7 +47,6 @@ export class GrafStore extends ObservableStore<FGraph> {
     if (!this.edges.length) return;
 
     const edgeToRemoveArr: FEdge[] = this.edges.filter(e => {
-      console.log("edge premove", e, fez);
       return e.label === fez.label;
     });
     
@@ -56,6 +55,9 @@ export class GrafStore extends ObservableStore<FGraph> {
     const edgeToRemove = edgeToRemoveArr[0];
     const nodeToRemove = edgeToRemove.origin;
 
+
+    // TODO refactor so as to not assume that the nodes and edges 
+    // are guaranteed to remain ordered despite of state changes
     const eIndex = this.edges.findIndex(e => e.origin.id === edgeToRemove.origin.id);
     const nIndex = this.nodes.findIndex(n => n.id === nodeToRemove.id);
 

@@ -25,6 +25,7 @@
     "@angular/router": "~12.2.0",
     "@angular/service-worker": "~12.2.0",
     "@codewithdan/observable-store": "^2.2.13",
+    "@codewithdan/observable-store-extensions": "^2.2.9",
     "@cosys/func": "^0.3.0",
     "@ngx-formly/core": "^5.0.0",
     "@ngx-formly/material": "^5.0.0",

@@ -15,11 +15,13 @@ import { DashChangesService } from '../dash-changes.service';
 })
 export class DashContentComponent implements AfterViewInit {
   inpControl = new FormControl('', Validators.required);
-  selectFormControl = new FormControl('', Validators.required);
+  selectFormControl = new FormControl('');
 
   selectable = true;
   removable = true;
   separatorKeysCodes: number[] = [ENTER, COMMA];
+
+  strLabels = ["label", "placeholder", "description", "id"];
   
   typeCtrl = new FormControl();
   labelCtrl = new FormControl();
@@ -27,22 +29,20 @@ export class DashContentComponent implements AfterViewInit {
   placeCtrl = new FormControl();
 
   filteredTypes: Observable<string[]>;
-  types!: string[];
+  type = 'input';
   allTypes: string[] = [
-    "text",
-    "number",
-    "email",
-    "password",
-    "time",
-    "date",
-    "tel",
-    "url",
-    "search",
-    "datetime-local",
-    "month",    
-    "week",
-    "color"
+    'input',
+    'textarea',
+    'checkbox',
+    'radio',
+    'select',
+    'multi-select',
+    'datepicker',
+    'toggle',
+    'slider',
+    'autocomplete'
   ];
+  
 
   @ViewChild('typeInput') typeInput!: ElementRef<HTMLInputElement>;
   @ViewChild('labelInput') labelInput!: ElementRef<HTMLInputElement>;
@@ -57,7 +57,7 @@ export class DashContentComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.changes.typeStrm.subscribe(t =>  this.types = this.allTypes = [t.value]);
+    this.changes.typeStrm.subscribe(t =>  this.type = t.value);
     this.changes.labelStrm.subscribe(t => this.labelInput.nativeElement.value = t.value);
     this.changes.descStrm.subscribe(t => this.descInput.nativeElement.value = t.value);
     this.changes.placeStrm.subscribe(t => this.placeInput.nativeElement.value = t.value);
@@ -82,24 +82,20 @@ export class DashContentComponent implements AfterViewInit {
   add(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
     if (value) {
-      this.types.pop();
-      this.types.push(value);
+      this.type = value;
       this.onTypeChange(value);
     }
     event.chipInput!.clear();
     this.typeCtrl.setValue(null);
   }
 
-  remove(type: string): void {
-    const index = this.types.indexOf(type);
-    if (index >= 0) {
-      this.types.splice(index, 1);
-    }
+  remove(): void {
+    this.type = "input";
+    this.onTypeChange(this.type);
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {
-    this.types.pop();
-    this.types.push(event.option.viewValue);
+    this.type = event.option.viewValue;
     this.onTypeChange(event.option.viewValue);
     this.typeInput.nativeElement.value = '';
     this.typeCtrl.setValue(null);
@@ -107,9 +103,21 @@ export class DashContentComponent implements AfterViewInit {
 
   private _filter(value: string): string[] {
     const filterValue = value.toLowerCase();
-
     return this.allTypes.filter(type => type.toLowerCase().includes(filterValue));
   }
 }
 
 
+// "text",
+// "number",
+// "email",
+// "password",
+// "time",
+// "date",
+// "tel",
+// "url",
+// "search",
+// "datetime-local",
+// "month",    
+// "week",
+// "color"

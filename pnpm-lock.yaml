@@ -18,6 +18,7 @@ specifiers:
   '@angular/router': ~12.2.0
   '@angular/service-worker': ~12.2.0
   '@codewithdan/observable-store': ^2.2.13
+  '@codewithdan/observable-store-extensions': ^2.2.9
   '@cosys/func': ^0.3.0
   '@ngx-formly/core': ^5.0.0
   '@ngx-formly/material': ^5.0.0
@@ -63,6 +64,7 @@ dependencies:
   '@angular/router': 12.2.4_cf887d031145d5606b4856a9417a9133
   '@angular/service-worker': 12.2.4_2fe3b31fd212d7627f698f70674c3dc1
   '@codewithdan/observable-store': 2.2.13_rxjs@6.6.7
+  '@codewithdan/observable-store-extensions': 2.2.9_3796790cf35159e784206e9e8adbbe5e
   '@cosys/func': 0.3.0
   '@ngx-formly/core': 5.10.22_@angular+forms@12.2.4+rxjs@6.6.7
   '@ngx-formly/material': 5.10.22_ebce448a755d3f98a38261ff2a8447d1
@@ -1705,6 +1707,16 @@ packages:
       '@babel/helper-validator-identifier': 7.14.9
       to-fast-properties: 2.0.0
     dev: true
+
+  /@codewithdan/observable-store-extensions/2.2.9_3796790cf35159e784206e9e8adbbe5e:
+    resolution: {integrity: sha512-+PdfGrhOlUKsC7bylLeUa6D55IPdNMI2aGHJbYtZuyRA4d4BChX3hazoTi9tswvRfjDAiPVWzdrze6Gp0zdXyg==}
+    peerDependencies:
+      '@codewithdan/observable-store': '>=2.2.12'
+      rxjs: '>=6.4.0 <8'
+    dependencies:
+      '@codewithdan/observable-store': 2.2.13_rxjs@6.6.7
+      rxjs: 6.6.7
+    dev: false
 
   /@codewithdan/observable-store/2.2.13_rxjs@6.6.7:
     resolution: {integrity: sha512-1jyioqOCARVLxDVEv9Ur/7YIMAXRkyKrOVne5+Qqc2WAiGQ/oquyT9Agz8GSf3ew9YYeOoQcvaf3xDUDCxhEYw==}

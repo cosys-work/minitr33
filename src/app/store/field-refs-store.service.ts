@@ -35,7 +35,7 @@ export class FieldRefsStoreService extends ObservableStore<FieldContainer> {
   }
 
   updateRefs() {
-    const refs = this.graphStore.nodes.map(n => fieldRefs(n.label, n.tag, n.title));
+    const refs = this.graphStore.nodes.map(n => fieldRefs(n.label, n.tag, n.title, 'input'));
     const cont = { refs };
     this.setState(cont, Actions.INIT);
   }

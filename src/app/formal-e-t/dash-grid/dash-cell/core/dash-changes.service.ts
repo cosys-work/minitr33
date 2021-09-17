@@ -158,8 +158,7 @@ export class DashChangesService {
       this.placeStrm,
       this.maxStrm,
       this.minStrm,
-      this.tr8sStrm,
-      this.relsStrm
+      this.tr8sStrm
     );
   }
 
