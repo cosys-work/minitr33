@@ -1,6 +1,6 @@
 import { AfterViewInit, Component } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { Field, FormlyFieldConfig } from '@ngx-formly/core';
+import { Field, FieldType, FormlyFieldConfig } from '@ngx-formly/core';
 import { merge } from 'rxjs';
 import { FieldId } from 'src/app/shared/field.model';
 import { FormalField } from 'src/app/shared/shared.model';
@@ -95,29 +95,56 @@ export class DashPreviewComponent implements AfterViewInit {
 
       if (this.change?.id && this.cursor < this.fieldGroup.length) {
         switch (this.change.id) {
-          case FieldId.type:
+          case FieldId.type: //1
             this.fieldGroup[this.cursor].type = this.change.value.trim().toLowerCase();
             break;
-          case FieldId.label:
-            this.fieldGroup[this.cursor].templateOptions.label =
-              this.change.value.trim();
+          case FieldId.label: //2
+            this.fieldGroup[this.cursor].templateOptions.label = this.change.value.trim();
             this.fieldGroup[this.cursor].key = keyMaker(this.change.value);
             break;
-          case FieldId.placeholder:
-            this.fieldGroup[this.cursor].templateOptions.placeholder =
-              this.change.value.trim();
+          case FieldId.placeholder: //3
+            this.fieldGroup[this.cursor].templateOptions.placeholder = this.change.value.trim();
             break;
-          case FieldId.description:
-            this.fieldGroup[this.cursor].templateOptions.description =
-              this.change.value.trim();
+          case FieldId.description: //4
+            this.fieldGroup[this.cursor].templateOptions.description = this.change.value.trim();
             break;
-          case FieldId.traits:
+          case FieldId.hidden: //5
+            this.fieldGroup[this.cursor].templateOptions.hidden = this.change.value;
             break;
-          case FieldId.relations:
+          case FieldId.readonly: //6
+            this.fieldGroup[this.cursor].templateOptions.readonly = this.change.value;
             break;
-          case FieldId.max:
+          case FieldId.max: //7
+            this.fieldGroup[this.cursor].templateOptions.max = this.change.value;
+            this.fieldGroup[this.cursor].templateOptions.maxLength = this.change.value;
             break;
-          case FieldId.min:
+          case FieldId.min: //8
+            this.fieldGroup[this.cursor].templateOptions.min = this.change.value;
+            this.fieldGroup[this.cursor].templateOptions.minLength = this.change.value;
+            break;
+          case FieldId.options: //9
+            this.fieldGroup[this.cursor].templateOptions.options = this.change.value;
+            break;
+          case FieldId.attributes: //10
+            this.fieldGroup[this.cursor].templateOptions.attributes = this.change.value;
+            break;
+          case FieldId.pattern: //11
+            this.fieldGroup[this.cursor].templateOptions.pattern = this.change.value;
+            break;
+          case FieldId.step: //12
+            this.fieldGroup[this.cursor].templateOptions.step = this.change.value;
+            break;
+          case FieldId.tabindex: //13
+            this.fieldGroup[this.cursor].templateOptions.tabindex = this.change.value;
+            break;
+          case FieldId.required: //13
+            this.fieldGroup[this.cursor].templateOptions.required = this.change.value;
+            break;
+          case FieldId.disabled: //13
+            this.fieldGroup[this.cursor].templateOptions.disabled = this.change.value;
+            break;
+          case FieldId.hidden: //13
+            this.fieldGroup[this.cursor].templateOptions.hidden = this.change.value;
             break;
           default:
             console.log('woah');

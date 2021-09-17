@@ -1,6 +1,9 @@
 <mat-grid-list cols="2" rowHeight="4:1">
-  <mat-grid-tile fxLayout="row" fxLayoutAlign="start center" >
-    <mat-radio-group class="example-chip-list" (change)="selectBoolField($event)">
+  <mat-grid-tile fxLayout="row" fxLayoutAlign="start center">
+    <mat-radio-group
+      class="example-chip-list"
+      (change)="selectBoolField($event)"
+    >
       <mat-radio-button
         *ngFor="let labeled of boolLabels"
         class="example-margin"
@@ -12,41 +15,17 @@
     </mat-radio-group>
   </mat-grid-tile>
   <mat-grid-tile>
-    <mat-form-field class="example-chip-list" appearance="fill">
-      <mat-chip-list #traitChips multiple aria-label="Trait selection">
-        <mat-chip
-          *ngFor="let trait of traits"
-          [selectable]="selectable"
-          [removable]="removable"
-          (removed)="removeTrait(trait)"
-        >
-          {{ trait }}
-          <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
-        </mat-chip>
-        <input
-          placeholder="Custom rule..."
-          #traitInput
-          [formControl]="traitCtrl"
-          [matAutocomplete]="autoCtrl"
-          [matChipInputFor]="traitChips"
-          [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-          (matChipInputTokenEnd)="addTrait($event)"
-        />
-      </mat-chip-list>
-      <mat-autocomplete
-        #autoCtrl="matAutocomplete"
-        (optionSelected)="selectedTrait($event)"
-      >
-        <mat-option
-          *ngFor="let trait of filteredTraits | async"
-          [value]="trait"
-        >
-          {{ trait }}
-        </mat-option>
-      </mat-autocomplete>
+
+    <mat-form-field class="full-width" appearance="standard">
+      <mat-label>{{ boostrLab | async }}</mat-label>
+      <mat-select (selectionChange)="onBoolFieldChange($event)" #boolSelecta>
+        <mat-option value="false">False</mat-option>
+        <mat-option value="true">True</mat-option>
+      </mat-select>
+      <mat-hint>{{ boostrDesc | async }}</mat-hint>
     </mat-form-field>
   </mat-grid-tile>
-  <mat-grid-tile fxLayout="row" fxLayoutAlign="start center" >
+  <mat-grid-tile fxLayout="row" fxLayoutAlign="start center">
     <mat-radio-group (change)="selectNumField($event)">
       <mat-radio-button
         *ngFor="let numF of numLabels"
@@ -59,35 +38,20 @@
     </mat-radio-group>
   </mat-grid-tile>
   <mat-grid-tile>
-    <mat-form-field class="example-chip-list" appearance="fill">
-      <mat-chip-list #chipList multiple aria-label="Key selection">
-        <mat-chip
-          *ngFor="let key of numTraits"
-          [selectable]="selectable"
-          [removable]="removable"
-          (removed)="removeKey(key.toString())"
-        >
-          {{ key }}
-          <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
-        </mat-chip>
-        <input
-          placeholder="Custom rule..."
-          #keyInput
-          [formControl]="keyCtrl"
-          [matAutocomplete]="autoKeys"
-          [matChipInputFor]="chipList"
-          [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-          (matChipInputTokenEnd)="addKey($event)"
-        />
-      </mat-chip-list>
-      <mat-autocomplete
-        #autoKeys="matAutocomplete"
-        (optionSelected)="selectedKey($event)"
-      >
-        <mat-option *ngFor="let key of filteredKeys | async" [value]="key">
-          {{ key }}
-        </mat-option>
-      </mat-autocomplete>
+    <mat-form-field class="full-width" appearance="standard">
+      <mat-label>{{strLab | async}}</mat-label>
+      <input
+        matInput
+        type="number"
+        [placeholder]="(strPlace | async)!"
+        [formControl]="keyCtrl"
+        #maInput
+        (keyup)="onNumFieldChange(maInput.value)"
+      />
+      <mat-icon matSuffix>outlined_flag</mat-icon>
+      <mat-hint>{{ strDesc | async }}</mat-hint>
     </mat-form-field>
+  
+    
   </mat-grid-tile>
 </mat-grid-list>

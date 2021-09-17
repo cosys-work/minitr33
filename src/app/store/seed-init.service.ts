@@ -19,7 +19,6 @@ export class SeedInitService {
     };
     function nodeWithField(iy: number): FNode {
       const ode = node(iy);
-      // makeFormalField label=label, placeholder=tag, description=title
       const field = makeFormalField(ode.label, ode.tag, ode.title);
       return ({
         ...ode, 

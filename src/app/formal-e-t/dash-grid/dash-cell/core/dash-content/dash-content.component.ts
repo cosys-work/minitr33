@@ -17,15 +17,40 @@ import { DashChangesService } from '../dash-changes.service';
 })
 export class DashContentComponent implements AfterViewInit {
   inpControl = new FormControl('', Validators.required);
-  selectFormControl = new FormControl('');
+  // selectFormControl = new FormControl('');
 
   selectable = true;
   removable = true;
   separatorKeysCodes: number[] = [ENTER, COMMA];
 
-  strLabels = ["label", "description", "placeholder", "id"];
-  optLabels = ["type", "options", "pattern", "attributes"];
+  allTypes: string[] = [
+    "input:text",
+    "input:number",
+    "input:email",
+    "input:password",
+    "input:time",
+    "input:date",
+    "input:tel",
+    "input:url",
+    "input:datetime-local",
+    "input:month",    
+    "input:week",
+    "input:color",
+    'textarea',
+    'checkbox',
+    'radio',
+    'select',
+    'multi-select',
+    'datepicker',
+    'toggle',
+    'slider',
+    'autocomplete'
+  ];
 
+  strLabels = ["label", "description", "placeholder", "id"];
+  curStrVal = this.strLabels[0];
+  optLabels = ["type", "options", "pattern", "attributes"];
+  curOptVal = this.optLabels[0];
 
   typeCtrl = new FormControl();
   inpCtrl = new FormControl();
@@ -57,6 +82,34 @@ export class DashContentComponent implements AfterViewInit {
       value: ""
     }
   }
+
+  optState = {
+    current: "type",
+    type: {
+      label: "Type",
+      placeholder: "Input",
+      description: "Type of the field",
+      value: ""
+    },
+    options: {
+      label: "Options",
+      placeholder: "Select options",
+      description: "Add options for the field",
+      value: ""
+    },
+    pattern: {
+      label: "Pattern",
+      placeholder: "Regex",
+      description: "Add a regex pattern",
+      value: ""
+    },
+    attributes: {
+      label: "Attributes",
+      placeholder: "Special fields",
+      description: "Special attributes go here",
+      value: ""
+    }
+  }
   
   strLab = new BehaviorSubject(this.state.label.label);
   strPlace = new BehaviorSubject(this.state.label.placeholder);
@@ -68,25 +121,13 @@ export class DashContentComponent implements AfterViewInit {
 
   filteredTypes: Observable<string[]>;
   type = 'input';
-  allTypes: string[] = [
-    'input',
-    'textarea',
-    'checkbox',
-    'radio',
-    'select',
-    'multi-select',
-    'datepicker',
-    'toggle',
-    'slider',
-    'autocomplete'
-  ];
 
   
 
   @ViewChild('typeInput') typeInput!: ElementRef<HTMLInputElement>;
   @ViewChild('labelInput') labelInput!: ElementRef<HTMLInputElement>;
   @ViewChild('descInput') descInput!: ElementRef<HTMLInputElement>;
-  @ViewChild('placeInput') placeInput!: ElementRef<HTMLInputElement>;
+  @ViewChild('maInput') maInput!: ElementRef<HTMLInputElement>;
 
   constructor(private changes: DashChangesService, private graf: GrafStore) {
     
@@ -97,10 +138,15 @@ export class DashContentComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.changes.typeStrm.subscribe(t =>  this.type = t.value);
     this.changes.labelStrm.subscribe(t => this.state.label.value = t.value);
     this.changes.descStrm.subscribe(t => this.state.description.value = t.value);
     this.changes.placeStrm.subscribe(t => this.state.placeholder.value = t.value);
+    this.changes.idStrm.subscribe(t =>  this.state.id.value = t.value);
+    
+    this.changes.typeStrm.subscribe(t =>  this.optState.type.value = t.value);
+    this.changes.optionsStrm.subscribe(t => this.optState.options.value = t.value);
+    this.changes.patternStrm.subscribe(t => this.optState.pattern.value = t.value);
+    this.changes.attributesStrm.subscribe(t => this.optState.attributes.value = t.value);
   }
 
   selectStrField(event: MatRadioChange) {
@@ -110,21 +156,25 @@ export class DashContentComponent implements AfterViewInit {
         this.strLab.next(this.state.label.label);
         this.strPlace.next(this.state.label.placeholder);
         this.strDesc.next(this.state.label.description);
+        this.maInput.nativeElement.value = this.changes.label ?? "";
         break;
       case "placeholder":
-        this.strLab.next("Placeholder");
-        this.strPlace.next("Eg: John Doe");
-        this.strDesc.next("Simple example value");
+        this.strLab.next(this.state.placeholder.label);
+        this.strPlace.next(this.state.placeholder.placeholder);
+        this.strDesc.next(this.state.placeholder.description);
+        this.maInput.nativeElement.value = this.changes.placeholder ?? "";
         break;      
       case "description":
-        this.strLab.next("Description");
-        this.strPlace.next("Eg: Please fill in your first name");
-        this.strDesc.next("Some hints about the field");
+        this.strLab.next(this.state.description.label);
+        this.strPlace.next(this.state.description.placeholder);
+        this.strDesc.next(this.state.description.description);
+        this.maInput.nativeElement.value = this.changes.description ?? "";
         break;
       case "id":
-        this.strLab.next("Id");
-        this.strPlace.next("Eg: 42");
-        this.strDesc.next("A unique hidden id");
+        this.strLab.next(this.state.id.label);
+        this.strPlace.next(this.state.id.placeholder);
+        this.strDesc.next(this.state.id.description);
+        this.maInput.nativeElement.value = this.changes.id ?? "";
         break;
       default:
         break;
@@ -132,16 +182,25 @@ export class DashContentComponent implements AfterViewInit {
     console.log("strfield click", event, event.source.value);
   }
 
-  onLabelChange(label: string) {
-    this.changes.label = label;
-  };
-
-  onTypeChange(type: string) {
-    this.changes.type = type;
-  };
-
-  onDescChange(desc: string) {
-    this.changes.description = desc;
+  onTypeChange(changed: string) {
+    switch (this.state.current) {
+      case "type":
+        this.changes.label = changed;
+        break;
+      case "options":
+        this.changes.options = changed.split(",");
+        break;      
+      case "pattern":
+        this.changes.pattern = changed;
+        break;
+      case "attributes":
+        const [key, val] = changed.split(":");
+        this.changes.attributes = { [key]: val};
+        break;
+      default:
+        break;
+    }
+    console.log("changed", changed);
   };
 
   onInpChange(changed: string) {
@@ -161,6 +220,7 @@ export class DashContentComponent implements AfterViewInit {
       default:
         break;
     }
+    console.log("changed", changed);
   };
 
   add(event: MatChipInputEvent): void {
@@ -190,18 +250,3 @@ export class DashContentComponent implements AfterViewInit {
     return this.allTypes.filter(type => type.toLowerCase().includes(filterValue));
   }
 }
-
-
-// "text",
-// "number",
-// "email",
-// "password",
-// "time",
-// "date",
-// "tel",
-// "url",
-// "search",
-// "datetime-local",
-// "month",    
-// "week",
-// "color"

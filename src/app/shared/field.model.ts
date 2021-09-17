@@ -1,14 +1,22 @@
-import { FormalField } from "./shared.model";
+import { FormalField, TemplateOptions } from "./shared.model";
 
 export interface FieldRefs {
-  label: string;
-  description: string;
-  type: string;
-  placeholder: string;
-  traits: string;
-  relations: string;
-  min: string;
-  max: string; 
+  label: string; //1
+  description: string; //2
+  id: string; //3
+  placeholder: string; //4
+  type: string; //5
+  pattern: string | RegExp; //6
+  options: string[], //7
+  attributes: { [key: string]: string | number; }, //8
+  required: boolean; //9
+  disabled: boolean; //10
+  hidden: boolean; //11
+  readonly: boolean; //12
+  tabindex: number; //13
+  maximum: number; //14
+  minimum: number; //15
+  step: number; //16
 }
 
 export function fieldRefs(
@@ -16,22 +24,37 @@ export function fieldRefs(
   placeholder: string,
   description: string,
   type: string,
-): FieldRefs {
-
-  const traits = "";
-  const relations = "";
-  const min = "";
-  const max = "";
+  pattern: string | RegExp,
+  options: string[],
+  attributes: { [key: string]: string | number; },
+  required: boolean,
+  disabled: boolean,
+  hidden: boolean,
+  readonly: boolean,
+  tabindex: number,
+  maximum: number,
+  minimum: number,
+  step: number,
+  id: string,
+): Required<FieldRefs> {
 
   return ({
     label,
     placeholder,
     description,
     type,
-    traits,
-    relations,
-    min, 
-    max
+    minimum, 
+    maximum,
+    id,
+    pattern,
+    options,
+    attributes,
+    required,
+    disabled,
+    hidden,
+    readonly,
+    tabindex,
+    step
   });
 }
 
@@ -40,38 +63,121 @@ export function fieldMaker(
     type: string, 
     label: string, 
     placeholder: string,
-    className: string
-): FormalField {
-
-    const templateOptions = {
+    className: string,
+    description: string,
+    id: string,
+    pattern: string | RegExp,
+    options: string[],
+    attributes: { [key: string]: string | number; },
+    required: boolean,
+    disabled: boolean,
+    hidden: boolean,
+    readonly: boolean,
+    tabindex: number,
+    max: number,
+    min: number,
+    step: number,
+): Omit<Required<FormalField>, "jump"> {
+    const [_, typeAA] = type.split(",");
+    const [minLength, maxLength, rows, cols] = [min, max, 0, 0];
+    const templateOptions: TemplateOptions = {
+      type: typeAA,
       label,
-      placeholder
+      placeholder,
+      pattern,
+      options,
+      attributes,
+      required,
+      disabled,
+      hidden,
+      readonly,
+      tabindex,
+      max,
+      min,
+      step,
+      minLength,
+      maxLength,
+      rows,
+      cols,
+      description
     };
+
+    const validation = {};
 
     return ({
       key,
       type,
       className,
-      templateOptions
+      templateOptions,
+      id,
+      validation
     });
 
 };
 
 
-export const emptyField = () => fieldMaker("key", "input", "label", "placeholder", "className");
-
-export function refsToField(refs: Required<FieldRefs>): FormalField {  
+export function refsToField(refs: FieldRefs): FormalField {  
   return fieldMaker(
-    refs.label, refs.type, refs.description, refs.placeholder, 'flex-1');
+    refs.label, 
+    refs.type, 
+    refs.description, 
+    refs.placeholder, 
+    'flex-1',
+    refs.description,
+    refs.id,
+    refs.pattern,
+    refs.options,
+    refs.attributes,
+    refs.required, 
+    refs.disabled,
+    refs.hidden,
+    refs.readonly,
+    refs.tabindex,
+    refs.maximum,
+    refs.minimum,
+    refs.step
+  );
 }
 
 export function makeFormalField(
   label: string,
   placeholder: string,
   description: string,
-  type: string = "input"
+  type: string = "input",
+  pattern: string = "",
+  options: string[] = [],
+  attributes: { [key: string]: string | number; } = {},
+  required: boolean = false,
+  disabled: boolean = false,
+  hidden: boolean = false,
+  readonly: boolean = false,
+  tabindex: number = 0,
+  maximum: number = 0,
+  minimum: number = 0,
+  step: number = 0,
+  id: string = "",
 ): FormalField {
-  return refsToField(fieldRefs(label, placeholder, description, type));
+  return refsToField(fieldRefs(
+    label, 
+    placeholder, 
+    description, 
+    type,
+
+    pattern,
+    options,
+    attributes,
+    
+    required,
+    disabled,
+    hidden,
+    readonly,
+
+    tabindex,
+    maximum,
+    minimum,
+    step,
+    id
+  ));
 }
 
 export enum FieldId {
@@ -81,42 +187,27 @@ export enum FieldId {
   placeholder = "placeholder",
   id = "id",
 
-  traits = "trait",
-  relations = "relation",
+  required = "required",
+  disabled = "disabled",
+  hidden = "hidden",
+  readonly = "readonly",
+
+  tabindex = "tabindex",
+  step = "step",
+
   min = "min",
-  max = "max"
+  max = "max",
+  pattern = "pattern",
+  options = "options",
+  attributes = "attributes"
 }
 
 export interface FieldType {
   id: FieldId;
-  value: string;
+  value: string | any;
 }
 
-export const fieldType: (id: FieldId, value: string) => FieldType 
+export const fieldType: (id: FieldId, value: string | any) => FieldType 
   = (id: FieldId, value: string) => ({id, value});
 
 
-
-export const nameField: FormalField = {
-  key: 'name',
-  type: 'input',
-  className: 'flex-2',
-  templateOptions: {
-    label: 'Name',
-    placeholder: 'Enter name',
-    required: true,
-    minLength: 3,
-    maxLength: 10,
-  }
-};
-
-export const emailField: FormalField = {
-  key: 'email',
-  type: 'input',
-  className: 'flex-2',
-  templateOptions: {
-    label: 'Email',
-    placeholder: 'Enter email',
-    required: false,
-  }
-}

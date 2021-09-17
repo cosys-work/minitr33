@@ -17,8 +17,8 @@
       <input
         matInput
         [placeholder]="(strPlace | async)!"
-        #placeInput
-        (keyup)="onInpChange(placeInput.value)"
+        #maInput
+        (keyup)="onInpChange(maInput.value)"
       />
       <mat-icon matSuffix>outlined_flag</mat-icon>
       <mat-hint>{{ strDesc | async }}</mat-hint>

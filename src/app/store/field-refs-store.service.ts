@@ -34,8 +34,42 @@ export class FieldRefsStoreService extends ObservableStore<FieldContainer> {
     })
   }
 
+  // label: string,
+  // placeholder: string,
+  // description: string,
+  // type: string,
+  // pattern?: string,
+  // options?: string,
+  // attributes?: string,
+  // required?: string,
+  // disabled?: string,
+  // hidden?: string,
+  // readonly?: string,
+  // tabindex?: string,
+  // maximum?: string,
+  // minimum?: string,
+  // step?: string,
+  // id?: string,
+
   updateRefs() {
-    const refs = this.graphStore.nodes.map(n => fieldRefs(n.label, n.tag, n.title, 'input'));
+    const refs = this.graphStore.nodes.map(n => fieldRefs(
+      n.field.templateOptions.label ?? n.label, 
+      n.field.templateOptions.placeholder ?? n.tag, 
+      n.field.templateOptions.description ?? n.title, 
+      n.field.type, 
+      n.field.templateOptions.pattern,
+      n.field.templateOptions.options,
+      n.field.templateOptions.attributes,
+      n.field.templateOptions.required,
+      n.field.templateOptions.disabled,
+      n.field.templateOptions.hidden,
+      n.field.templateOptions.readonly,
+      n.field.templateOptions.tabindex,
+      n.field.templateOptions.max,
+      n.field.templateOptions.min,
+      n.field.templateOptions.step,
+      n.field.id,
+    ));
     const cont = { refs };
     this.setState(cont, Actions.INIT);
   }
