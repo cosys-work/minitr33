@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, merge, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, ReplaySubject, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter } from 'rxjs/operators';
 import { FieldId, FieldRefs, fieldType, FieldType } from 'src/app/shared/field.model';
 import { FieldRefsStoreService } from 'src/app/store/field-refs-store.service';
@@ -10,32 +10,32 @@ import { FormCursorStoreService } from 'src/app/store/form-cursor-store.service'
 })
 export class DashChangesService {
 
-  private labelChanges!: BehaviorSubject<FieldType>;
-  private typeChanges!: BehaviorSubject<FieldType>;
-  private descChanges!: BehaviorSubject<FieldType>;
-  private placeChanges!: BehaviorSubject<FieldType>;
-  private idChanges!: BehaviorSubject<FieldType>;
-  private optsChanges!: BehaviorSubject<FieldType>;
-  private attrsChanges!: BehaviorSubject<FieldType>;
-  private patternChanges!: BehaviorSubject<FieldType>;
+  private labelChanges = new ReplaySubject<FieldType>(1);
+  private typeChanges = new ReplaySubject<FieldType>(1);
+  private descChanges = new ReplaySubject<FieldType>(1);
+  private placeChanges = new ReplaySubject<FieldType>(1);
+  private idChanges = new ReplaySubject<FieldType>(1);
+  private optsChanges = new ReplaySubject<FieldType>(1);
+  private attrsChanges = new ReplaySubject<FieldType>(1);
+  private patternChanges = new ReplaySubject<FieldType>(1);
 
-  private minChanges!: BehaviorSubject<FieldType>;
-  private maxChanges!: BehaviorSubject<FieldType>;
-  private requiredChanges!: BehaviorSubject<FieldType>;
-  private disabledChanges!: BehaviorSubject<FieldType>;
-  private hiddenChanges!: BehaviorSubject<FieldType>;
-  private readonlyChanges!: BehaviorSubject<FieldType>;
-  private tabindexChanges!: BehaviorSubject<FieldType>;
-  private stepChanges!: BehaviorSubject<FieldType>;
+  private minChanges = new ReplaySubject<FieldType>(1);
+  private maxChanges = new ReplaySubject<FieldType>(1);
+  private requiredChanges = new ReplaySubject<FieldType>(1);
+  private disabledChanges = new ReplaySubject<FieldType>(1);
+  private hiddenChanges = new ReplaySubject<FieldType>(1);
+  private readonlyChanges = new ReplaySubject<FieldType>(1);
+  private tabindexChanges = new ReplaySubject<FieldType>(1);
+  private stepChanges = new ReplaySubject<FieldType>(1);
 
-  private minRuleChanges!: BehaviorSubject<FieldType>;
-  private maxRuleChanges!: BehaviorSubject<FieldType>;
-  private requiredRuleChanges!: BehaviorSubject<FieldType>;
-  private disabledRuleChanges!: BehaviorSubject<FieldType>;
-  private hiddenRuleChanges!: BehaviorSubject<FieldType>;
-  private readonlyRuleChanges!: BehaviorSubject<FieldType>;
-  private tabindexRuleChanges!: BehaviorSubject<FieldType>;
-  private stepRuleChanges!: BehaviorSubject<FieldType>;
+  private minRuleChanges = new ReplaySubject<FieldType>(1);
+  private maxRuleChanges = new ReplaySubject<FieldType>(1);
+  private requiredRuleChanges = new ReplaySubject<FieldType>(1);
+  private disabledRuleChanges = new ReplaySubject<FieldType>(1);
+  private hiddenRuleChanges = new ReplaySubject<FieldType>(1);
+  private readonlyRuleChanges = new ReplaySubject<FieldType>(1);
+  private tabindexRuleChanges = new ReplaySubject<FieldType>(1);
+  private stepRuleChanges = new ReplaySubject<FieldType>(1);
 
   constructor(
     private fieldRefsStore: FieldRefsStoreService,
@@ -71,243 +71,149 @@ export class DashChangesService {
   //1
   set max(max: number) {
     const maxField = fieldType(FieldId.max, max);
-    this.maxChanges ? this.maxChanges.next(maxField): this.maxChanges = new BehaviorSubject(maxField);
+    this.maxChanges.next(maxField);
   }
 
-  get max(): number {
-    return this.maxChanges.value.value;
-  }
 
   set maxRule(max: string) {
     const maxField = fieldType(FieldId.max, max);
-    this.maxRuleChanges ? this.maxRuleChanges.next(maxField): this.maxRuleChanges = new BehaviorSubject(maxField);
-  }
-
-  get maxRule(): string {
-    return this.maxRuleChanges.value.value;
+    this.maxRuleChanges.next(maxField);
   }
 
   //2
   set min(min: number) {
     const minField = fieldType(FieldId.min, min);
-    this.minChanges ? this.minChanges.next(minField): this.minChanges = new BehaviorSubject(minField);
-  }
-
-  get min(): number {
-    return this.minChanges.value.value;
+    this.minChanges.next(minField);
   }
 
   set minRule(min: string) {
     const minField = fieldType(FieldId.min, min);
-    this.minRuleChanges ? this.minRuleChanges.next(minField): this.minRuleChanges = new BehaviorSubject(minField);
-  }
-
-  get minRule(): string {
-    return this.minRuleChanges.value.value;
+    this.minRuleChanges.next(minField);
   }
 
   //3
   set label(label: string) {
+    console.log("label called", label);
     const labelField = fieldType(FieldId.label, label);
-    this.labelChanges ? this.labelChanges.next(labelField) : this.labelChanges = new BehaviorSubject(labelField);
-  }
-
-  get label(): string {
-    return this.labelChanges.value.value;
+    this.labelChanges.next(labelField);
   }
 
   //4
   set type(type: string) {
     const typeField = fieldType(FieldId.type, type);
-    this.typeChanges ? this.typeChanges.next(typeField) : this.typeChanges = new BehaviorSubject(typeField);
-  }
-
-  get type(): string {
-    return this.typeChanges.value.value;
+    this.typeChanges.next(typeField);
   }
 
   //5
   set id(id: string) {
     const idField = fieldType(FieldId.id, id);
-    this.idChanges ? this.idChanges.next(idField) : this.idChanges = new BehaviorSubject(idField);
-  }
-
-  get id(): string {
-    return this.idChanges.value.value.toString();
+    this.idChanges.next(idField);
   }
 
   //6
   set description(description: string) {
     const descField = fieldType(FieldId.description, description);
-    this.descChanges ? this.descChanges.next(descField) : this.descChanges = new BehaviorSubject(descField);
-  }
-
-  get description(): string {
-    return this.descChanges.value.value;
+    this.descChanges.next(descField);
   }
 
   //7
   set placeholder(placeholder: string) {
     const placeField = fieldType(FieldId.placeholder, placeholder);
-    this.placeChanges ? this.placeChanges.next(placeField) : this.placeChanges = new BehaviorSubject(placeField);
-  }
-
-  get placeholder(): string {
-    return this.placeChanges.value.value;
+    this.placeChanges.next(placeField);
   }
 
   //8
   set required(required: boolean) {
     const requiredField = fieldType(FieldId.required, required);
-    this.requiredChanges ? this.requiredChanges.next(requiredField): this.requiredChanges = new BehaviorSubject(requiredField);
-  }
-
-  get required(): boolean {
-    return this.requiredChanges.value.value;
+    this.requiredChanges.next(requiredField);
   }
 
   set requiredRule(required: string) {
-    const requiredField = fieldType(FieldId.required, required);
-    this.requiredRuleChanges ? this.requiredRuleChanges.next(requiredField): this.requiredRuleChanges = new BehaviorSubject(requiredField);
-  }
-
-  get requiredRule(): string {
-    return this.requiredRuleChanges.value.value;
+    const requiredField = fieldType(FieldId.requiredRule, required);
+    this.requiredRuleChanges.next(requiredField);
   }
 
   //9
   set disabled(disabled: boolean) {
     const disField = fieldType(FieldId.disabled, disabled);
-    this.disabledChanges ? this.disabledChanges.next(disField): this.disabledChanges = new BehaviorSubject(disField);
-  }
-
-  get disabled(): boolean {
-    return this.disabledChanges.value.value;
+    this.disabledChanges.next(disField);
   }
 
   set disabledRule(disabled: string) {
-    const disField = fieldType(FieldId.disabled, disabled);
-    this.disabledRuleChanges ? this.disabledRuleChanges.next(disField): this.disabledRuleChanges = new BehaviorSubject(disField);
-  }
-
-  get disabledRule(): string {
-    return this.disabledRuleChanges.value.value;
+    const disField = fieldType(FieldId.disabledRule, disabled);
+    this.disabledRuleChanges.next(disField);
   }
 
   //10
   set hidden(hidden: boolean) {
-    const hideField = fieldType(FieldId.max, hidden);
-    this.hiddenChanges ? this.hiddenChanges.next(hideField): this.hiddenChanges = new BehaviorSubject(hideField);
-  }
-
-  get hidden(): boolean {
-    return this.hiddenChanges.value.value;
+    const hideField = fieldType(FieldId.hidden, hidden);
+    this.hiddenChanges.next(hideField);
   }
 
   set hiddenRule(hidden: string) {
-    const hideField = fieldType(FieldId.max, hidden);
-    this.hiddenRuleChanges ? this.hiddenRuleChanges.next(hideField): this.hiddenRuleChanges = new BehaviorSubject(hideField);
-  }
-
-  get hiddenRule(): string {
-    return this.hiddenRuleChanges.value.value;
+    const hideField = fieldType(FieldId.hiddenRule, hidden);
+    this.hiddenRuleChanges.next(hideField);
   }
 
   //11
   set readonly(readonly: boolean) {
     const readonlyField = fieldType(FieldId.readonly, readonly);
-    this.readonlyChanges ? this.readonlyChanges.next(readonlyField): this.readonlyChanges = new BehaviorSubject(readonlyField);
-  }
-
-  get readonly(): boolean {
-    return this.readonlyChanges.value.value;
+    this.readonlyChanges.next(readonlyField);
   }
 
   set readonlyRule(readonly: string) {
     const readonlyField = fieldType(FieldId.readonly, readonly);
-    this.readonlyRuleChanges ? this.readonlyRuleChanges.next(readonlyField): this.readonlyRuleChanges = new BehaviorSubject(readonlyField);
+    this.readonlyRuleChanges.next(readonlyField);
   }
-
-  get readonlyRule(): string {
-    return this.readonlyRuleChanges.value.value;
-  }
-
 
   //12
   set tabindex(tabindex: number) {
     const tabindexField = fieldType(FieldId.tabindex, tabindex);
-    this.tabindexChanges ? this.tabindexChanges.next(tabindexField): this.tabindexChanges = new BehaviorSubject(tabindexField);
-  }
-
-  get tabindex(): number {
-    return this.tabindexChanges.value.value;
+    this.tabindexChanges.next(tabindexField);
   }
 
   set tabindexRule(tabindex: string) {
     const tabindexField = fieldType(FieldId.tabindex, tabindex);
-    this.tabindexRuleChanges ? this.tabindexRuleChanges.next(tabindexField): this.tabindexRuleChanges = new BehaviorSubject(tabindexField);
-  }
-
-  get tabindexRule(): string {
-    return this.tabindexRuleChanges.value.value;
+    this.tabindexRuleChanges.next(tabindexField);
   }
 
   //13
   set step(step: number) {
     const stepField = fieldType(FieldId.step, step);
-    this.stepChanges ? this.stepChanges.next(stepField): this.stepChanges = new BehaviorSubject(stepField);
-  }
-
-  get step(): number {
-    return this.stepChanges.value.value;
+    this.stepChanges.next(stepField);
   }
 
   set stepRule(step: string) {
     const stepField = fieldType(FieldId.step, step);
-    this.stepRuleChanges ? this.stepRuleChanges.next(stepField): this.stepRuleChanges = new BehaviorSubject(stepField);
-  }
-
-  get stepRule(): string {
-    return this.stepRuleChanges.value.value;
+    this.stepRuleChanges.next(stepField);
   }
 
   //14
   set pattern(pattern: string | RegExp) {
     const patField = fieldType(FieldId.pattern, pattern);
-    this.patternChanges ? this.patternChanges.next(patField): this.patternChanges = new BehaviorSubject(patField);
-  }
-
-  get pattern() {
-    return this.patternChanges.value.value;
+    this.patternChanges.next(patField);
   }
 
   //15
   set options(options: string[]) {
     const optField = fieldType(FieldId.options, options);
-    this.optsChanges ? this.optsChanges.next(optField): this.optsChanges = new BehaviorSubject(optField);
+    this.optsChanges.next(optField);
   }
 
-  get options() {
-    return this.optsChanges.value.value;
-  }
 
   //16 
   set attributes(attributes:  { [key: string]: string | number }) {
     const attrField = fieldType(FieldId.options, attributes);
-    this.attrsChanges ? this.optsChanges.next(attrField): this.attrsChanges = new BehaviorSubject(attrField);
-  }
-
-  get attributes():  { [key: string]: string | number } {
-    return this.attrsChanges.value.value;
+    this.optsChanges.next(attrField);
   }
 
 
-  private debounceObs(bSub: BehaviorSubject<FieldType>): Observable<FieldType> {
+  private debounceObs(bSub: Observable<FieldType>): Observable<FieldType> {
     const dummy = (new Subject<FieldType>()).asObservable;
     return bSub ? bSub.pipe(
-      filter(v => v.value !== ""),
       debounceTime(300),
-      distinctUntilChanged()
+      distinctUntilChanged(),
+      filter(v => v.value !== ""),
     ) : dummy();
   }
 
@@ -328,11 +234,11 @@ export class DashChangesService {
   }
 
   get maxStrm() {
-    return this.debounceObs(this.maxChanges);
+    return this.debounceObs(this.maxChanges.pipe(filter(v => v.value !== 0)));
   }
 
   get minStrm() {
-    return this.debounceObs(this.minChanges);
+    return this.debounceObs(this.minChanges.pipe(filter(v => v.value !== 0)));
   }
 
   get idStrm() {
@@ -352,48 +258,26 @@ export class DashChangesService {
   }
   
   get requiredStrm() {
-    return this.debounceObs(this.requiredChanges);
+    return this.debounceObs(this.requiredChanges.pipe(filter(v => v.value == 'true' )));
   }
 
   get disabledStrm() {
-    return this.debounceObs(this.disabledChanges);
+    return this.debounceObs(this.disabledChanges.pipe(filter(v => v.value == 'true' )));
   }
 
   get hiddenStrm() {
-    return this.debounceObs(this.hiddenChanges);
+    return this.debounceObs(this.hiddenChanges.pipe(filter(v => v.value == 'true' )));
   }
   
   get readonlyStrm() {
-    return this.debounceObs(this.readonlyChanges);
+    return this.debounceObs(this.readonlyChanges.pipe(filter(v => v.value == 'true' )));
   }
   
   get tabindexStrm() {
-    return this.debounceObs(this.tabindexChanges);
+    return this.debounceObs(this.tabindexChanges.pipe(filter(v => v.value !== 0)));
   }
 
   get stepStrm() {
-    return this.debounceObs(this.stepChanges);
+    return this.debounceObs(this.stepChanges.pipe(filter(v => v.value !== 0)));
   }
-
-  get stream(): Observable<FieldType> {
-    return merge(
-      this.labelStrm, //1
-      this.descStrm, //2
-      this.typeStrm, //3
-      this.placeStrm, //4
-      this.maxStrm, //5
-      this.minStrm, //6
-      this.stepStrm, //7
-      this.tabindexStrm, //8
-      this.readonlyStrm, //9
-      this.hiddenStrm, //10
-      this.disabledStrm, //11
-      this.requiredStrm, //12
-      this.attributesStrm, //13
-      this.patternStrm, //14
-      this.optionsStrm, //15
-      this.idStrm //16
-    );
-  }
-
 }

@@ -1,8 +1,6 @@
 import { AfterViewInit, Component } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { Field, FieldType, FormlyFieldConfig } from '@ngx-formly/core';
-import { merge } from 'rxjs';
-import { FieldId } from 'src/app/shared/field.model';
+import { FormlyFieldConfig } from '@ngx-formly/core';
 import { FormalField } from 'src/app/shared/shared.model';
 import { FormCursorStoreService } from 'src/app/store/form-cursor-store.service';
 import { GrafStore } from 'src/app/store/graf-store.service';
@@ -40,6 +38,7 @@ export class DashPreviewComponent implements AfterViewInit {
     private cursorStore: FormCursorStoreService,
     private grafStore: GrafStore
   ) {
+    this.cursorStore.current.subscribe((c) => (this.cursor = c));
     this.coreUpdateMecha();
     this.updateWhenContentUpdates();
     this.updateWhenGraphUpdates();
@@ -82,78 +81,149 @@ export class DashPreviewComponent implements AfterViewInit {
       this.fieldGroup[i].templateOptions.placeholder =
         cur.templateOptions.placeholder;
       this.fieldGroup[i].templateOptions.description =
-        cur.templateOptions.label;
+        cur.templateOptions.description;
     });
     this.field.fieldGroup = this.fieldGroup;
     this.fields = [...this.fields];
   }
 
   updateWhenContentUpdates() {
+    console.log('outside the changer', this.cursor, this.change.id);
     
-    this.changes.stream.subscribe((a) => {
-      this.change = a;
+      this.changes.labelStrm.subscribe(l => {
+        this.fieldGroup[this.cursor].templateOptions.label = l.value;
+        this.fieldGroup[this.cursor].key = keyMaker(l.value);
+        console.log('inside the label changer', this.cursor, this.change.id, l.value);
+      });
 
-      if (this.change?.id && this.cursor < this.fieldGroup.length) {
-        switch (this.change.id) {
-          case FieldId.type: //1
-            this.fieldGroup[this.cursor].type = this.change.value.trim().toLowerCase();
-            break;
-          case FieldId.label: //2
-            this.fieldGroup[this.cursor].templateOptions.label = this.change.value.trim();
-            this.fieldGroup[this.cursor].key = keyMaker(this.change.value);
-            break;
-          case FieldId.placeholder: //3
-            this.fieldGroup[this.cursor].templateOptions.placeholder = this.change.value.trim();
-            break;
-          case FieldId.description: //4
-            this.fieldGroup[this.cursor].templateOptions.description = this.change.value.trim();
-            break;
-          case FieldId.hidden: //5
-            this.fieldGroup[this.cursor].templateOptions.hidden = this.change.value;
-            break;
-          case FieldId.readonly: //6
-            this.fieldGroup[this.cursor].templateOptions.readonly = this.change.value;
-            break;
-          case FieldId.max: //7
-            this.fieldGroup[this.cursor].templateOptions.max = this.change.value;
-            this.fieldGroup[this.cursor].templateOptions.maxLength = this.change.value;
-            break;
-          case FieldId.min: //8
-            this.fieldGroup[this.cursor].templateOptions.min = this.change.value;
-            this.fieldGroup[this.cursor].templateOptions.minLength = this.change.value;
-            break;
-          case FieldId.options: //9
-            this.fieldGroup[this.cursor].templateOptions.options = this.change.value;
-            break;
-          case FieldId.attributes: //10
-            this.fieldGroup[this.cursor].templateOptions.attributes = this.change.value;
-            break;
-          case FieldId.pattern: //11
-            this.fieldGroup[this.cursor].templateOptions.pattern = this.change.value;
-            break;
-          case FieldId.step: //12
-            this.fieldGroup[this.cursor].templateOptions.step = this.change.value;
-            break;
-          case FieldId.tabindex: //13
-            this.fieldGroup[this.cursor].templateOptions.tabindex = this.change.value;
-            break;
-          case FieldId.required: //14
-            this.fieldGroup[this.cursor].templateOptions.required = this.change.value;
-            break;
-          case FieldId.disabled: //15
-            this.fieldGroup[this.cursor].templateOptions.disabled = this.change.value;
-            break;
-          case FieldId.hidden: //16
-            this.fieldGroup[this.cursor].templateOptions.hidden = this.change.value;
-            break;
-          default:
-            console.log('woah');
-            break;
-        }
-        this.field.fieldGroup[this.cursor] = this.fieldGroup[this.cursor];
-        this.fields = [...this.fields];
-      }
-    });
+      this.changes.typeStrm.subscribe(t => {
+        this.fieldGroup[this.cursor].type = t.value
+          .trim()
+          .toLowerCase();
+        console.log('inside the type changer', this.cursor, this.change.id, t.value);
+      });
+
+      this.changes.placeStrm.subscribe((p) => {
+        this.fieldGroup[this.cursor].templateOptions.placeholder =
+          p.value.trim();
+        console.log(
+          'inside the placeholder changer',
+          this.cursor,
+          this.change.id,
+          p.value
+        );
+      });
+
+      this.changes.descStrm.subscribe((p) => {
+        this.fieldGroup[this.cursor].templateOptions.description =
+          p.value.trim();
+        console.log(
+          'inside the description changer',
+          this.cursor,
+          this.change.id,
+          p.value
+        );
+      });
+
+      this.changes.hiddenStrm.subscribe((p) => {
+        this.fieldGroup[this.cursor].templateOptions.hidden = p.value;
+        console.log(
+          'inside the hidden changer',
+          this.cursor,
+          this.change.id,
+          p.value
+        );
+      });
+
+      this.changes.readonlyStrm.subscribe((p) => {
+        console.log(
+          'inside the readonly changer',
+          this.cursor,
+          this.change.id,
+          p.value
+        );
+        this.fieldGroup[this.cursor].templateOptions.readonly =
+          p.value;
+      });
+
+      this.changes.maxStrm.subscribe((p) => {
+        this.fieldGroup[this.cursor].templateOptions.max = p.value;
+        this.fieldGroup[this.cursor].templateOptions.maxLength =
+          this.change.value;
+        console.log(
+          'inside the max changer',
+          this.cursor,
+          this.change.id,
+          p.value
+        );
+      });
+
+      this.changes.minStrm.subscribe((p) => {
+        this.fieldGroup[this.cursor].templateOptions.min = p.value;
+        this.fieldGroup[this.cursor].templateOptions.minLength =
+          this.change.value;
+        console.log('inside the min changer', this.cursor, this.change.id, p.value);
+      });
+
+      this.changes.optionsStrm.subscribe((p) => {
+        this.fieldGroup[this.cursor].templateOptions.options =
+          p.value;
+        console.log('inside the options changer', this.cursor, this.change.id, p.value);
+      });
+
+      this.changes.attributesStrm.subscribe((p) => {
+        this.fieldGroup[this.cursor].templateOptions.attributes =
+          p.value;
+        console.log(
+          'inside the atttributes changer',
+          this.cursor,
+          this.change.id,
+          p.value
+        );
+      });
+
+      this.changes.patternStrm.subscribe((p) => {
+        this.fieldGroup[this.cursor].templateOptions.pattern =
+          p.value;
+        console.log('inside the pattern changer', this.cursor, this.change.id, p.value);
+      });
+
+      this.changes.stepStrm.subscribe((p) => {
+        this.fieldGroup[this.cursor].templateOptions.step = p.value;
+        console.log('inside the step changer', this.cursor, this.change.id, p.value);
+      });
+
+      this.changes.tabindexStrm.subscribe((p) => {
+        this.fieldGroup[this.cursor].templateOptions.tabindex =
+          p.value;
+        console.log('inside the tabindex changer', this.cursor, p.value);
+      });
+
+      this.changes.requiredStrm.subscribe((p) => {
+        this.fieldGroup[this.cursor].templateOptions.required =
+          p.value;
+        console.log(
+          'inside the required changer',
+          this.cursor,
+          this.change.id,
+          p.value
+        );
+      });
+
+      this.changes.disabledStrm.subscribe((a) => {
+        this.fieldGroup[this.cursor].templateOptions.disabled =
+          a.value;
+        console.log(
+          'inside the disabled changer',
+          this.cursor,
+          this.change.id,
+          a.value
+        );
+      });
+
+      this.field.fieldGroup[this.cursor] = this.fieldGroup[this.cursor];
+      this.fields = [...this.fields];
+    
   }
 
   onSubmit(model: any) {

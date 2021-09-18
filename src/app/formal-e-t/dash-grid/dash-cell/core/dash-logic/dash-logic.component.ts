@@ -4,6 +4,7 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatRadioChange } from '@angular/material/radio';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { first } from 'rxjs/operators';
 import { DashChangesService } from '../dash-changes.service';
 
 export type BooTyped = "required" | "disabled" | "hidden" | "readonly";
@@ -38,7 +39,7 @@ export interface NumTyper {
   styleUrls: ['./dash-logic.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DashLogicComponent implements AfterContentInit {
+export class DashLogicComponent {
 
   selectable = true;
   removable = true;
@@ -132,18 +133,6 @@ export class DashLogicComponent implements AfterContentInit {
     console.log("submitted logic form", this.formGroup.value);
   }
 
-  ngAfterContentInit(): void {
-    this.changes.requiredStrm.subscribe(t => this.changes.required = t.value);
-    this.changes.disabledStrm.subscribe(t => this.changes.disabled = t.value);
-    this.changes.hiddenStrm.subscribe(t => this.changes.hidden = t.value);
-    this.changes.readonlyStrm.subscribe(t => this.changes.readonly = t.value);
-
-    this.changes.tabindexStrm.subscribe(t => this.changes.tabindex = t.value);
-    this.changes.minStrm.subscribe(t => this.changes.min = t.value);
-    this.changes.maxStrm.subscribe(t => this.changes.max = t.value);
-    this.changes.stepStrm.subscribe(t => this.changes.step = t.value);
-  }
-
   selectBoolField(event: MatRadioChange) {
     this.boostate.current = event.source.value;
     this.onBoolFieldSelect(event.source.value);
@@ -173,25 +162,25 @@ export class DashLogicComponent implements AfterContentInit {
         this.boostrLab.next(this.boostate.required.label);
         this.boostrPlace.next(this.boostate.required.placeholder);
         this.boostrDesc.next(this.boostate.required.description);
-        this.booInput.nativeElement.value = this.changes.requiredRule;
+        this.changes.requiredStrm.pipe(first()).subscribe(rs => this.booInput.nativeElement.value = String(rs.value));
         break;
       case this.boolLabels[1]: //disabled
         this.boostrLab.next(this.boostate.disabled.label);
         this.boostrPlace.next(this.boostate.disabled.placeholder);
         this.boostrDesc.next(this.boostate.disabled.description);
-        this.booInput.nativeElement.value = this.changes.disabledRule;
+        this.changes.disabledStrm.pipe(first()).subscribe(ds => this.booInput.nativeElement.value = ds.value);
         break;    
       case this.boolLabels[2]: //hidden
         this.boostrLab.next(this.boostate.hidden.label);
         this.boostrPlace.next(this.boostate.hidden.placeholder);
         this.boostrDesc.next(this.boostate.hidden.description);
-        this.booInput.nativeElement.value = this.changes.hiddenRule;
+        this.changes.hiddenStrm.pipe(first()).subscribe(ds => this.booInput.nativeElement.value = ds.value);
         break;
       case this.boolLabels[3]: //readonly
         this.boostrLab.next(this.boostate.readonly.label);
         this.boostrPlace.next(this.boostate.readonly.placeholder);
         this.boostrDesc.next(this.boostate.readonly.description);
-        this.booInput.nativeElement.value = this.changes.readonlyRule;
+        this.changes.readonlyStrm.pipe(first()).subscribe(rs => this.booInput.nativeElement.value = rs.value);
         break;
       default:
         break;

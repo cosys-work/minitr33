@@ -53,9 +53,9 @@ export class FieldRefsStoreService extends ObservableStore<FieldContainer> {
 
   updateRefs() {
     const refs = this.graphStore.nodes.map(n => fieldRefs(
-      n.field.templateOptions.label ?? n.label, 
-      n.field.templateOptions.placeholder ?? n.tag, 
-      n.field.templateOptions.description ?? n.title, 
+      n.label ?? n.field.templateOptions.label, 
+      n.tag ?? n.field.templateOptions.placeholder, 
+      n.title ?? n.field.templateOptions.description, 
       n.field.type, 
       n.field.templateOptions.pattern,
       n.field.templateOptions.options,
@@ -71,6 +71,7 @@ export class FieldRefsStoreService extends ObservableStore<FieldContainer> {
       n.field.id,
     ));
     const cont = { refs };
+    console.log("orig ref", cont);
     this.setState(cont, Actions.INIT);
   }
 

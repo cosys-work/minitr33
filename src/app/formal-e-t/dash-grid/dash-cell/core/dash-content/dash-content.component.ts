@@ -1,5 +1,5 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { AfterContentInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipInputEvent } from '@angular/material/chips';
@@ -15,7 +15,7 @@ import { DashChangesService } from '../dash-changes.service';
   templateUrl: './dash-content.component.html',
   styleUrls: ['./dash-content.component.scss']
 })
-export class DashContentComponent implements AfterContentInit {
+export class DashContentComponent {
   inpControl = new FormControl('', Validators.required);
   // selectFormControl = new FormControl('');
 
@@ -124,18 +124,6 @@ export class DashContentComponent implements AfterContentInit {
       startWith(null),
       map((type: string | null) => type ? this._filter(type) : this.allTypes.slice())
     );
-  }
-
-  ngAfterContentInit(): void {
-    this.changes.labelStrm.subscribe(t => this.changes.label = t.value);
-    this.changes.descStrm.subscribe(t => this.changes.description = t.value);
-    this.changes.placeStrm.subscribe(t => this.changes.placeholder = t.value);
-    this.changes.idStrm.subscribe(t =>  this.changes.id = t.value);
-    
-    this.changes.typeStrm.subscribe(t =>  this.changes.type = t.value);
-    this.changes.optionsStrm.subscribe(t => this.changes.options = t.value);
-    this.changes.patternStrm.subscribe(t => this.changes.pattern = t.value);
-    this.changes.attributesStrm.subscribe(t => this.changes.attributes = t.value);
   }
 
   selectStrField(event: MatRadioChange) {
