@@ -1,0 +1,95 @@
+{
+  "configVersion": 1,
+  "timestamp": 1631962005749,
+  "index": "/minitr33/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "updateMode": "prefetch",
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
+      "urls": [
+        "/minitr33/267.b14c95a503a06b179be9.js",
+        "/minitr33/favicon.ico",
+        "/minitr33/index.html",
+        "/minitr33/main.d0cc872fd064d6255ec4.js",
+        "/minitr33/manifest.webmanifest",
+        "/minitr33/polyfills.0fae2bbde8615bba68c8.js",
+        "/minitr33/runtime.d0c465c603ee22c9a5c9.js",
+        "/minitr33/scripts.86000e955ce7599b82eb.js",
+        "/minitr33/styles.84f54bdaf64c7a10573c.css"
+      ],
+      "patterns": []
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
+      "urls": [
+        "/minitr33/assets/css/css2.css",
+        "/minitr33/assets/css/icon.css",
+        "/minitr33/assets/fonts/KFOlCnqEu92Fr1MmEU9fBBc4.woff2",
+        "/minitr33/assets/fonts/KFOmCnqEu92Fr1Mu4mxK.woff2",
+        "/minitr33/assets/fonts/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2",
+        "/minitr33/assets/icons/icon-128x128.png",
+        "/minitr33/assets/icons/icon-144x144.png",
+        "/minitr33/assets/icons/icon-152x152.png",
+        "/minitr33/assets/icons/icon-192x192.png",
+        "/minitr33/assets/icons/icon-384x384.png",
+        "/minitr33/assets/icons/icon-512x512.png",
+        "/minitr33/assets/icons/icon-72x72.png",
+        "/minitr33/assets/icons/icon-96x96.png"
+      ],
+      "patterns": []
+    }
+  ],
+  "dataGroups": [],
+  "hashTable": {
+    "/minitr33/267.b14c95a503a06b179be9.js": "22a09314eb52a90c8b27cce0313ef0ca539bbe03",
+    "/minitr33/assets/css/css2.css": "a9a337d942bf656770371bfb38f8605baa31aee2",
+    "/minitr33/assets/css/icon.css": "c697eb22ee5aa0e57470feec629d1247f44b5d34",
+    "/minitr33/assets/fonts/KFOlCnqEu92Fr1MmEU9fBBc4.woff2": "d836c7d4bc52bcd67626b8960ae030ad315c2507",
+    "/minitr33/assets/fonts/KFOmCnqEu92Fr1Mu4mxK.woff2": "106ac454ba4e503e0a1cd15e1275130918049182",
+    "/minitr33/assets/fonts/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2": "be9632119acce89bdb8d7fb0e6d90a6fe75b5a14",
+    "/minitr33/assets/icons/icon-128x128.png": "dae3b6ed49bdaf4327b92531d4b5b4a5d30c7532",
+    "/minitr33/assets/icons/icon-144x144.png": "b0bd89982e08f9bd2b642928f5391915b74799a7",
+    "/minitr33/assets/icons/icon-152x152.png": "7479a9477815dfd9668d60f8b3b2fba709b91310",
+    "/minitr33/assets/icons/icon-192x192.png": "1abd80d431a237a853ce38147d8c63752f10933b",
+    "/minitr33/assets/icons/icon-384x384.png": "329749cd6393768d3131ed6304c136b1ca05f2fd",
+    "/minitr33/assets/icons/icon-512x512.png": "559d9c4318b45a1f2b10596bbb4c960fe521dbcc",
+    "/minitr33/assets/icons/icon-72x72.png": "c457e56089a36952cd67156f9996bc4ce54a5ed9",
+    "/minitr33/assets/icons/icon-96x96.png": "3914125a4b445bf111c5627875fc190f560daa41",
+    "/minitr33/favicon.ico": "22f6a4a3bcaafafb0254e0f2fa4ceb89e505e8b2",
+    "/minitr33/index.html": "7569e1399f14050cdff0eede9cc0277bcd9b6977",
+    "/minitr33/main.d0cc872fd064d6255ec4.js": "48aeaaa18c0bb186f96ca97b68ae41563e880253",
+    "/minitr33/manifest.webmanifest": "21c332c4167f6381b21506e58bed411c2f8a012a",
+    "/minitr33/polyfills.0fae2bbde8615bba68c8.js": "0a26ed191fe16de1902b83bd9ddcaac796d1d885",
+    "/minitr33/runtime.d0c465c603ee22c9a5c9.js": "a038eff10648811499ae4ebbfa0a4c4c20e1b234",
+    "/minitr33/scripts.86000e955ce7599b82eb.js": "c37fb2445f32bcd0dc5e982cab2ab48f5bdccdba",
+    "/minitr33/styles.84f54bdaf64c7a10573c.css": "79fb826194f6e62949707faec4839d6153fbd4b7"
+  },
+  "navigationUrls": [
+    {
+      "positive": true,
+      "regex": "^\\/.*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*\\.[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*\\/.*$"
+    }
+  ],
+  "navigationRequestStrategy": "performance"
+}
