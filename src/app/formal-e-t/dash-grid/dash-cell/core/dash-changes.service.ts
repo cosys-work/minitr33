@@ -70,6 +70,15 @@ export class DashChangesService {
     return this.maxChanges.value.value;
   }
 
+  set maxRule(max: string) {
+    const maxField = fieldType(FieldId.max, max);
+    this.maxChanges ? this.maxChanges.next(maxField): this.maxChanges = new BehaviorSubject(maxField);
+  }
+
+  get maxRule(): string {
+    return this.maxChanges.value.value;
+  }
+
   //2
   set min(min: number) {
     const minField = fieldType(FieldId.min, min);
@@ -77,6 +86,15 @@ export class DashChangesService {
   }
 
   get min(): number {
+    return this.minChanges.value.value;
+  }
+
+  set minRule(min: string) {
+    const minField = fieldType(FieldId.min, min);
+    this.minChanges ? this.minChanges.next(minField): this.minChanges = new BehaviorSubject(minField);
+  }
+
+  get minRule(): string {
     return this.minChanges.value.value;
   }
 
@@ -140,6 +158,15 @@ export class DashChangesService {
     return this.requiredChanges.value.value;
   }
 
+  set requiredRule(required: string) {
+    const requiredField = fieldType(FieldId.required, required);
+    this.requiredChanges ? this.requiredChanges.next(requiredField): this.requiredChanges = new BehaviorSubject(requiredField);
+  }
+
+  get requiredRule(): string {
+    return this.requiredChanges.value.value;
+  }
+
   //9
   set disabled(disabled: boolean) {
     const disField = fieldType(FieldId.disabled, disabled);
@@ -147,6 +174,15 @@ export class DashChangesService {
   }
 
   get disabled(): boolean {
+    return this.disabledChanges.value.value;
+  }
+
+  set disabledRule(disabled: string) {
+    const disField = fieldType(FieldId.disabled, disabled);
+    this.disabledChanges ? this.disabledChanges.next(disField): this.disabledChanges = new BehaviorSubject(disField);
+  }
+
+  get disabledRule(): string {
     return this.disabledChanges.value.value;
   }
 
@@ -160,6 +196,15 @@ export class DashChangesService {
     return this.hiddenChanges.value.value;
   }
 
+  set hiddenRule(hidden: string) {
+    const hideField = fieldType(FieldId.max, hidden);
+    this.hiddenChanges ? this.hiddenChanges.next(hideField): this.hiddenChanges = new BehaviorSubject(hideField);
+  }
+
+  get hiddenRule(): string {
+    return this.hiddenChanges.value.value;
+  }
+
   //11
   set readonly(readonly: boolean) {
     const readonlyField = fieldType(FieldId.readonly, readonly);
@@ -169,6 +214,16 @@ export class DashChangesService {
   get readonly(): boolean {
     return this.readonlyChanges.value.value;
   }
+
+  set readonlyRule(readonly: string) {
+    const readonlyField = fieldType(FieldId.readonly, readonly);
+    this.readonlyChanges ? this.readonlyChanges.next(readonlyField): this.readonlyChanges = new BehaviorSubject(readonlyField);
+  }
+
+  get readonlyRule(): string {
+    return this.readonlyChanges.value.value;
+  }
+
 
   //12
   set tabindex(tabindex: number) {
@@ -180,6 +235,15 @@ export class DashChangesService {
     return this.tabindexChanges.value.value;
   }
 
+  set tabindexRule(tabindex: string) {
+    const tabindexField = fieldType(FieldId.tabindex, tabindex);
+    this.tabindexChanges ? this.tabindexChanges.next(tabindexField): this.tabindexChanges = new BehaviorSubject(tabindexField);
+  }
+
+  get tabindexRule(): string {
+    return this.tabindexChanges.value.value;
+  }
+
   //13
   set step(step: number) {
     const stepField = fieldType(FieldId.step, step);
@@ -187,6 +251,15 @@ export class DashChangesService {
   }
 
   get step(): number {
+    return this.stepChanges.value.value;
+  }
+
+  set stepRule(step: string) {
+    const stepField = fieldType(FieldId.step, step);
+    this.stepChanges ? this.stepChanges.next(stepField): this.stepChanges = new BehaviorSubject(stepField);
+  }
+
+  get stepRule(): string {
     return this.stepChanges.value.value;
   }
 

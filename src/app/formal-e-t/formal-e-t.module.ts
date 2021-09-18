@@ -16,6 +16,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { FormlyModule } from '@ngx-formly/core';
 import { FormlyMaterialModule } from '@ngx-formly/material';
 import { NgxGraphModule } from '@swimlane/ngx-graph';
@@ -78,6 +79,7 @@ const COMPS = [
     MatRadioModule,
     MatSelectModule,
     MatChipsModule,
+    MatSlideToggleModule,
     MatCommonModule,
     MatAutocompleteModule,
     SharedModule,

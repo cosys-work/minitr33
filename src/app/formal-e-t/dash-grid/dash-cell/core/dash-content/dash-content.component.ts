@@ -60,25 +60,21 @@ export class DashContentComponent implements AfterViewInit {
       label: "Label",
       placeholder: "Eg: First Name",
       description: "Short Name of the Field",
-      value: ""
     },
     placeholder: {
       label: "Placeholder",
       placeholder: "Eg: John Doe",
       description: "Simple example value",
-      value: ""
     },
     description: {
       label: "Description",
       placeholder: "Eg: Please fill in your first name",
       description: "Some hints about the field",
-      value: ""
     },
     id: {
       label: "Id",
       placeholder: "Eg: 42",
       description: "A unique hidden id",
-      value: ""
     }
   }
 
@@ -88,32 +84,33 @@ export class DashContentComponent implements AfterViewInit {
       label: "Type",
       placeholder: "Input",
       description: "Type of the field",
-      value: ""
     },
     options: {
       label: "Options",
       placeholder: "Select options",
       description: "Add options for the field",
-      value: ""
     },
     pattern: {
       label: "Pattern",
       placeholder: "Regex",
       description: "Add a regex pattern",
-      value: ""
     },
     attributes: {
       label: "Attributes",
       placeholder: "Special fields",
       description: "Special attributes go here",
-      value: ""
     }
   }
   
   strLab = new BehaviorSubject(this.state.label.label);
   strPlace = new BehaviorSubject(this.state.label.placeholder);
   strDesc = new BehaviorSubject(this.state.label.description);
-  strId = new BehaviorSubject(this.state.label.label);
+
+  ostrLab = new BehaviorSubject(this.optState.type.label);
+  ostrPlace = new BehaviorSubject(this.optState.type.placeholder);
+  ostrDesc = new BehaviorSubject(this.optState.type.description);
+
+
   
   filteredTypes: Observable<string[]>;
   type = 'input';
@@ -130,15 +127,15 @@ export class DashContentComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.changes.labelStrm.subscribe(t => this.state.label.value = t.value);
-    this.changes.descStrm.subscribe(t => this.state.description.value = t.value);
-    this.changes.placeStrm.subscribe(t => this.state.placeholder.value = t.value);
-    this.changes.idStrm.subscribe(t =>  this.state.id.value = t.value);
+    this.changes.labelStrm.subscribe(t => this.changes.label = t.value);
+    this.changes.descStrm.subscribe(t => this.changes.description = t.value);
+    this.changes.placeStrm.subscribe(t => this.changes.placeholder = t.value);
+    this.changes.idStrm.subscribe(t =>  this.changes.id = t.value);
     
-    this.changes.typeStrm.subscribe(t =>  this.optState.type.value = t.value);
-    this.changes.optionsStrm.subscribe(t => this.optState.options.value = t.value);
-    this.changes.patternStrm.subscribe(t => this.optState.pattern.value = t.value);
-    this.changes.attributesStrm.subscribe(t => this.optState.attributes.value = t.value);
+    this.changes.typeStrm.subscribe(t =>  this.changes.type = t.value);
+    this.changes.optionsStrm.subscribe(t => this.changes.options = t.value);
+    this.changes.patternStrm.subscribe(t => this.changes.pattern = t.value);
+    this.changes.attributesStrm.subscribe(t => this.changes.attributes = t.value);
   }
 
   selectStrField(event: MatRadioChange) {
@@ -173,10 +170,44 @@ export class DashContentComponent implements AfterViewInit {
     }
   }
 
-  onTypeChange(changed: string) {
-    switch (this.state.current) {
+  selectOptField(event: MatRadioChange) {
+    console.log("selected opt", event);
+    this.optState.current = event.source.value;
+    switch (this.optState.current) {
       case "type":
-        this.changes.label = changed;
+        this.ostrLab.next(this.optState.type.label);
+        this.ostrPlace.next(this.optState.type.placeholder);
+        this.ostrDesc.next(this.optState.type.description);
+        // this.maInput.nativeElement.value = this.changes.label ?? "";
+        break;
+      case "options":
+        this.ostrLab.next(this.optState.options.label);
+        this.ostrPlace.next(this.optState.options.placeholder);
+        this.ostrDesc.next(this.optState.options.description);
+        // this.maInput.nativeElement.value = this.changes.placeholder ?? "";
+        break;      
+      case "pattern":
+        this.ostrLab.next(this.optState.pattern.label);
+        this.ostrPlace.next(this.optState.pattern.placeholder);
+        this.ostrDesc.next(this.optState.pattern.description);
+        // this.maInput.nativeElement.value = this.changes.description ?? "";
+        break;
+      case "attributes":
+        this.ostrLab.next(this.optState.attributes.label);
+        this.ostrPlace.next(this.optState.attributes.placeholder);
+        this.ostrDesc.next(this.optState.attributes.description);
+        // this.maInput.nativeElement.value = this.changes.id ?? "";
+        break;
+      default:
+        break;
+    }
+  }
+
+  onTypeChange(changed: string) {
+    console.log("changed", changed);
+    switch (this.optState.current) {
+      case "type":
+        this.changes.type = changed;
         break;
       case "options":
         this.changes.options = changed.split(",");
