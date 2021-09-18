@@ -21,13 +21,21 @@ export class DashChangesService {
 
   private minChanges!: BehaviorSubject<FieldType>;
   private maxChanges!: BehaviorSubject<FieldType>;
-
   private requiredChanges!: BehaviorSubject<FieldType>;
   private disabledChanges!: BehaviorSubject<FieldType>;
   private hiddenChanges!: BehaviorSubject<FieldType>;
   private readonlyChanges!: BehaviorSubject<FieldType>;
   private tabindexChanges!: BehaviorSubject<FieldType>;
   private stepChanges!: BehaviorSubject<FieldType>;
+
+  private minRuleChanges!: BehaviorSubject<FieldType>;
+  private maxRuleChanges!: BehaviorSubject<FieldType>;
+  private requiredRuleChanges!: BehaviorSubject<FieldType>;
+  private disabledRuleChanges!: BehaviorSubject<FieldType>;
+  private hiddenRuleChanges!: BehaviorSubject<FieldType>;
+  private readonlyRuleChanges!: BehaviorSubject<FieldType>;
+  private tabindexRuleChanges!: BehaviorSubject<FieldType>;
+  private stepRuleChanges!: BehaviorSubject<FieldType>;
 
   constructor(
     private fieldRefsStore: FieldRefsStoreService,
@@ -72,11 +80,11 @@ export class DashChangesService {
 
   set maxRule(max: string) {
     const maxField = fieldType(FieldId.max, max);
-    this.maxChanges ? this.maxChanges.next(maxField): this.maxChanges = new BehaviorSubject(maxField);
+    this.maxRuleChanges ? this.maxRuleChanges.next(maxField): this.maxRuleChanges = new BehaviorSubject(maxField);
   }
 
   get maxRule(): string {
-    return this.maxChanges.value.value;
+    return this.maxRuleChanges.value.value;
   }
 
   //2
@@ -91,11 +99,11 @@ export class DashChangesService {
 
   set minRule(min: string) {
     const minField = fieldType(FieldId.min, min);
-    this.minChanges ? this.minChanges.next(minField): this.minChanges = new BehaviorSubject(minField);
+    this.minRuleChanges ? this.minRuleChanges.next(minField): this.minRuleChanges = new BehaviorSubject(minField);
   }
 
   get minRule(): string {
-    return this.minChanges.value.value;
+    return this.minRuleChanges.value.value;
   }
 
   //3
@@ -160,11 +168,11 @@ export class DashChangesService {
 
   set requiredRule(required: string) {
     const requiredField = fieldType(FieldId.required, required);
-    this.requiredChanges ? this.requiredChanges.next(requiredField): this.requiredChanges = new BehaviorSubject(requiredField);
+    this.requiredRuleChanges ? this.requiredRuleChanges.next(requiredField): this.requiredRuleChanges = new BehaviorSubject(requiredField);
   }
 
   get requiredRule(): string {
-    return this.requiredChanges.value.value;
+    return this.requiredRuleChanges.value.value;
   }
 
   //9
@@ -179,11 +187,11 @@ export class DashChangesService {
 
   set disabledRule(disabled: string) {
     const disField = fieldType(FieldId.disabled, disabled);
-    this.disabledChanges ? this.disabledChanges.next(disField): this.disabledChanges = new BehaviorSubject(disField);
+    this.disabledRuleChanges ? this.disabledRuleChanges.next(disField): this.disabledRuleChanges = new BehaviorSubject(disField);
   }
 
   get disabledRule(): string {
-    return this.disabledChanges.value.value;
+    return this.disabledRuleChanges.value.value;
   }
 
   //10
@@ -198,11 +206,11 @@ export class DashChangesService {
 
   set hiddenRule(hidden: string) {
     const hideField = fieldType(FieldId.max, hidden);
-    this.hiddenChanges ? this.hiddenChanges.next(hideField): this.hiddenChanges = new BehaviorSubject(hideField);
+    this.hiddenRuleChanges ? this.hiddenRuleChanges.next(hideField): this.hiddenRuleChanges = new BehaviorSubject(hideField);
   }
 
   get hiddenRule(): string {
-    return this.hiddenChanges.value.value;
+    return this.hiddenRuleChanges.value.value;
   }
 
   //11
@@ -217,11 +225,11 @@ export class DashChangesService {
 
   set readonlyRule(readonly: string) {
     const readonlyField = fieldType(FieldId.readonly, readonly);
-    this.readonlyChanges ? this.readonlyChanges.next(readonlyField): this.readonlyChanges = new BehaviorSubject(readonlyField);
+    this.readonlyRuleChanges ? this.readonlyRuleChanges.next(readonlyField): this.readonlyRuleChanges = new BehaviorSubject(readonlyField);
   }
 
   get readonlyRule(): string {
-    return this.readonlyChanges.value.value;
+    return this.readonlyRuleChanges.value.value;
   }
 
 
@@ -237,11 +245,11 @@ export class DashChangesService {
 
   set tabindexRule(tabindex: string) {
     const tabindexField = fieldType(FieldId.tabindex, tabindex);
-    this.tabindexChanges ? this.tabindexChanges.next(tabindexField): this.tabindexChanges = new BehaviorSubject(tabindexField);
+    this.tabindexRuleChanges ? this.tabindexRuleChanges.next(tabindexField): this.tabindexRuleChanges = new BehaviorSubject(tabindexField);
   }
 
   get tabindexRule(): string {
-    return this.tabindexChanges.value.value;
+    return this.tabindexRuleChanges.value.value;
   }
 
   //13
@@ -256,11 +264,11 @@ export class DashChangesService {
 
   set stepRule(step: string) {
     const stepField = fieldType(FieldId.step, step);
-    this.stepChanges ? this.stepChanges.next(stepField): this.stepChanges = new BehaviorSubject(stepField);
+    this.stepRuleChanges ? this.stepRuleChanges.next(stepField): this.stepRuleChanges = new BehaviorSubject(stepField);
   }
 
   get stepRule(): string {
-    return this.stepChanges.value.value;
+    return this.stepRuleChanges.value.value;
   }
 
   //14

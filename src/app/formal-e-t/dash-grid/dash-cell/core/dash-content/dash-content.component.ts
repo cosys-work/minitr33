@@ -1,5 +1,5 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { AfterContentInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipInputEvent } from '@angular/material/chips';
@@ -15,7 +15,7 @@ import { DashChangesService } from '../dash-changes.service';
   templateUrl: './dash-content.component.html',
   styleUrls: ['./dash-content.component.scss']
 })
-export class DashContentComponent implements AfterViewInit {
+export class DashContentComponent implements AfterContentInit {
   inpControl = new FormControl('', Validators.required);
   // selectFormControl = new FormControl('');
 
@@ -126,7 +126,7 @@ export class DashContentComponent implements AfterViewInit {
     );
   }
 
-  ngAfterViewInit(): void {
+  ngAfterContentInit(): void {
     this.changes.labelStrm.subscribe(t => this.changes.label = t.value);
     this.changes.descStrm.subscribe(t => this.changes.description = t.value);
     this.changes.placeStrm.subscribe(t => this.changes.placeholder = t.value);
@@ -225,6 +225,7 @@ export class DashContentComponent implements AfterViewInit {
   };
 
   onInpChange(changed: string) {
+    console.log("firing inp change first", changed, this.state.current);
     switch (this.state.current) {
       case "label":
         this.changes.label = changed;

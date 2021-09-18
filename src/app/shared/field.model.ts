@@ -192,11 +192,22 @@ export enum FieldId {
   hidden = "hidden",
   readonly = "readonly",
 
+  requiredRule = "requiredRule",
+  disabledRule = "disabledRule",
+  hiddenRule = "hiddenRule",
+  readonlyRule = "readonlyRule",
+
   tabindex = "tabindex",
   step = "step",
-
   min = "min",
   max = "max",
+
+  tabindexRule = "tabindexRule",
+  stepRule = "stepRule",
+  minRule = "minRule",
+  maxRule = "maxRule",
+
+  
   pattern = "pattern",
   options = "options",
   attributes = "attributes"

@@ -89,9 +89,9 @@ export class DashPreviewComponent implements AfterViewInit {
   }
 
   updateWhenContentUpdates() {
-    merge(this.cursorStore.current, this.changes.stream).subscribe((a) => {
-      this.cursor = typeof a === 'number' ? a : this.cursor;
-      this.change = typeof a !== 'number' ? a : this.change;
+    
+    this.changes.stream.subscribe((a) => {
+      this.change = a;
 
       if (this.change?.id && this.cursor < this.fieldGroup.length) {
         switch (this.change.id) {
