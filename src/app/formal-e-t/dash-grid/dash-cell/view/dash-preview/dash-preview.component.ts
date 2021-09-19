@@ -5,7 +5,7 @@ import {FormalField} from 'src/app/shared/shared.model';
 import {FormCursorStoreService} from 'src/app/store/form-cursor-store.service';
 import {GrafStore} from 'src/app/store/graf-store.service';
 import {DashChangesService} from '../../core/dash-changes.service';
-import {FullTemplate} from "../../../../../shared/field.model";
+import {FieldRefsAddons} from "../../../../../shared/field.model";
 
 const keyMaker = (key: string) => {
   return key.trim().toLowerCase().replace(/ /g, '_');
@@ -85,98 +85,105 @@ export class DashPreviewComponent implements AfterViewInit, OnDestroy {
     this.fields = [...this.fields];
   }
 
-  tOptUpdater(opt: keyof FullTemplate, val: any) {
-    this.fieldGroup[this.cursor].templateOptions[opt] = val;
+  tOptRuleUpdater(opt: keyof FieldRefsAddons, val: any) {
+
+    if (this?.fieldGroup[this.cursor]?.validation && this?.fieldGroup[this.cursor]?.validation[opt]) {
+      this.fieldGroup[this.cursor].validation[opt] = val;
+    }
+    this.updater();
+  }
+
+  updater() {
     this.field.fieldGroup[this.cursor] = this.fieldGroup[this.cursor];
     this.fields = [...this.fields];
   }
 
   updateWhenContentUpdates() {
     this.changes.get.labelStream.subscribe(l => {
-      this.tOptUpdater("label", l.value);
+      this.fieldGroup[this.cursor].templateOptions.label = l.value;
       this.fieldGroup[this.cursor].key = keyMaker(l.value);
     });
 
     this.changes.get.typeStream.subscribe(t => {
-      this.tOptUpdater("type", t.value.trim().toLowerCase())
+      this.fieldGroup[this.cursor].templateOptions.type = t.value.trim().toLowerCase();
     });
 
     this.changes.get.placeholderStream.subscribe((p) => {
-      this.tOptUpdater("placeholder", p.value.trim());
+      this.fieldGroup[this.cursor].templateOptions.placeholder = p.value.trim();
     });
 
     this.changes.get.descriptionStream.subscribe((p) => {
-      this.tOptUpdater("description", p.value.trim());
+      this.fieldGroup[this.cursor].templateOptions.description = p.value.trim();
     });
 
     this.changes.get.optionsStream.subscribe((p) => {
-      this.tOptUpdater("options", p.value);
+      this.fieldGroup[this.cursor].templateOptions.options = p.value;
     });
 
     this.changes.get.attributesStream.subscribe((p) => {
-      this.tOptUpdater("attributes", p.value);
+      this.fieldGroup[this.cursor].templateOptions.attributes = p.value;
     });
 
     this.changes.get.patternStream.subscribe((p) => {
-      this.tOptUpdater("pattern", p.value);
+      this.fieldGroup[this.cursor].templateOptions.pattern = p.value;
     });
 
 
     this.changes.get.hiddenStream.subscribe((p) => {
-      this.tOptUpdater("hidden", p.value);
+      this.fieldGroup[this.cursor].templateOptions.hidden = p.value;
     });
     this.changes.get.readonlyStream.subscribe((p) => {
-      this.tOptUpdater("readonly", p.value);
+      this.fieldGroup[this.cursor].templateOptions.readonly = p.value;
     });
     this.changes.get.requiredStream.subscribe((p) => {
-      this.tOptUpdater("required", p.value);
+      this.fieldGroup[this.cursor].templateOptions.required = p.value;
     });
     this.changes.get.disabledStream.subscribe((a) => {
-      this.tOptUpdater("disabled", a.value);
+      this.fieldGroup[this.cursor].templateOptions.disabled = a.value;
     });
 
     this.changes.get.maxStream.subscribe((p) => {
-      this.tOptUpdater("max", p.value);
-      this.tOptUpdater("maxLength", p.value);
+      this.fieldGroup[this.cursor].templateOptions.max = p.value;
+      this.fieldGroup[this.cursor].templateOptions.maxLength = p.value;
     });
     this.changes.get.minStream.subscribe((p) => {
-      this.tOptUpdater("min", p.value);
-      this.tOptUpdater("minLength", p.value);
+      this.fieldGroup[this.cursor].templateOptions.min = p.value;
+      this.fieldGroup[this.cursor].templateOptions.minLength = p.value;
     });
     this.changes.get.stepStream.subscribe((p) => {
-      this.tOptUpdater("step", p.value);
-      this.tOptUpdater("rows", p.value);
-      this.tOptUpdater("cols", p.value);
+      this.fieldGroup[this.cursor].templateOptions.step = p.value;
+      this.fieldGroup[this.cursor].templateOptions.rows = p.value;
+      this.fieldGroup[this.cursor].templateOptions.cols = p.value;
     });
     this.changes.get.tabindexStream.subscribe((p) => {
-      this.tOptUpdater("tabindex", p.value);
+      this.fieldGroup[this.cursor].templateOptions.tabindex = p.value;
     });
 
 
     this.changes.get.hiddenRuleStream.subscribe((p) => {
-      this.tOptUpdater("hiddenRule", p.value);
+      this.tOptRuleUpdater("hiddenRule", p.value);
     });
     this.changes.get.readonlyRuleStream.subscribe((p) => {
-      this.tOptUpdater("readonlyRule", p.value);
+      this.tOptRuleUpdater("readonlyRule", p.value);
     });
     this.changes.get.requiredRuleStream.subscribe((p) => {
-      this.tOptUpdater("requiredRule", p.value);
+      this.tOptRuleUpdater("requiredRule", p.value);
     });
     this.changes.get.disabledRuleStream.subscribe((a) => {
-      this.tOptUpdater("disabledRule", a.value);
+      this.tOptRuleUpdater("disabledRule", a.value);
     });
 
     this.changes.get.maxRuleStream.subscribe((p) => {
-      this.tOptUpdater("maxRule", p.value);
+      this.tOptRuleUpdater("maxRule", p.value);
     });
     this.changes.get.minRuleStream.subscribe((p) => {
-      this.tOptUpdater("minRule", p.value);
+      this.tOptRuleUpdater("minRule", p.value);
     });
     this.changes.get.stepRuleStream.subscribe((p) => {
-      this.tOptUpdater("stepRule", p.value);
+      this.tOptRuleUpdater("stepRule", p.value);
     });
     this.changes.get.tabindexRuleStream.subscribe((p) => {
-      this.tOptUpdater("tabindexRule", p.value);
+      this.tOptRuleUpdater("tabindexRule", p.value);
     });
   }
 

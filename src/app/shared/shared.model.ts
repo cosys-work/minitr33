@@ -1,5 +1,6 @@
 import {FormlyFieldConfig} from '@ngx-formly/core';
 import {Observable} from 'rxjs';
+import {FieldRefsAddons} from "./field.model";
 
 export interface TemplateOptions {
   type: string; //1
@@ -38,23 +39,13 @@ export interface FormalField {
   className: string;
   id: string;
   templateOptions: TemplateOptions;
-  validation?: {
+  validation: {
     messages?: {
       [messageProperties: string]: ValidationMessageOption['message'];
     };
     show?: boolean;
 
-    hiddenRule: string;
-    requiredRule: string;
-    disabledRule: string;
-    readonlyRule: string;
-
-    minRule: string;
-    maxRule: string;
-    stepRule: string;
-    tabindexRule: string;
-
     [additionalProperties: string]: any;
-  };
+  } & FieldRefsAddons ;
   jump?: FormalField | FormalField[];
 }
