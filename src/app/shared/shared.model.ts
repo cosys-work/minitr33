@@ -1,47 +1,49 @@
-import { FormlyFieldConfig } from "@ngx-formly/core";
-import { Observable } from "rxjs";
+import {FormlyFieldConfig} from '@ngx-formly/core';
+import {Observable} from 'rxjs';
 
 export interface TemplateOptions {
-    type: string;
-    label: string;
-    placeholder: string;
-    disabled: boolean;
-    options: any[];
-    rows: number;
-    cols: number;
-    description: string;
-    hidden: boolean;
-    max: number;
-    min: number;
-    minLength: number;
-    maxLength: number;
-    pattern: string | RegExp;
-    required: boolean;
-    tabindex: number;
-    readonly: boolean;
-    attributes: {
-        [key: string]: string | number;
-    };
-    step: number;
+  type: string; //1
+  label: string; //2
+  placeholder: string; //3
+  disabled: boolean | undefined; //4
+  options: any[]; //5
+  rows: number; //6
+  cols: number; //7
+  description: string; //8
+  hidden: boolean | undefined; //9
+  max: number | undefined; //10
+  min: number | undefined; //11
+  minLength: number | undefined; //12
+  maxLength: number | undefined; //13
+  pattern: string | RegExp; //14
+  required: boolean | undefined; //15
+  tabindex: number; //16
+  readonly: boolean | undefined; //17
+  attributes: { //18
+    [key: string]: string | number;
+  };
+  step: number; //19
 }
 
 export interface ValidationMessageOption {
-    name: string;
-    message: string | ((error: any, field: FormlyFieldConfig) => string | Observable<string>);
+  name: string;
+  message:
+    | string
+    | ((error: any, field: FormlyFieldConfig) => string | Observable<string>);
 }
 
 export interface FormalField {
-    key: string,
-    type: string,
-    className: string,
-    id: string,
-    templateOptions: TemplateOptions;
-    validation?: {
-        messages?: {
-            [messageProperties: string]: ValidationMessageOption['message'];
-        };
-        show?: boolean;
-        [additionalProperties: string]: any;
+  key: string;
+  type: string;
+  className: string;
+  id: string;
+  templateOptions: TemplateOptions;
+  validation?: {
+    messages?: {
+      [messageProperties: string]: ValidationMessageOption['message'];
     };
-    jump?: FormalField | FormalField[];
+    show?: boolean;
+    [additionalProperties: string]: any;
+  };
+  jump?: FormalField | FormalField[];
 }

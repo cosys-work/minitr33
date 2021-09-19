@@ -1,4 +1,4 @@
-import { AfterViewInit, Component } from '@angular/core';
+import {AfterViewInit, Component, OnDestroy} from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { FormalField } from 'src/app/shared/shared.model';
@@ -15,7 +15,7 @@ const keyMaker = (key: string) => {
   templateUrl: './dash-preview.component.html',
   styleUrls: ['./dash-preview.component.scss'],
 })
-export class DashPreviewComponent implements AfterViewInit {
+export class DashPreviewComponent implements AfterViewInit, OnDestroy {
   form = new FormGroup({});
   model = {};
 
@@ -57,8 +57,6 @@ export class DashPreviewComponent implements AfterViewInit {
         feld[c].style.boxShadow =
           '0 -5px 3px -3px purple, 0 5px 3px -3px purple';
       }
-
-      const feld = fields();
       setTimeout(updateFieldMarker, 250);
     });
   }
@@ -76,12 +74,10 @@ export class DashPreviewComponent implements AfterViewInit {
     this.fieldGroup.forEach((_, i) => {
       const cur = this.grafStore.nodes[i].field;
       this.fieldGroup[i].type = cur.type.toLowerCase();
-      this.fieldGroup[i].templateOptions.label = cur.key;
       this.fieldGroup[i].key = keyMaker(cur.key);
-      this.fieldGroup[i].templateOptions.placeholder =
-        cur.templateOptions.placeholder;
-      this.fieldGroup[i].templateOptions.description =
-        cur.templateOptions.description;
+      this.fieldGroup[i].templateOptions = cur.templateOptions;
+      this.fieldGroup[i].id = cur.id;
+      this.fieldGroup[i].className = cur.className;
     });
     this.field.fieldGroup = this.fieldGroup;
     this.fields = [...this.fields];
@@ -89,21 +85,19 @@ export class DashPreviewComponent implements AfterViewInit {
 
   updateWhenContentUpdates() {
     console.log('outside the changer', this.cursor, this.change.id);
-    
-      this.changes.labelStrm.subscribe(l => {
+
+      this.changes.get.labelStream.subscribe(l => {
         this.fieldGroup[this.cursor].templateOptions.label = l.value;
         this.fieldGroup[this.cursor].key = keyMaker(l.value);
         console.log('inside the label changer', this.cursor, this.change.id, l.value);
       });
 
-      this.changes.typeStrm.subscribe(t => {
-        this.fieldGroup[this.cursor].type = t.value
-          .trim()
-          .toLowerCase();
+      this.changes.get.typeStream.subscribe(t => {
+        this.fieldGroup[this.cursor].type = t.value.trim().toLowerCase();
         console.log('inside the type changer', this.cursor, this.change.id, t.value);
       });
 
-      this.changes.placeStrm.subscribe((p) => {
+      this.changes.get.placeStream.subscribe((p) => {
         this.fieldGroup[this.cursor].templateOptions.placeholder =
           p.value.trim();
         console.log(
@@ -114,7 +108,7 @@ export class DashPreviewComponent implements AfterViewInit {
         );
       });
 
-      this.changes.descStrm.subscribe((p) => {
+      this.changes.get.descStream.subscribe((p) => {
         this.fieldGroup[this.cursor].templateOptions.description =
           p.value.trim();
         console.log(
@@ -125,7 +119,7 @@ export class DashPreviewComponent implements AfterViewInit {
         );
       });
 
-      this.changes.hiddenStrm.subscribe((p) => {
+      this.changes.get.hiddenStream.subscribe((p) => {
         this.fieldGroup[this.cursor].templateOptions.hidden = p.value;
         console.log(
           'inside the hidden changer',
@@ -135,7 +129,7 @@ export class DashPreviewComponent implements AfterViewInit {
         );
       });
 
-      this.changes.readonlyStrm.subscribe((p) => {
+      this.changes.get.readonlyStream.subscribe((p) => {
         console.log(
           'inside the readonly changer',
           this.cursor,
@@ -146,7 +140,7 @@ export class DashPreviewComponent implements AfterViewInit {
           p.value;
       });
 
-      this.changes.maxStrm.subscribe((p) => {
+      this.changes.get.maxStream.subscribe((p) => {
         this.fieldGroup[this.cursor].templateOptions.max = p.value;
         this.fieldGroup[this.cursor].templateOptions.maxLength =
           this.change.value;
@@ -158,20 +152,20 @@ export class DashPreviewComponent implements AfterViewInit {
         );
       });
 
-      this.changes.minStrm.subscribe((p) => {
+      this.changes.get.minStream.subscribe((p) => {
         this.fieldGroup[this.cursor].templateOptions.min = p.value;
         this.fieldGroup[this.cursor].templateOptions.minLength =
           this.change.value;
         console.log('inside the min changer', this.cursor, this.change.id, p.value);
       });
 
-      this.changes.optionsStrm.subscribe((p) => {
+      this.changes.get.optionsStream.subscribe((p) => {
         this.fieldGroup[this.cursor].templateOptions.options =
           p.value;
         console.log('inside the options changer', this.cursor, this.change.id, p.value);
       });
 
-      this.changes.attributesStrm.subscribe((p) => {
+      this.changes.get.attributesStream.subscribe((p) => {
         this.fieldGroup[this.cursor].templateOptions.attributes =
           p.value;
         console.log(
@@ -182,24 +176,24 @@ export class DashPreviewComponent implements AfterViewInit {
         );
       });
 
-      this.changes.patternStrm.subscribe((p) => {
+      this.changes.get.patternStream.subscribe((p) => {
         this.fieldGroup[this.cursor].templateOptions.pattern =
           p.value;
         console.log('inside the pattern changer', this.cursor, this.change.id, p.value);
       });
 
-      this.changes.stepStrm.subscribe((p) => {
+      this.changes.get.stepStream.subscribe((p) => {
         this.fieldGroup[this.cursor].templateOptions.step = p.value;
         console.log('inside the step changer', this.cursor, this.change.id, p.value);
       });
 
-      this.changes.tabindexStrm.subscribe((p) => {
+      this.changes.get.tabindexStream.subscribe((p) => {
         this.fieldGroup[this.cursor].templateOptions.tabindex =
           p.value;
         console.log('inside the tabindex changer', this.cursor, p.value);
       });
 
-      this.changes.requiredStrm.subscribe((p) => {
+      this.changes.get.requiredStream.subscribe((p) => {
         this.fieldGroup[this.cursor].templateOptions.required =
           p.value;
         console.log(
@@ -210,7 +204,7 @@ export class DashPreviewComponent implements AfterViewInit {
         );
       });
 
-      this.changes.disabledStrm.subscribe((a) => {
+      this.changes.get.disabledStream.subscribe((a) => {
         this.fieldGroup[this.cursor].templateOptions.disabled =
           a.value;
         console.log(
@@ -223,10 +217,13 @@ export class DashPreviewComponent implements AfterViewInit {
 
       this.field.fieldGroup[this.cursor] = this.fieldGroup[this.cursor];
       this.fields = [...this.fields];
-    
+
   }
 
   onSubmit(model: any) {
     console.log(model, model === this.model, this.model);
+  }
+
+  ngOnDestroy(): void {
   }
 }

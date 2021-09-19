@@ -23,12 +23,12 @@ export class FieldRefsStoreService extends ObservableStore<FieldContainer> {
   constructor(
     private graphStore: GrafStore,
     private cursorStore: FormCursorStoreService
-  ) { 
+  ) {
     super({trackStateHistory: true});
 
     merge(
       this.graphStore.rxtiv(),
-      this.cursorStore.rxtiv()  
+      this.cursorStore.rxtiv()
     ).subscribe(_ => {
       this.updateRefs();
     })
@@ -53,18 +53,18 @@ export class FieldRefsStoreService extends ObservableStore<FieldContainer> {
 
   updateRefs() {
     const refs = this.graphStore.nodes.map(n => fieldRefs(
-      n.label ?? n.field.templateOptions.label, 
-      n.tag ?? n.field.templateOptions.placeholder, 
-      n.title ?? n.field.templateOptions.description, 
-      n.field.type, 
+      n.label ?? n.field.templateOptions.label,
+      n.tag ?? n.field.templateOptions.placeholder,
+      n.title ?? n.field.templateOptions.description,
+      n.field.type,
       n.field.templateOptions.pattern,
       n.field.templateOptions.options,
       n.field.templateOptions.attributes,
+      n.field.templateOptions.tabindex,
       n.field.templateOptions.required,
       n.field.templateOptions.disabled,
       n.field.templateOptions.hidden,
       n.field.templateOptions.readonly,
-      n.field.templateOptions.tabindex,
       n.field.templateOptions.max,
       n.field.templateOptions.min,
       n.field.templateOptions.step,

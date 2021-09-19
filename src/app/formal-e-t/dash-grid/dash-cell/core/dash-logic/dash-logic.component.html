@@ -6,7 +6,7 @@
         (change)="selectBoolField($event)"
       >
         <mat-radio-button
-          *ngFor="let labeled of boolLabels"
+          *ngFor="let labeled of booLabels"
           class="example-margin"
           [value]="labeled"
           [checked]="labeled === 'required'"
@@ -20,7 +20,7 @@
         class="comfy"
         formControlName="enableReq"
         (change)="onBoolReqChange($event)"
-        *ngIf="boostate.current === 'required'"
+        *ngIf="booState.current === 'required'"
       >
         <span class="saano">Required?</span>
       </mat-slide-toggle>
@@ -29,7 +29,7 @@
         class="comfy"
         formControlName="enableDis"
         (change)="onBoolDisChange($event)"
-        *ngIf="boostate.current === 'disabled'"
+        *ngIf="booState.current === 'disabled'"
       >
         <span class="saano">Disabled?</span>
       </mat-slide-toggle>
@@ -38,7 +38,7 @@
         class="comfy"
         formControlName="enableHid"
         (change)="onBoolHidChange($event)"
-        *ngIf="boostate.current === 'hidden'"
+        *ngIf="booState.current === 'hidden'"
       >
         <span class="saano">Hidden?</span>
       </mat-slide-toggle>
@@ -47,23 +47,23 @@
         class="comfy"
         formControlName="enableRead"
         (change)="onBoolReadChange($event)"
-        *ngIf="boostate.current === 'readonly'"
+        *ngIf="booState.current === 'readonly'"
       >
         <span class="saano">Readonly?</span>
       </mat-slide-toggle>
 
       <mat-form-field class="three-quart-width" appearance="standard">
-        <mat-label>{{ boostrLab | async }}</mat-label>
+        <mat-label>{{ booStrLab | async }}</mat-label>
         <input
           matInput
           type="text"
-          [placeholder]="(boostrPlace | async)!"
+          [placeholder]="(booStrPlace | async)!"
           [formControl]="keyCtrl"
           #booInput
           (keyup)="onBooTextChange(booInput.value)"
         />
         <mat-icon matSuffix>vpn_key</mat-icon>
-        <mat-hint>{{ boostrDesc | async }}</mat-hint>
+        <mat-hint>{{ booStrDesc | async }}</mat-hint>
       </mat-form-field>
     </mat-grid-tile>
     <mat-grid-tile fxLayout="row" fxLayoutAlign="start center">
@@ -99,7 +99,7 @@
           [placeholder]="'Eg: ref + logic ' + (strPlace | async)!"
           [formControl]="keyCtrl"
           #rulInput
-          (keyup)="onNumFieldRuleChange(rulInput.value)"
+          (keyup)="onNumFieldChange(rulInput.value, true)"
         />
         <mat-icon matSuffix>vpn_key</mat-icon>
         <mat-hint> When is this {{ strDesc | async | lowercase }} applicable?</mat-hint>

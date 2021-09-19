@@ -1,37 +1,20 @@
-import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { AfterContentInit, ChangeDetectionStrategy, Component, ElementRef, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { MatRadioChange } from '@angular/material/radio';
-import { MatSlideToggleChange } from '@angular/material/slide-toggle';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { first } from 'rxjs/operators';
-import { DashChangesService } from '../dash-changes.service';
-
-export type BooTyped = "required" | "disabled" | "hidden" | "readonly";
-
-export type NumTyped = "tabindex" | "maximum" | "minimum" | "step";
-
-export interface FieldEssentials {
-  label: string;
-  placeholder: string;
-  description: string;
-}
-
-export interface BooTyper {
-  current: BooTyped;
-  required: FieldEssentials;
-  disabled: FieldEssentials;
-  hidden: FieldEssentials;
-  readonly: FieldEssentials;
-}
-
-export interface NumTyper {
-  current: NumTyped;
-  tabindex: FieldEssentials;
-  maximum: FieldEssentials;
-  minimum: FieldEssentials;
-  step: FieldEssentials;
-}
+import {ChangeDetectionStrategy, Component, ElementRef, ViewChild} from '@angular/core';
+import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
+import {MatRadioChange} from '@angular/material/radio';
+import {MatSlideToggleChange} from '@angular/material/slide-toggle';
+import {BehaviorSubject, Observable} from 'rxjs';
+import {take} from 'rxjs/operators';
+import {DashChangesService} from '../dash-changes.service';
+import {FieldId, FieldType} from "../../../../../shared/field.model";
+import {
+  booLabels,
+  BooTyped,
+  BooTyper,
+  isNumTyped,
+  numLabels,
+  NumTyped,
+  NumTyper
+} from "../../../../../shared/logic.model";
 
 @Component({
   selector: 'app-dash-logic',
@@ -41,18 +24,7 @@ export interface NumTyper {
 })
 export class DashLogicComponent {
 
-  selectable = true;
-  removable = true;
-  separatorKeysCodes: number[] = [ENTER, COMMA];
-
   keyCtrl = new FormControl();
-  filteredKeys!: Observable<string[]>;
-  keys: string[] = ['Name'];
-  allKeys: string[] = ['Name', 'Email', 'Phone', 'Count'];
-
-  boolChoices = ["true", "false" ];
-  boolLabels = [ "required", "disabled", "hidden", "readonly"];
-  numLabels = ["tabindex", "maximum", "minimum", "step"];
 
   state: NumTyper = {
     current: "tabindex",
@@ -78,8 +50,7 @@ export class DashLogicComponent {
     }
   };
 
-
-  boostate: BooTyper = {
+  booState: BooTyper = {
     current: "required",
     required: {
       label: "Rule for 'Required'",
@@ -107,9 +78,12 @@ export class DashLogicComponent {
   strPlace = new BehaviorSubject(this.state.tabindex.placeholder);
   strDesc = new BehaviorSubject(this.state.tabindex.description);
 
-  boostrLab = new BehaviorSubject(this.boostate.required.label);
-  boostrPlace = new BehaviorSubject(this.boostate.required.placeholder);
-  boostrDesc = new BehaviorSubject(this.boostate.required.description);
+  booLabels = booLabels;
+  numLabels = numLabels;
+
+  booStrLab = new BehaviorSubject(this.booState.required.label);
+  booStrPlace = new BehaviorSubject(this.booState.required.placeholder);
+  booStrDesc = new BehaviorSubject(this.booState.required.description);
 
   formGroup!: FormGroup;
 
@@ -134,90 +108,85 @@ export class DashLogicComponent {
   }
 
   selectBoolField(event: MatRadioChange) {
-    this.boostate.current = event.source.value;
+    this.booState.current = event.source.value;
     this.onBoolFieldSelect(event.source.value);
   }
 
   onBoolReqChange(changed: MatSlideToggleChange) {
-    console.log("boolReqChanger",  changed);
-    this.changes.required = changed.checked;
+    console.log("boolReqChanger", changed);
+    this.changes.set.required = changed.checked;
   }
 
   onBoolDisChange(changed: MatSlideToggleChange) {
     console.log("boolDisChanger", changed);
-    this.changes.disabled = changed.checked;
+    this.changes.set.disabled = changed.checked;
   }
 
   onBoolHidChange(changed: MatSlideToggleChange) {
-    this.changes.hidden = changed.checked;
+    this.changes.set.hidden = changed.checked;
   }
 
   onBoolReadChange(changed: MatSlideToggleChange) {
-    this.changes.readonly = changed.checked;
+    this.changes.set.readonly = changed.checked;
+  }
+
+  nextGet(selector: NumTyped | BooTyped, streams: Observable<FieldType>[]) {
+    const elems = streams.length === 2 ? [this.numInput] : [];
+
+    if (isNumTyped(selector)) {
+      this.strLab.next(this.state[selector].label);
+      this.strPlace.next(this.state[selector].placeholder);
+      this.strDesc.next(this.state[selector].description);
+      elems.push(this.rulInput);
+    } else {
+      this.booStrLab.next(this.booState[selector].label);
+      this.booStrPlace.next(this.booState[selector].placeholder);
+      this.booStrDesc.next(this.booState[selector].description);
+      elems.push(this.booInput);
+    }
+
+    streams.forEach((s, i) => {
+      s.pipe(take(1))
+        .subscribe(s => elems[i].nativeElement.value = s.value);
+    });
   }
 
   onBoolFieldSelect(_: string) {
-    switch (this.boostate.current) {
-      case this.boolLabels[0]: //"required":
-        this.boostrLab.next(this.boostate.required.label);
-        this.boostrPlace.next(this.boostate.required.placeholder);
-        this.boostrDesc.next(this.boostate.required.description);
-        this.changes.requiredStrm.pipe(first()).subscribe(rs => this.booInput.nativeElement.value = String(rs.value));
+    const cg = this.changes.get;
+    switch (this.booState.current) {
+      case FieldId.required:
+        this.nextGet(FieldId.required, [cg.requiredRuleStream]);
         break;
-      case this.boolLabels[1]: //disabled
-        this.boostrLab.next(this.boostate.disabled.label);
-        this.boostrPlace.next(this.boostate.disabled.placeholder);
-        this.boostrDesc.next(this.boostate.disabled.description);
-        this.changes.disabledStrm.pipe(first()).subscribe(ds => this.booInput.nativeElement.value = ds.value);
-        break;    
-      case this.boolLabels[2]: //hidden
-        this.boostrLab.next(this.boostate.hidden.label);
-        this.boostrPlace.next(this.boostate.hidden.placeholder);
-        this.boostrDesc.next(this.boostate.hidden.description);
-        this.changes.hiddenStrm.pipe(first()).subscribe(ds => this.booInput.nativeElement.value = ds.value);
+      case FieldId.disabled:
+        this.nextGet(FieldId.disabled, [cg.disabledRuleStream]);
         break;
-      case this.boolLabels[3]: //readonly
-        this.boostrLab.next(this.boostate.readonly.label);
-        this.boostrPlace.next(this.boostate.readonly.placeholder);
-        this.boostrDesc.next(this.boostate.readonly.description);
-        this.changes.readonlyStrm.pipe(first()).subscribe(rs => this.booInput.nativeElement.value = rs.value);
+      case FieldId.hidden:
+        this.nextGet(FieldId.hidden, [cg.hiddenRuleStream]);
+        break;
+      case FieldId.readonly:
+        this.nextGet(FieldId.readonly, [cg.readonlyRuleStream]);
         break;
       default:
         break;
     }
-    
+
   };
 
 
   onNumFieldSelect(_: string) {
+    const cg = this.changes.get;
     switch (this.state.current) {
-      case "tabindex": //"tabindex":
-        this.strLab.next(this.state.tabindex.label);
-        this.strPlace.next(this.state.tabindex.placeholder);
-        this.strDesc.next(this.state.tabindex.description);
-        this.numInput.nativeElement.value = String(this.changes.tabindex);
-        this.rulInput.nativeElement.value = String(this.changes.tabindexRule);
+      case FieldId.tabindex: //"tabindex":
+        this.nextGet(FieldId.tabindex, [cg.tabindexStream, cg.tabindexRuleStream]);
         break;
       case "maximum": //maximum
-        this.strLab.next(this.state.maximum.label);
-        this.strPlace.next(this.state.maximum.placeholder);
-        this.strDesc.next(this.state.maximum.description);
-        this.numInput.nativeElement.value = String(this.changes.max);
-        this.rulInput.nativeElement.value = String(this.changes.maxRule);
-        break;      
+        this.nextGet(FieldId.max, [cg.maxStream, cg.maxRuleStream]);
+        break;
       case "minimum": //minimum
-        this.strLab.next(this.state.minimum.label);
-        this.strPlace.next(this.state.minimum.placeholder);
-        this.strDesc.next(this.state.minimum.description);
-        this.numInput.nativeElement.value = String(this.changes.min);
-        this.rulInput.nativeElement.value = String(this.changes.minRule);
+        this.nextGet(FieldId.max, [cg.minStream, cg.minRuleStream]);
         break;
       case "step": //step
-        this.strLab.next(this.state.step.label);
-        this.strPlace.next(this.state.step.placeholder);
-        this.strDesc.next(this.state.step.description);
-        this.numInput.nativeElement.value = String(this.changes.step);
-        this.rulInput.nativeElement.value = String(this.changes.stepRule);
+        this.nextGet(FieldId.step, [cg.stepStream, cg.stepRuleStream]);
         break;
       default:
         break;
@@ -228,38 +197,27 @@ export class DashLogicComponent {
     console.log("conditional logic", changed);
   }
 
-  onNumFieldChange(changed: string) {
+  onNumFieldChange(changed: string, rule = false) {
     switch (this.state.current) {
       case "tabindex":
-        this.changes.tabindex = Number(changed);
+        rule ?
+          this.changes.set.tabindex = Number(changed) :
+          this.changes.set.tabindexRule = changed;
         break;
       case "maximum":
-        this.changes.max = Number(changed);
-        break;      
+        rule ?
+          this.changes.set.max = Number(changed) :
+          this.changes.set.maxRule = changed;
+        break;
       case "minimum":
-        this.changes.min = Number(changed);
+        rule ?
+          this.changes.set.min = Number(changed) :
+          this.changes.set.minRule = changed;
         break;
       case "step":
-        this.changes.step = Number(changed);
-        break;
-      default:
-        break;
-    }
-  }
-
-  onNumFieldRuleChange(changed: string) {
-    switch (this.state.current) {
-      case "tabindex":
-        this.changes.tabindex = Number(changed);
-        break;
-      case "maximum":
-        this.changes.max = Number(changed);
-        break;      
-      case "minimum":
-        this.changes.min = Number(changed);
-        break;
-      case "step":
-        this.changes.step = Number(changed);
+        rule ?
+          this.changes.set.step = Number(changed) :
+          this.changes.set.stepRule = changed;
         break;
       default:
         break;

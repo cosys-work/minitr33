@@ -9,15 +9,20 @@ export interface FieldRefs {
   pattern: string | RegExp; //6
   options: string[], //7
   attributes: { [key: string]: string | number; }, //8
-  required: boolean; //9
-  disabled: boolean; //10
-  hidden: boolean; //11
-  readonly: boolean; //12
+  required?: boolean; //9
+  disabled?: boolean; //10
+  hidden?: boolean; //11
+  readonly?: boolean; //12
   tabindex: number; //13
-  maximum: number; //14
-  minimum: number; //15
-  step: number; //16
+  max?: number; //14
+  min?: number; //15
+  step?: number; //16
 }
+
+export type FieldReffs = Omit<
+  TemplateOptions,
+  'minLength' | 'maxLength' | 'rows' | 'cols'
+  >
 
 export function fieldRefs(
   label: string,
@@ -27,24 +32,24 @@ export function fieldRefs(
   pattern: string | RegExp,
   options: string[],
   attributes: { [key: string]: string | number; },
-  required: boolean,
-  disabled: boolean,
-  hidden: boolean,
-  readonly: boolean,
   tabindex: number,
-  maximum: number,
-  minimum: number,
-  step: number,
-  id: string,
-): Required<FieldRefs> {
+  required?: boolean,
+  disabled?: boolean,
+  hidden?: boolean,
+  readonly?: boolean,
+  maximum?: number,
+  minimum?: number,
+  step?: number,
+  id: string = "",
+): FieldRefs {
 
   return ({
     label,
     placeholder,
     description,
     type,
-    minimum, 
-    maximum,
+    min: minimum,
+    max: maximum,
     id,
     pattern,
     options,
@@ -59,9 +64,9 @@ export function fieldRefs(
 }
 
 export function fieldMaker(
-    key: string, 
-    type: string, 
-    label: string, 
+    key: string,
+    type: string,
+    label: string,
     placeholder: string,
     className: string,
     description: string,
@@ -69,15 +74,15 @@ export function fieldMaker(
     pattern: string | RegExp,
     options: string[],
     attributes: { [key: string]: string | number; },
-    required: boolean,
-    disabled: boolean,
-    hidden: boolean,
-    readonly: boolean,
     tabindex: number,
-    max: number,
-    min: number,
-    step: number,
-): Omit<Required<FormalField>, "jump"> {
+    required?: boolean,
+    disabled?: boolean,
+    hidden?: boolean,
+    readonly?: boolean,
+    max?: number,
+    min?: number,
+    step: number = 1,
+): Omit<FormalField, "jump"> {
     const [_, typeAA] = type.split(",");
     const [minLength, maxLength, rows, cols] = [min, max, 0, 0];
     const templateOptions: TemplateOptions = {
@@ -113,28 +118,28 @@ export function fieldMaker(
       validation
     });
 
-};
+}
 
 
-export function refsToField(refs: FieldRefs): FormalField {  
+export function refsToField(refs: FieldRefs): FormalField {
   return fieldMaker(
-    refs.label, 
-    refs.type, 
-    refs.description, 
-    refs.placeholder, 
+    refs.label,
+    refs.type,
+    refs.description,
+    refs.placeholder,
     'flex-1',
     refs.description,
     refs.id,
     refs.pattern,
     refs.options,
     refs.attributes,
-    refs.required, 
+    refs.tabindex,
+    refs.required,
     refs.disabled,
     refs.hidden,
     refs.readonly,
-    refs.tabindex,
-    refs.maximum,
-    refs.minimum,
+    refs.max,
+    refs.min,
     refs.step
   );
 }
@@ -147,32 +152,33 @@ export function makeFormalField(
   pattern: string = "",
   options: string[] = [],
   attributes: { [key: string]: string | number; } = {},
-  required: boolean = false,
-  disabled: boolean = false,
-  hidden: boolean = false,
-  readonly: boolean = false,
-  tabindex: number = 0,
-  maximum: number = 0,
-  minimum: number = 0,
-  step: number = 0,
+  tabindex: number,
+  required?: boolean,
+  disabled?: boolean,
+  hidden?: boolean,
+  readonly?: boolean,
+  maximum?: number,
+  minimum?: number,
+  step?: number,
   id: string = "",
 ): FormalField {
   return refsToField(fieldRefs(
-    label, 
-    placeholder, 
-    description, 
+    label,
+    placeholder,
+    description,
     type,
 
     pattern,
     options,
     attributes,
-    
+
+    tabindex,
+
     required,
     disabled,
     hidden,
     readonly,
 
-    tabindex,
     maximum,
     minimum,
     step,
@@ -199,15 +205,15 @@ export enum FieldId {
 
   tabindex = "tabindex",
   step = "step",
-  min = "min",
-  max = "max",
+  min = "minimum",
+  max = "maximum",
 
   tabindexRule = "tabindexRule",
   stepRule = "stepRule",
   minRule = "minRule",
   maxRule = "maxRule",
 
-  
+
   pattern = "pattern",
   options = "options",
   attributes = "attributes"
@@ -218,7 +224,5 @@ export interface FieldType {
   value: string | any;
 }
 
-export const fieldType: (id: FieldId, value: string | any) => FieldType 
+export const fieldType: (id: FieldId, value: string | any) => FieldType
   = (id: FieldId, value: string) => ({id, value});
-
-
