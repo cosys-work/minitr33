@@ -99,7 +99,7 @@
           [placeholder]="'Eg: ref + logic ' + (strPlace | async)!"
           [formControl]="keyCtrl"
           #rulInput
-          (keyup)="onNumFieldChange(rulInput.value, true)"
+          (keyup)="onNumFieldChange(rulInput.value, false)"
         />
         <mat-icon matSuffix>vpn_key</mat-icon>
         <mat-hint> When is this {{ strDesc | async | lowercase }} applicable?</mat-hint>

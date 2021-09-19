@@ -36,7 +36,7 @@ export class DashChangesService {
           this.set.readonly = refs.readonly ?? false;
 
           this.set.tabindex = refs.tabindex ?? cursor;
-          this.set.max = refs.max ?? 1_000_000_000;
+          this.set.max = refs.max ?? 1_000_000;
           this.set.min = refs.min ?? 0;
           this.set.step = refs.step ?? 1;
 

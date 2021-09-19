@@ -197,25 +197,25 @@ export class DashLogicComponent {
     console.log("conditional logic", changed);
   }
 
-  onNumFieldChange(changed: string, rule = false) {
+  onNumFieldChange(changed: string, unruly = true) {
     switch (this.state.current) {
       case "tabindex":
-        rule ?
+        unruly ?
           this.changes.set.tabindex = Number(changed) :
           this.changes.set.tabindexRule = changed;
         break;
       case "maximum":
-        rule ?
+        unruly ?
           this.changes.set.max = Number(changed) :
           this.changes.set.maxRule = changed;
         break;
       case "minimum":
-        rule ?
+        unruly ?
           this.changes.set.min = Number(changed) :
           this.changes.set.minRule = changed;
         break;
       case "step":
-        rule ?
+        unruly ?
           this.changes.set.step = Number(changed) :
           this.changes.set.stepRule = changed;
         break;
