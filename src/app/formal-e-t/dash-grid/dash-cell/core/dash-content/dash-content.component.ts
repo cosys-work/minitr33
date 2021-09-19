@@ -114,6 +114,9 @@ export class DashContentComponent {
   type = 'input';
 
   @ViewChild('typeInput') typeInput!: ElementRef<HTMLInputElement>;
+  @ViewChild('optionsInput') optionsInput!: ElementRef<HTMLInputElement>;
+  @ViewChild('patternInput') patternInput!: ElementRef<HTMLInputElement>;
+  @ViewChild('attributesInput') attributesInput!: ElementRef<HTMLInputElement>;
   @ViewChild('maInput') maInput!: ElementRef<HTMLInputElement>;
 
   constructor(private changes: DashChangesService) {
@@ -253,6 +256,60 @@ export class DashContentComponent {
   }
 
   private _filter(value: string): string[] {
+    const filterValue = value.toLowerCase();
+    return this.allTypes.filter(type => type.toLowerCase().includes(filterValue));
+  }
+
+  addPattern(event: MatChipInputEvent): void {
+    const value = (event.value || '').trim();
+    if (value) {
+      this.type = value;
+      this.onTypeChange(value);
+    }
+    event.chipInput!.clear();
+    this.typeCtrl.setValue(null);
+  }
+
+  removePattern(): void {
+    this.type = "input";
+    this.onTypeChange(this.type);
+  }
+
+  selectedPattern(event: MatAutocompleteSelectedEvent): void {
+    this.type = event.option.viewValue;
+    this.onTypeChange(event.option.viewValue);
+    this.typeInput.nativeElement.value = '';
+    this.typeCtrl.setValue(null);
+  }
+
+  private _filterPattern(value: string): string[] {
+    const filterValue = value.toLowerCase();
+    return this.allTypes.filter(type => type.toLowerCase().includes(filterValue));
+  }
+
+  addAttributes(event: MatChipInputEvent): void {
+    const value = (event.value || '').trim();
+    if (value) {
+      this.type = value;
+      this.onTypeChange(value);
+    }
+    event.chipInput!.clear();
+    this.typeCtrl.setValue(null);
+  }
+
+  removeAttributes(): void {
+    this.type = "input";
+    this.onTypeChange(this.type);
+  }
+
+  selectedAttributes(event: MatAutocompleteSelectedEvent): void {
+    this.type = event.option.viewValue;
+    this.onTypeChange(event.option.viewValue);
+    this.typeInput.nativeElement.value = '';
+    this.typeCtrl.setValue(null);
+  }
+
+  private _filterAttributes(value: string): string[] {
     const filterValue = value.toLowerCase();
     return this.allTypes.filter(type => type.toLowerCase().includes(filterValue));
   }
