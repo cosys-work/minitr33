@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {FieldRefs} from 'src/app/shared/field.model';
+import {FullFieldRefs} from 'src/app/shared/field.model';
 import {FieldRefsStoreService} from 'src/app/store/field-refs-store.service';
 import {FormCursorStoreService} from 'src/app/store/form-cursor-store.service';
 import {ChangeSettersService} from "./change-setters.service";
@@ -18,7 +18,7 @@ export class DashChangesService {
   ) {
     this.cursorStore.current.subscribe(cursor => {
       if (cursor >= 0 && cursor <= this.fieldRefsStore.state.length) {
-        const refs: FieldRefs = this.fieldRefsStore.state[cursor];
+        const refs: FullFieldRefs = this.fieldRefsStore.state[cursor];
         if (refs) {
           this.set.label = refs.label;
           this.set.type = refs.type;
@@ -39,6 +39,15 @@ export class DashChangesService {
           this.set.max = refs.max ?? 1_000_000_000;
           this.set.min = refs.min ?? 0;
           this.set.step = refs.step ?? 1;
+
+          this.set.stepRule = refs.stepRule ?? "";
+          this.set.tabindexRule = refs.tabindexRule ?? "";
+          this.set.maxRule = refs.maxRule ?? "";
+          this.set.minRule = refs.minRule ?? "";
+          this.set.requiredRule = refs.requiredRule ?? "";
+          this.set.readonlyRule = refs.readonlyRule ?? "";
+          this.set.hiddenRule = refs.hiddenRule ?? "";
+          this.set.disabledRule = refs.disabledRule ?? "";
 
           // Object.assign(this.set, refs);
           // Object.keys(refs).forEach((prop) => {

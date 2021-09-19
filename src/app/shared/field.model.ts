@@ -1,4 +1,4 @@
-import { FormalField, TemplateOptions } from "./shared.model";
+import {TemplateOptions} from "./shared.model";
 
 export interface FieldRefs {
   label: string; //1
@@ -19,172 +19,22 @@ export interface FieldRefs {
   step?: number; //16
 }
 
-export type FieldReffs = Omit<
-  TemplateOptions,
-  'minLength' | 'maxLength' | 'rows' | 'cols'
-  >
+export interface FieldRefsAddons {
+  requiredRule: string;
+  disabledRule: string;
+  hiddenRule: string;
+  readonlyRule: string;
 
-export function fieldRefs(
-  label: string,
-  placeholder: string,
-  description: string,
-  type: string,
-  pattern: string | RegExp,
-  options: string[],
-  attributes: { [key: string]: string | number; },
-  tabindex: number,
-  required?: boolean,
-  disabled?: boolean,
-  hidden?: boolean,
-  readonly?: boolean,
-  maximum?: number,
-  minimum?: number,
-  step?: number,
-  id: string = "",
-): FieldRefs {
-
-  return ({
-    label,
-    placeholder,
-    description,
-    type,
-    min: minimum,
-    max: maximum,
-    id,
-    pattern,
-    options,
-    attributes,
-    required,
-    disabled,
-    hidden,
-    readonly,
-    tabindex,
-    step
-  });
+  maxRule: string;
+  minRule: string;
+  stepRule: string;
+  tabindexRule: string;
 }
 
-export function fieldMaker(
-    key: string,
-    type: string,
-    label: string,
-    placeholder: string,
-    className: string,
-    description: string,
-    id: string,
-    pattern: string | RegExp,
-    options: string[],
-    attributes: { [key: string]: string | number; },
-    tabindex: number,
-    required?: boolean,
-    disabled?: boolean,
-    hidden?: boolean,
-    readonly?: boolean,
-    max?: number,
-    min?: number,
-    step: number = 1,
-): Omit<FormalField, "jump"> {
-    const [_, typeAA] = type.split(",");
-    const [minLength, maxLength, rows, cols] = [min, max, 0, 0];
-    const templateOptions: TemplateOptions = {
-      type: typeAA ?? "text",
-      label,
-      placeholder,
-      pattern,
-      options,
-      attributes,
-      required,
-      disabled,
-      hidden,
-      readonly,
-      tabindex,
-      max,
-      min,
-      step,
-      minLength,
-      maxLength,
-      rows,
-      cols,
-      description
-    };
+export type FieldReffs = Omit<TemplateOptions,
+  'minLength' | 'maxLength' | 'rows' | 'cols'>;
 
-    const validation = {};
-
-    return ({
-      key,
-      type,
-      className,
-      templateOptions,
-      id,
-      validation
-    });
-
-}
-
-
-export function refsToField(refs: FieldRefs): FormalField {
-  return fieldMaker(
-    refs.label,
-    refs.type,
-    refs.description,
-    refs.placeholder,
-    'flex-1',
-    refs.description,
-    refs.id,
-    refs.pattern,
-    refs.options,
-    refs.attributes,
-    refs.tabindex,
-    refs.required,
-    refs.disabled,
-    refs.hidden,
-    refs.readonly,
-    refs.max,
-    refs.min,
-    refs.step
-  );
-}
-
-export function makeFormalField(
-  label: string,
-  placeholder: string,
-  description: string,
-  tabindex: number,
-  type: string = "input",
-  pattern: string = "",
-  options: string[] = [],
-  attributes: { [key: string]: string | number; } = {},
-  required?: boolean,
-  disabled?: boolean,
-  hidden?: boolean,
-  readonly?: boolean,
-  maximum?: number,
-  minimum?: number,
-  step?: number,
-  id: string = "",
-): FormalField {
-  return refsToField(fieldRefs(
-    label,
-    placeholder,
-    description,
-    type,
-
-    pattern,
-    options,
-    attributes,
-
-    tabindex,
-
-    required,
-    disabled,
-    hidden,
-    readonly,
-
-    maximum,
-    minimum,
-    step,
-    id
-  ));
-}
+export type FullFieldRefs = FieldRefs & FieldRefsAddons;
 
 export enum FieldId {
   label = "label",

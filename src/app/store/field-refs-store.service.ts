@@ -1,9 +1,10 @@
 import {Injectable} from '@angular/core';
 import {ObservableStore} from '@codewithdan/observable-store';
 import {merge} from 'rxjs';
-import {fieldRefs, FullFieldRefs} from '../shared/field.model';
+import {FullFieldRefs} from '../shared/field.model';
 import {FormCursorStoreService} from './form-cursor-store.service';
 import {GrafStore} from './graf-store.service';
+import {fieldRefs} from "./seed-init.utils";
 
 export interface FieldContainer {
   refs: FullFieldRefs[];
@@ -11,7 +12,6 @@ export interface FieldContainer {
 
 enum Actions {
   INIT="INIT_REFS",
-  REINIT="REINIT_REFS",
   EDIT="EDIT_REFS"
 }
 
@@ -71,8 +71,4 @@ export class FieldRefsStoreService extends ObservableStore<FieldContainer> {
     return this.getState(true).refs;
   }
 
-  set addField(refs: FullFieldRefs) {
-    const oldRefs = { refs: this.state };
-    this.setState({...oldRefs, ...refs}, Actions.EDIT);
-  }
 }

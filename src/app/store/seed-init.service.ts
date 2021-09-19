@@ -1,6 +1,6 @@
-import { Injectable } from "@angular/core";
-import { FEdge, FGraph, FNode } from "../shared/f-graph.model";
-import { seedEmptyField } from "../shared/field.model";
+import {Injectable} from "@angular/core";
+import {FEdge, FGraph, FNode} from "../shared/f-graph.model";
+import {seedEmptyField} from "./seed-init.utils";
 
 
 @Injectable({
