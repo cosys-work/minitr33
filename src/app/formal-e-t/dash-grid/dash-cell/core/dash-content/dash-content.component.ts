@@ -137,13 +137,13 @@ export class DashContentComponent {
         this.strLab.next(this.state.placeholder.label);
         this.strPlace.next(this.state.placeholder.placeholder);
         this.strDesc.next(this.state.placeholder.description);
-        this.changes.get.placeStream.pipe(take(1)).subscribe( p =>this.maInput.nativeElement.value = p.value);
+        this.changes.get.placeholderStream.pipe(take(1)).subscribe(p =>this.maInput.nativeElement.value = p.value);
         break;
       case "description":
         this.strLab.next(this.state.description.label);
         this.strPlace.next(this.state.description.placeholder);
         this.strDesc.next(this.state.description.description);
-        this.changes.get.descStream.pipe(take(1)).subscribe(d => this.maInput.nativeElement.value = d.value);
+        this.changes.get.descriptionStream.pipe(take(1)).subscribe(d => this.maInput.nativeElement.value = d.value);
         break;
       case "id":
         this.strLab.next(this.state.id.label);

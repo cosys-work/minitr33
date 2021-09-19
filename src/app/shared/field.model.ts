@@ -31,10 +31,9 @@ export interface FieldRefsAddons {
   tabindexRule: string;
 }
 
-export type FieldReffs = Omit<TemplateOptions,
-  'minLength' | 'maxLength' | 'rows' | 'cols'>;
-
 export type FullFieldRefs = FieldRefs & FieldRefsAddons;
+
+export type FullTemplate = TemplateOptions & FieldRefsAddons;
 
 export enum FieldId {
   label = "label",

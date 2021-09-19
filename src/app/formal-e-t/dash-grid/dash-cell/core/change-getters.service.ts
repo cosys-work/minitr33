@@ -30,11 +30,11 @@ export class ChangeGettersService {
     return debounceObs(this.cs.typeChanges);
   }
 
-  get descStream() {
+  get descriptionStream() {
     return debounceObs(this.cs.descChanges);
   }
 
-  get placeStream() {
+  get placeholderStream() {
     return debounceObs(this.cs.placeChanges);
   }
 

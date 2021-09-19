@@ -1,10 +1,11 @@
 import {AfterViewInit, Component, OnDestroy} from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { FormlyFieldConfig } from '@ngx-formly/core';
-import { FormalField } from 'src/app/shared/shared.model';
-import { FormCursorStoreService } from 'src/app/store/form-cursor-store.service';
-import { GrafStore } from 'src/app/store/graf-store.service';
-import { DashChangesService } from '../../core/dash-changes.service';
+import {FormGroup} from '@angular/forms';
+import {FormlyFieldConfig} from '@ngx-formly/core';
+import {FormalField} from 'src/app/shared/shared.model';
+import {FormCursorStoreService} from 'src/app/store/form-cursor-store.service';
+import {GrafStore} from 'src/app/store/graf-store.service';
+import {DashChangesService} from '../../core/dash-changes.service';
+import {FullTemplate} from "../../../../../shared/field.model";
 
 const keyMaker = (key: string) => {
   return key.trim().toLowerCase().replace(/ /g, '_');
@@ -29,7 +30,7 @@ export class DashPreviewComponent implements AfterViewInit, OnDestroy {
   fields: FormlyFieldConfig[] = [this.field];
 
   cursor: number = 0;
-  change: any = { id: 0 };
+  change: any = {id: 0};
 
   formlyFormElem!: Element;
 
@@ -57,6 +58,7 @@ export class DashPreviewComponent implements AfterViewInit, OnDestroy {
         feld[c].style.boxShadow =
           '0 -5px 3px -3px purple, 0 5px 3px -3px purple';
       }
+
       setTimeout(updateFieldMarker, 250);
     });
   }
@@ -83,141 +85,99 @@ export class DashPreviewComponent implements AfterViewInit, OnDestroy {
     this.fields = [...this.fields];
   }
 
+  tOptUpdater(opt: keyof FullTemplate, val: any) {
+    this.fieldGroup[this.cursor].templateOptions[opt] = val;
+    this.field.fieldGroup[this.cursor] = this.fieldGroup[this.cursor];
+    this.fields = [...this.fields];
+  }
+
   updateWhenContentUpdates() {
-    console.log('outside the changer', this.cursor, this.change.id);
+    this.changes.get.labelStream.subscribe(l => {
+      this.tOptUpdater("label", l.value);
+      this.fieldGroup[this.cursor].key = keyMaker(l.value);
+    });
 
-      this.changes.get.labelStream.subscribe(l => {
-        this.fieldGroup[this.cursor].templateOptions.label = l.value;
-        this.fieldGroup[this.cursor].key = keyMaker(l.value);
-        console.log('inside the label changer', this.cursor, this.change.id, l.value);
-      });
+    this.changes.get.typeStream.subscribe(t => {
+      this.tOptUpdater("type", t.value.trim().toLowerCase())
+    });
 
-      this.changes.get.typeStream.subscribe(t => {
-        this.fieldGroup[this.cursor].type = t.value.trim().toLowerCase();
-        console.log('inside the type changer', this.cursor, this.change.id, t.value);
-      });
+    this.changes.get.placeholderStream.subscribe((p) => {
+      this.tOptUpdater("placeholder", p.value.trim());
+    });
 
-      this.changes.get.placeStream.subscribe((p) => {
-        this.fieldGroup[this.cursor].templateOptions.placeholder =
-          p.value.trim();
-        console.log(
-          'inside the placeholder changer',
-          this.cursor,
-          this.change.id,
-          p.value
-        );
-      });
+    this.changes.get.descriptionStream.subscribe((p) => {
+      this.tOptUpdater("description", p.value.trim());
+    });
 
-      this.changes.get.descStream.subscribe((p) => {
-        this.fieldGroup[this.cursor].templateOptions.description =
-          p.value.trim();
-        console.log(
-          'inside the description changer',
-          this.cursor,
-          this.change.id,
-          p.value
-        );
-      });
+    this.changes.get.optionsStream.subscribe((p) => {
+      this.tOptUpdater("options", p.value);
+    });
 
-      this.changes.get.hiddenStream.subscribe((p) => {
-        this.fieldGroup[this.cursor].templateOptions.hidden = p.value;
-        console.log(
-          'inside the hidden changer',
-          this.cursor,
-          this.change.id,
-          p.value
-        );
-      });
+    this.changes.get.attributesStream.subscribe((p) => {
+      this.tOptUpdater("attributes", p.value);
+    });
 
-      this.changes.get.readonlyStream.subscribe((p) => {
-        console.log(
-          'inside the readonly changer',
-          this.cursor,
-          this.change.id,
-          p.value
-        );
-        this.fieldGroup[this.cursor].templateOptions.readonly =
-          p.value;
-      });
+    this.changes.get.patternStream.subscribe((p) => {
+      this.tOptUpdater("pattern", p.value);
+    });
 
-      this.changes.get.maxStream.subscribe((p) => {
-        this.fieldGroup[this.cursor].templateOptions.max = p.value;
-        this.fieldGroup[this.cursor].templateOptions.maxLength =
-          this.change.value;
-        console.log(
-          'inside the max changer',
-          this.cursor,
-          this.change.id,
-          p.value
-        );
-      });
 
-      this.changes.get.minStream.subscribe((p) => {
-        this.fieldGroup[this.cursor].templateOptions.min = p.value;
-        this.fieldGroup[this.cursor].templateOptions.minLength =
-          this.change.value;
-        console.log('inside the min changer', this.cursor, this.change.id, p.value);
-      });
+    this.changes.get.hiddenStream.subscribe((p) => {
+      this.tOptUpdater("hidden", p.value);
+    });
+    this.changes.get.readonlyStream.subscribe((p) => {
+      this.tOptUpdater("readonly", p.value);
+    });
+    this.changes.get.requiredStream.subscribe((p) => {
+      this.tOptUpdater("required", p.value);
+    });
+    this.changes.get.disabledStream.subscribe((a) => {
+      this.tOptUpdater("disabled", a.value);
+    });
 
-      this.changes.get.optionsStream.subscribe((p) => {
-        this.fieldGroup[this.cursor].templateOptions.options =
-          p.value;
-        console.log('inside the options changer', this.cursor, this.change.id, p.value);
-      });
+    this.changes.get.maxStream.subscribe((p) => {
+      this.tOptUpdater("max", p.value);
+      this.tOptUpdater("maxLength", p.value);
+    });
+    this.changes.get.minStream.subscribe((p) => {
+      this.tOptUpdater("min", p.value);
+      this.tOptUpdater("minLength", p.value);
+    });
+    this.changes.get.stepStream.subscribe((p) => {
+      this.tOptUpdater("step", p.value);
+      this.tOptUpdater("rows", p.value);
+      this.tOptUpdater("cols", p.value);
+    });
+    this.changes.get.tabindexStream.subscribe((p) => {
+      this.tOptUpdater("tabindex", p.value);
+    });
 
-      this.changes.get.attributesStream.subscribe((p) => {
-        this.fieldGroup[this.cursor].templateOptions.attributes =
-          p.value;
-        console.log(
-          'inside the atttributes changer',
-          this.cursor,
-          this.change.id,
-          p.value
-        );
-      });
 
-      this.changes.get.patternStream.subscribe((p) => {
-        this.fieldGroup[this.cursor].templateOptions.pattern =
-          p.value;
-        console.log('inside the pattern changer', this.cursor, this.change.id, p.value);
-      });
+    this.changes.get.hiddenRuleStream.subscribe((p) => {
+      this.tOptUpdater("hiddenRule", p.value);
+    });
+    this.changes.get.readonlyRuleStream.subscribe((p) => {
+      this.tOptUpdater("readonlyRule", p.value);
+    });
+    this.changes.get.requiredRuleStream.subscribe((p) => {
+      this.tOptUpdater("requiredRule", p.value);
+    });
+    this.changes.get.disabledRuleStream.subscribe((a) => {
+      this.tOptUpdater("disabledRule", a.value);
+    });
 
-      this.changes.get.stepStream.subscribe((p) => {
-        this.fieldGroup[this.cursor].templateOptions.step = p.value;
-        console.log('inside the step changer', this.cursor, this.change.id, p.value);
-      });
-
-      this.changes.get.tabindexStream.subscribe((p) => {
-        this.fieldGroup[this.cursor].templateOptions.tabindex =
-          p.value;
-        console.log('inside the tabindex changer', this.cursor, p.value);
-      });
-
-      this.changes.get.requiredStream.subscribe((p) => {
-        this.fieldGroup[this.cursor].templateOptions.required =
-          p.value;
-        console.log(
-          'inside the required changer',
-          this.cursor,
-          this.change.id,
-          p.value
-        );
-      });
-
-      this.changes.get.disabledStream.subscribe((a) => {
-        this.fieldGroup[this.cursor].templateOptions.disabled =
-          a.value;
-        console.log(
-          'inside the disabled changer',
-          this.cursor,
-          this.change.id,
-          a.value
-        );
-      });
-
-      this.field.fieldGroup[this.cursor] = this.fieldGroup[this.cursor];
-      this.fields = [...this.fields];
-
+    this.changes.get.maxRuleStream.subscribe((p) => {
+      this.tOptUpdater("maxRule", p.value);
+    });
+    this.changes.get.minRuleStream.subscribe((p) => {
+      this.tOptUpdater("minRule", p.value);
+    });
+    this.changes.get.stepRuleStream.subscribe((p) => {
+      this.tOptUpdater("stepRule", p.value);
+    });
+    this.changes.get.tabindexRuleStream.subscribe((p) => {
+      this.tOptUpdater("tabindexRule", p.value);
+    });
   }
 
   onSubmit(model: any) {
