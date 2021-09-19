@@ -16,15 +16,15 @@ export class SeedInitService {
         title: `Description ${ix}`,
         tag: `Placeholder ${ix}`
       });
-    };
+    }
     function nodeWithField(iy: number): FNode {
       const ode = node(iy);
-      const field = makeFormalField(ode.label, ode.tag, ode.title);
+      const field = makeFormalField(ode.label, ode.tag, ode.title, iy);
       return ({
-        ...ode, 
-        field 
-      }); 
-    };
+        ...ode,
+        field
+      });
+    }
     return nodeWithField(iz);
   }
 
