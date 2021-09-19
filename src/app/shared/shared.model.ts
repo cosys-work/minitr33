@@ -43,6 +43,17 @@ export interface FormalField {
       [messageProperties: string]: ValidationMessageOption['message'];
     };
     show?: boolean;
+
+    hiddenRule: string;
+    requiredRule: string;
+    disabledRule: string;
+    readonlyRule: string;
+
+    minRule: string;
+    maxRule: string;
+    stepRule: string;
+    tabindexRule: string;
+
     [additionalProperties: string]: any;
   };
   jump?: FormalField | FormalField[];

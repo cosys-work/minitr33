@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { FEdge, FGraph, FNode } from "../shared/f-graph.model";
-import { makeFormalField } from "../shared/field.model";
+import { seedEmptyField } from "../shared/field.model";
 
 
 @Injectable({
@@ -19,7 +19,7 @@ export class SeedInitService {
     }
     function nodeWithField(iy: number): FNode {
       const ode = node(iy);
-      const field = makeFormalField(ode.label, ode.tag, ode.title, iy);
+      const field = seedEmptyField(ode.label, ode.tag, ode.title, iy);
       return ({
         ...ode,
         field

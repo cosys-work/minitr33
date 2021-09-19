@@ -45,7 +45,7 @@ export class ChangeSettersService {
 
 
   set maxRule(max: string) {
-    const maxField = fieldType(FieldId.max, max);
+    const maxField = fieldType(FieldId.maxRule, max);
     this.maxRuleChanges.next(maxField);
   }
 
@@ -56,7 +56,7 @@ export class ChangeSettersService {
   }
 
   set minRule(min: string) {
-    const minField = fieldType(FieldId.min, min);
+    const minField = fieldType(FieldId.minRule, min);
     this.minRuleChanges.next(minField);
   }
 
@@ -131,7 +131,7 @@ export class ChangeSettersService {
   }
 
   set readonlyRule(readonly: string) {
-    const readonlyField = fieldType(FieldId.readonly, readonly);
+    const readonlyField = fieldType(FieldId.readonlyRule, readonly);
     this.readonlyRuleChanges.next(readonlyField);
   }
 
@@ -142,7 +142,7 @@ export class ChangeSettersService {
   }
 
   set tabindexRule(tabindex: string) {
-    const tabindexField = fieldType(FieldId.tabindex, tabindex);
+    const tabindexField = fieldType(FieldId.tabindexRule, tabindex);
     this.tabindexRuleChanges.next(tabindexField);
   }
 
@@ -153,7 +153,7 @@ export class ChangeSettersService {
   }
 
   set stepRule(step: string) {
-    const stepField = fieldType(FieldId.step, step);
+    const stepField = fieldType(FieldId.stepRule, step);
     this.stepRuleChanges.next(stepField);
   }
 
@@ -172,7 +172,7 @@ export class ChangeSettersService {
 
   //16
   set attributes(attributes: { [key: string]: string | number }) {
-    const attrField = fieldType(FieldId.options, attributes);
+    const attrField = fieldType(FieldId.attributes, attributes);
     this.attrsChanges.next(attrField);
   }
 }
