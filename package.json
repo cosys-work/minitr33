@@ -7,7 +7,10 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "postinstall": "ngcc --properties es2015 browser module main"
+    "postinstall": "ngcc --properties es2015 browser module main",
+    "e2e": "ng e2e",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run"
   },
   "private": true,
   "dependencies": {
@@ -24,6 +27,7 @@
     "@angular/platform-browser-dynamic": "~12.2.0",
     "@angular/router": "~12.2.0",
     "@angular/service-worker": "~12.2.0",
+    "@briebug/jest-schematic": "3.1.0",
     "@codewithdan/observable-store": "^2.2.13",
     "@codewithdan/observable-store-extensions": "^2.2.9",
     "@cosys/func": "^0.3.0",
@@ -41,9 +45,11 @@
     "zone.js": "~0.11.4"
   },
   "devDependencies": {
+    "@angular-builders/jest": "12.1.2",
     "@angular-devkit/build-angular": "~12.2.2",
     "@angular/cli": "~12.2.2",
     "@angular/compiler-cli": "~12.2.0",
+    "@cypress/schematic": "1.5.1",
     "@ngx-formly/schematics": "5.10.22",
     "@types/d3-dispatch": "^3.0.1",
     "@types/d3-drag": "^3.0.1",
@@ -51,15 +57,14 @@
     "@types/d3-shape": "^3.0.2",
     "@types/d3-timer": "^3.0.0",
     "@types/jasmine": "~3.8.0",
+    "@types/jest": "27.0.2",
     "@types/node": "^12.11.1",
     "@types/three": "^0.131.0",
     "angular-cli-ghpages": "1.0.0-rc.2",
     "jasmine-core": "~3.8.0",
-    "karma": "~6.3.0",
-    "karma-chrome-launcher": "~3.1.0",
+    "jest": "27.2.1",
     "karma-coverage": "~2.0.3",
-    "karma-jasmine": "~4.0.0",
-    "karma-jasmine-html-reporter": "~1.7.0",
-    "typescript": "~4.3.5"
+    "typescript": "~4.3.5",
+    "cypress": "8.4.1"
   }
 }
