@@ -44,6 +44,7 @@ export class DashChangesService {
           this.set.tabindexRule = refs.tabindexRule ?? "";
           this.set.maxRule = refs.maxRule ?? "";
           this.set.minRule = refs.minRule ?? "";
+
           this.set.requiredRule = refs.requiredRule ?? "";
           this.set.readonlyRule = refs.readonlyRule ?? "";
           this.set.hiddenRule = refs.hiddenRule ?? "";

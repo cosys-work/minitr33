@@ -105,7 +105,11 @@ export class DashPreviewComponent implements AfterViewInit, OnDestroy {
     });
 
     this.changes.get.typeStream.subscribe(t => {
-      this.fieldGroup[this.cursor].templateOptions.type = t.value.trim().toLowerCase();
+      const [typeA, typeB] = t.value.trim().split(",");
+      this.fieldGroup[this.cursor].type = typeA;
+      if (typeB) {
+        this.fieldGroup[this.cursor].templateOptions.type = typeB;
+      }
     });
 
     this.changes.get.placeholderStream.subscribe((p) => {

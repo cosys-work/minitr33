@@ -45,12 +45,12 @@ export class DashContentComponent {
     'slider',
     'autocomplete'
   ];
+  allPatterns: string[] = ["Pattern 1", "Pattern 2"];
+  allOptions: string[] = ["Option 1", "Option 2"];
+  allAttributes: string[] = ["Attribute 1", "Attribute 2"];
 
   strLabels = ["label", "description", "placeholder", "id"];
-
   optLabels = ["type", "options", "pattern", "attributes"];
-
-  typeCtrl = new FormControl();
 
   state = {
     current: "label",
@@ -75,7 +75,6 @@ export class DashContentComponent {
       description: "A unique hidden id",
     }
   }
-
   optState = {
     current: "type",
     type: {
@@ -108,10 +107,20 @@ export class DashContentComponent {
   oysterPlace = new BehaviorSubject(this.optState.type.placeholder);
   oysterDesc = new BehaviorSubject(this.optState.type.description);
 
-
+  typeCtrl = new FormControl();
+  patternCtrl = new FormControl();
+  optionsCtrl = new FormControl();
+  attributesCtrl = new FormControl();
 
   filteredTypes: Observable<string[]>;
-  type = 'input';
+  filteredPatterns: Observable<string[]>;
+  filteredOptions: Observable<string[]>;
+  filteredAttributes: Observable<string[]>;
+
+  curType = "input,text";
+  curOptions = "Opt 1";
+  curAttributes = "Attr 1";
+  curPattern = "Pat 1";
 
   @ViewChild('typeInput') typeInput!: ElementRef<HTMLInputElement>;
   @ViewChild('optionsInput') optionsInput!: ElementRef<HTMLInputElement>;
@@ -123,7 +132,22 @@ export class DashContentComponent {
 
     this.filteredTypes = this.typeCtrl.valueChanges.pipe(
       startWith(null),
-      map((type: string | null) => type ? this._filter(type) : this.allTypes.slice())
+      map((type: string | null) => type ? this._filterType(type) : this.allTypes.slice())
+    );
+
+    this.filteredPatterns = this.patternCtrl.valueChanges.pipe(
+      startWith(null),
+      map((pat: string | null) => pat ? this._filterPattern(pat) : this.allPatterns.slice())
+    );
+
+    this.filteredOptions = this.optionsCtrl.valueChanges.pipe(
+      startWith(null),
+      map((opt: string | null) => opt ? this._filterOptions(opt) : this.allOptions.slice())
+    );
+
+    this.filteredAttributes = this.attributesCtrl.valueChanges.pipe(
+      startWith(null),
+      map((attr: string | null) => attr ? this._filterAttributes(attr) : this.allAttributes.slice())
     );
   }
 
@@ -192,38 +216,17 @@ export class DashContentComponent {
     }
   }
 
-  onTypeChange(changed: string) {
-    console.log("changed", changed);
-    switch (this.optState.current) {
-      case "type":
-        this.changes.set.type = changed;
-        break;
-      case "options":
-        this.changes.set.options = changed.split(",");
-        break;
-      case "pattern":
-        this.changes.set.pattern = changed;
-        break;
-      case "attributes":
-        const [key, val] = changed.split(":");
-        this.changes.set.attributes = { [key]: val};
-        break;
-      default:
-        break;
-    }
-  };
-
-  onInpChange(changed: string) {
-    console.log("firing inp change first", changed, this.state.current);
+  onStrFieldDataChange(changed: string) {
+    console.log("changed str field data", changed);
     switch (this.state.current) {
       case "label":
         this.changes.set.label = changed;
         break;
-      case "placeholder":
-        this.changes.set.placeholder = changed;
-        break;
       case "description":
         this.changes.set.description = changed;
+        break;
+      case "placeholder":
+        this.changes.set.placeholder = changed;
         break;
       case "id":
         this.changes.set.id = changed;
@@ -233,29 +236,45 @@ export class DashContentComponent {
     }
   };
 
-  add(event: MatChipInputEvent): void {
+
+  onTypeChange(changed: string) {
+    console.log("changed type", changed);
+    this.curType = changed;
+    this.changes.set.type = changed.toLowerCase();
+  };
+
+  onPatternChange(changed: string) {
+    console.log("changed pattern", changed);
+  };
+
+  onAttributeChange(changed: string) {
+    console.log("changed attribute", changed);
+  };
+
+  onOptionChange(changed: string) {
+    console.log("changed option", changed);
+  };
+
+  addType(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
     if (value) {
-      this.type = value;
       this.onTypeChange(value);
     }
     event.chipInput!.clear();
     this.typeCtrl.setValue(null);
   }
 
-  remove(): void {
-    this.type = "input";
-    this.onTypeChange(this.type);
+  removeType(): void {
+    console.log("type removal triggered");
   }
 
-  selected(event: MatAutocompleteSelectedEvent): void {
-    this.type = event.option.viewValue;
+  selectedType(event: MatAutocompleteSelectedEvent): void {
     this.onTypeChange(event.option.viewValue);
     this.typeInput.nativeElement.value = '';
     this.typeCtrl.setValue(null);
   }
 
-  private _filter(value: string): string[] {
+  private _filterType(value: string): string[] {
     const filterValue = value.toLowerCase();
     return this.allTypes.filter(type => type.toLowerCase().includes(filterValue));
   }
@@ -263,54 +282,72 @@ export class DashContentComponent {
   addPattern(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
     if (value) {
-      this.type = value;
-      this.onTypeChange(value);
+      this.onPatternChange(value);
     }
     event.chipInput!.clear();
-    this.typeCtrl.setValue(null);
+    this.patternCtrl.setValue(null);
   }
 
   removePattern(): void {
-    this.type = "input";
-    this.onTypeChange(this.type);
+    console.log("pattern removal triggered");
   }
 
   selectedPattern(event: MatAutocompleteSelectedEvent): void {
-    this.type = event.option.viewValue;
-    this.onTypeChange(event.option.viewValue);
-    this.typeInput.nativeElement.value = '';
-    this.typeCtrl.setValue(null);
+    this.onPatternChange(event.option.viewValue);
+    this.patternInput.nativeElement.value = '';
+    this.patternCtrl.setValue(null);
   }
 
   private _filterPattern(value: string): string[] {
     const filterValue = value.toLowerCase();
-    return this.allTypes.filter(type => type.toLowerCase().includes(filterValue));
+    return this.allPatterns.filter(pat => pat.toLowerCase().includes(filterValue));
   }
 
   addAttributes(event: MatChipInputEvent): void {
-    const value = (event.value || '').trim();
+    const value = event.value.trim() || '';
     if (value) {
-      this.type = value;
-      this.onTypeChange(value);
+      this.onAttributeChange(value);
     }
     event.chipInput!.clear();
-    this.typeCtrl.setValue(null);
+    this.attributesCtrl.setValue(null);
   }
 
   removeAttributes(): void {
-    this.type = "input";
-    this.onTypeChange(this.type);
+    console.log("attr removal triggered");
   }
 
   selectedAttributes(event: MatAutocompleteSelectedEvent): void {
-    this.type = event.option.viewValue;
-    this.onTypeChange(event.option.viewValue);
-    this.typeInput.nativeElement.value = '';
-    this.typeCtrl.setValue(null);
+    this.onAttributeChange(event.option.viewValue);
+    this.attributesInput.nativeElement.value = '';
+    this.attributesCtrl.setValue(null);
   }
 
   private _filterAttributes(value: string): string[] {
     const filterValue = value.toLowerCase();
-    return this.allTypes.filter(type => type.toLowerCase().includes(filterValue));
+    return this.allAttributes.filter(type => type.toLowerCase().includes(filterValue));
+  }
+
+  addOptions(event: MatChipInputEvent): void {
+    const value = (event.value || '').trim();
+    if (value) {
+      this.onOptionChange(value);
+    }
+    event.chipInput!.clear();
+    this.optionsCtrl.setValue(null);
+  }
+
+  removeOptions(): void {
+    console.log("options removal triggered");
+  }
+
+  selectedOptions(event: MatAutocompleteSelectedEvent): void {
+    this.onOptionChange(event.option.viewValue);
+    this.optionsInput.nativeElement.value = '';
+    this.optionsCtrl.setValue(null);
+  }
+
+  private _filterOptions(value: string): string[] {
+    const filterValue = value.toLowerCase();
+    return this.allOptions.filter(opt => opt.toLowerCase().includes(filterValue));
   }
 }
