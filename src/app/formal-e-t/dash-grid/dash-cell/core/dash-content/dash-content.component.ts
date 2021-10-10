@@ -50,7 +50,7 @@ export class DashContentComponent {
   allAttributes: string[] = ["Attribute 1", "Attribute 2"];
 
   strLabels = ["label", "description", "placeholder", "id"];
-  optLabels = ["type", "options", "pattern", "attributes"];
+  optLabels = ["type", "pattern", "options", "attributes"];
 
   state = {
     current: "label",

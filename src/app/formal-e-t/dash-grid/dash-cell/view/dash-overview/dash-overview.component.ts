@@ -29,7 +29,7 @@ export class DashOverviewComponent implements AfterContentInit {
   panOnZoom: boolean = true;
 
   autoZoom: boolean = true;
-  autoCenter: boolean = true; 
+  autoCenter: boolean = true;
 
   update$: Subject<boolean> = new Subject();
   center$: Subject<boolean> = new Subject();

@@ -1,8 +1,8 @@
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatSidenav } from '@angular/material/sidenav';
-import { interval, Observable } from 'rxjs';
-import { first, map, shareReplay } from 'rxjs/operators';
+import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {MatSidenav} from '@angular/material/sidenav';
+import {interval, Observable} from 'rxjs';
+import {map, shareReplay, take} from 'rxjs/operators';
 
 const SIDEBAR_COLLAPSE_TIME = 1000;
 
@@ -31,12 +31,10 @@ export class NaviComponent implements OnInit {
   constructor(private breakpointObserver: BreakpointObserver) {}
 
   ngOnInit() {
-    interval(SIDEBAR_COLLAPSE_TIME).pipe(first()).subscribe(() => {
+    interval(SIDEBAR_COLLAPSE_TIME).pipe(take(1)).subscribe(async () => {
       if (this.drawer.opened) {
-        this.drawer.toggle();
+        await this.drawer.toggle();
       }
     })
-
   }
-
 }

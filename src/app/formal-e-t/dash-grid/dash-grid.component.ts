@@ -1,9 +1,9 @@
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { Component } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { map, take, tap } from 'rxjs/operators';
-import { FormCursorStoreService } from 'src/app/store/form-cursor-store.service';
-import { GrafStore } from 'src/app/store/graf-store.service';
+import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
+import {Component} from '@angular/core';
+import {BehaviorSubject, Observable} from 'rxjs';
+import {map, take} from 'rxjs/operators';
+import {FormCursorStoreService} from 'src/app/store/form-cursor-store.service';
+import {GrafStore} from 'src/app/store/graf-store.service';
 
 @Component({
   selector: 'app-dash-grid',
@@ -20,10 +20,10 @@ export class DashGridComponent {
     map(({ matches }) => {
       if (matches) {
         return [
-          { title: 'Field Content', cols: 1, rows: 1 },
-          { title: 'Form Preview', cols: 1, rows: 1 },
-          { title: 'Field Logic', cols: 1, rows: 1 }, 
-          { title: 'Form Overview', cols: 1, rows: 1 },
+          { title: 'Field Content', cols: 2, rows: 2 },
+          { title: 'Form Preview', cols: 2, rows: 2 },
+          { title: 'Field Logic', cols: 2, rows: 2 },
+          { title: 'Form Overview', cols: 2, rows: 2 },
         ];
       }
 
@@ -84,7 +84,7 @@ export class DashGridComponent {
       this.curseRedeemer(idx);
     });
   }
- 
+
   onPrev(_: Event) {
     this.handlePreving();
   }

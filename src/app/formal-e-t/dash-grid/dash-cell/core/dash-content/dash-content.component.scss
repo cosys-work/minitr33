@@ -9,3 +9,9 @@
 .example-margin {
   margin: 0 12px;
 }
+
+.example-radio-group {
+  display: flex;
+  flex-direction: row;
+  align-content: baseline;
+}
