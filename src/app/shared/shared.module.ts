@@ -1,10 +1,17 @@
 import { NgModule } from '@angular/core';
+import { StatefulnessComponent } from './statefulness/statefulness.component';
 
-const COMPS = [];
+const COMPS = [
+  StatefulnessComponent
+];
 
 @NgModule({
-  declarations: [],
+  declarations: [
+    ...COMPS
+  ],
   imports: [],
-  exports: []
+  exports: [
+    ...COMPS
+  ]
 })
 export class SharedModule { }
