@@ -92,6 +92,7 @@ export class ChangeGettersService {
     return debounceObs(this.cs.readonlyChanges);
   }
 
+
   get requiredRuleStream() {
     return debounceObs(this.cs.requiredRuleChanges);
   }
@@ -107,7 +108,6 @@ export class ChangeGettersService {
   get readonlyRuleStream() {
     return debounceObs(this.cs.readonlyRuleChanges);
   }
-
 
 
   get tabindexRuleStream() {
