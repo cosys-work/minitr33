@@ -36,7 +36,7 @@ export class StatefulnessComponent implements OnInit {
     return this[OnDestroySubject].asObservable();
   }
 
-  onSrcUpdate<T>(sources: ObservableMap<T>, func: (v) => void): T {
+  onSrcUpdate<T>(sources: ObservableMap<T>, func: (v: unknown) => void): T {
     const sink = {} as T;
     const sourceKeys = Object.keys(sources) as (keyof T)[];
     const updateSink$ = from(sourceKeys).pipe(

@@ -35,7 +35,8 @@ export class FieldRefsStoreService extends ObservableStore<FieldContainer> {
   }
 
   updateRefs() {
-    //const n.field.validation['tabindexRule'] ?? ""
+    // rerun for every field for now, optimize later if there's any slowdown or potential speed gain
+    // because some fields are inter-connected
     const refs = this.graphStore.nodes.map(n => fieldRefs(
       n.label ?? n.field.templateOptions.label,
       n.tag ?? n.field.templateOptions.placeholder,
