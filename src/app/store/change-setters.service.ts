@@ -1,178 +1,199 @@
 import {Injectable} from '@angular/core';
-import {FieldId, FieldType, fieldType} from "../shared/field.model";
-import {ReplaySubject} from "rxjs";
+import {FieldId, FieldRefsAddons, fieldType} from "../shared/field.model";
+import {GrafStore} from "./graf-store.service";
+import {map} from "rxjs/operators";
+import {FormalField, TemplateOptions} from "../shared/shared.model";
 
 @Injectable({
   providedIn: 'root'
 })
 export class ChangeSettersService {
 
-  labelChanges = new ReplaySubject<FieldType>(1);
-  typeChanges = new ReplaySubject<FieldType>(1);
-  descChanges = new ReplaySubject<FieldType>(1);
-  placeChanges = new ReplaySubject<FieldType>(1);
+  rxt = this.graf.rxtiv();
 
-  idChanges = new ReplaySubject<FieldType>(1);
-  optsChanges = new ReplaySubject<FieldType>(1);
-  attrsChanges = new ReplaySubject<FieldType>(1);
-  patternChanges = new ReplaySubject<FieldType>(1);
+  fielder(tmpl: keyof FormalField) {
+    return this.rxt.pipe(map(z => z.nodes[z.curNode].field[tmpl]));
+  }
 
-  minChanges = new ReplaySubject<FieldType>(1);
-  maxChanges = new ReplaySubject<FieldType>(1);
-  tabindexChanges = new ReplaySubject<FieldType>(1);
-  stepChanges = new ReplaySubject<FieldType>(1);
+  valor(rule: keyof FieldRefsAddons) {
+    return this.rxt.pipe(map(z => z.nodes[z.curNode].field.validation[rule]))
+  }
 
-  requiredChanges = new ReplaySubject<FieldType>(1);
-  disabledChanges = new ReplaySubject<FieldType>(1);
-  hiddenChanges = new ReplaySubject<FieldType>(1);
-  readonlyChanges = new ReplaySubject<FieldType>(1);
+  templar(opt: keyof TemplateOptions) {
+    return this.rxt.pipe(map(z => z.nodes[z.curNode].field.templateOptions[opt]));
+  }
 
-  minRuleChanges = new ReplaySubject<FieldType>(1);
-  maxRuleChanges = new ReplaySubject<FieldType>(1);
-  tabindexRuleChanges = new ReplaySubject<FieldType>(1);
-  stepRuleChanges = new ReplaySubject<FieldType>(1);
 
-  requiredRuleChanges = new ReplaySubject<FieldType>(1);
-  disabledRuleChanges = new ReplaySubject<FieldType>(1);
-  hiddenRuleChanges = new ReplaySubject<FieldType>(1);
-  readonlyRuleChanges = new ReplaySubject<FieldType>(1);
+  labelChanges = this.templar(FieldId.label);
+  typeChanges = this.templar(FieldId.type);
+  descriptionChanges = this.templar(FieldId.description);
+  placeholderChanges = this.templar(FieldId.placeholder);
+
+  idChanges = this.fielder(FieldId.id);
+  optsChanges = this.templar(FieldId.options);
+  attrsChanges = this.templar(FieldId.attributes);
+  patternChanges = this.templar(FieldId.pattern);
+
+  minChanges = this.templar(FieldId.min);
+  maxChanges = this.templar(FieldId.max);
+  tabindexChanges = this.templar(FieldId.tabindex);
+  stepChanges = this.templar(FieldId.step);
+
+  requiredChanges = this.templar(FieldId.required);
+  disabledChanges = this.templar(FieldId.disabled);
+  hiddenChanges = this.templar(FieldId.hidden);
+  readonlyChanges = this.templar(FieldId.readonly);
+
+  minRuleChanges = this.valor(FieldId.minRule);
+  maxRuleChanges = this.valor(FieldId.maxRule);
+  tabindexRuleChanges = this.valor(FieldId.tabindexRule);
+  stepRuleChanges = this.valor(FieldId.stepRule);
+
+  requiredRuleChanges = this.valor(FieldId.requiredRule);
+  disabledRuleChanges = this.valor(FieldId.disabledRule);
+  hiddenRuleChanges = this.valor(FieldId.hiddenRule);
+  readonlyRuleChanges = this.valor(FieldId.readonlyRule);
+
+  constructor(private graf: GrafStore) {
+
+  }
 
   //1
   set max(max: number) {
     const maxField = fieldType(FieldId.max, max);
-    this.maxChanges.next(maxField);
+    console.log(maxField);
   }
 
 
   set maxRule(max: string) {
     const maxField = fieldType(FieldId.maxRule, max);
-    this.maxRuleChanges.next(maxField);
+    console.log(maxField);
   }
 
   //2
   set min(min: number) {
     const minField = fieldType(FieldId.min, min);
-    this.minChanges.next(minField);
+    console.log(minField);
   }
 
   set minRule(min: string) {
     const minField = fieldType(FieldId.minRule, min);
-    this.minRuleChanges.next(minField);
+    console.log(minField);
   }
 
   //3
   set label(label: string) {
     console.log("label called", label);
     const labelField = fieldType(FieldId.label, label);
-    this.labelChanges.next(labelField);
+    console.log(labelField);
   }
 
   //4
   set type(type: string) {
     const typeField = fieldType(FieldId.type, type);
-    this.typeChanges.next(typeField);
+    console.log(typeField);
   }
 
   //5
   set id(id: string) {
     const idField = fieldType(FieldId.id, id);
-    this.idChanges.next(idField);
+    console.log(idField);
   }
 
   //6
   set description(description: string) {
     const descField = fieldType(FieldId.description, description);
-    this.descChanges.next(descField);
+    console.log(descField);
   }
 
   //7
   set placeholder(placeholder: string) {
     const placeField = fieldType(FieldId.placeholder, placeholder);
-    this.placeChanges.next(placeField);
+    console.log(placeField);
   }
 
   //8
   set required(required: boolean) {
     const requiredField = fieldType(FieldId.required, required);
-    this.requiredChanges.next(requiredField);
+    console.log(requiredField);
   }
 
   set requiredRule(required: string) {
     const requiredField = fieldType(FieldId.requiredRule, required);
-    this.requiredRuleChanges.next(requiredField);
+    console.log(requiredField);
   }
 
   //9
   set disabled(disabled: boolean) {
     const disField = fieldType(FieldId.disabled, disabled);
-    this.disabledChanges.next(disField);
+    console.log(disField);
   }
 
   set disabledRule(disabled: string) {
     const disField = fieldType(FieldId.disabledRule, disabled);
-    this.disabledRuleChanges.next(disField);
+    console.log(disField);
   }
 
   //10
   set hidden(hidden: boolean) {
     const hideField = fieldType(FieldId.hidden, hidden);
-    this.hiddenChanges.next(hideField);
+    console.log(hideField);
   }
 
   set hiddenRule(hidden: string) {
     const hideField = fieldType(FieldId.hiddenRule, hidden);
-    this.hiddenRuleChanges.next(hideField);
+    console.log(hideField);
   }
 
   //11
   set readonly(readonly: boolean) {
     const readonlyField = fieldType(FieldId.readonly, readonly);
-    this.readonlyChanges.next(readonlyField);
+    console.log(readonlyField);
   }
 
   set readonlyRule(readonly: string) {
     const readonlyField = fieldType(FieldId.readonlyRule, readonly);
-    this.readonlyRuleChanges.next(readonlyField);
+    console.log(readonlyField);
   }
 
   //12
   set tabindex(tabindex: number) {
     const tabindexField = fieldType(FieldId.tabindex, tabindex);
-    this.tabindexChanges.next(tabindexField);
+    console.log(tabindexField);
   }
 
   set tabindexRule(tabindex: string) {
     const tabindexField = fieldType(FieldId.tabindexRule, tabindex);
-    this.tabindexRuleChanges.next(tabindexField);
+    console.log(tabindexField);
   }
 
   //13
   set step(step: number) {
     const stepField = fieldType(FieldId.step, step);
-    this.stepChanges.next(stepField);
+    console.log(stepField);
   }
 
   set stepRule(step: string) {
     const stepField = fieldType(FieldId.stepRule, step);
-    this.stepRuleChanges.next(stepField);
+    console.log(stepField);
   }
 
   //14
   set pattern(pattern: string | RegExp) {
     const patField = fieldType(FieldId.pattern, pattern);
-    this.patternChanges.next(patField);
+    console.log(patField);
   }
 
   //15
   set options(options: string[]) {
     const optField = fieldType(FieldId.options, options);
-    this.optsChanges.next(optField);
+    console.log(optField);
   }
 
 
   //16
   set attributes(attributes: { [key: string]: string | number }) {
     const attrField = fieldType(FieldId.attributes, attributes);
-    this.attrsChanges.next(attrField);
+    console.log(attrField);
   }
 }

@@ -60,8 +60,8 @@ export enum FieldId {
 
   tabindex = "tabindex",
   step = "step",
-  min = "minimum",
-  max = "maximum",
+  min = "min",
+  max = "max",
 
   tabindexRule = "tabindexRule",
   stepRule = "stepRule",

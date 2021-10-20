@@ -1,6 +1,6 @@
 export type BooTyped = "required" | "disabled" | "hidden" | "readonly";
 
-export type NumTyped = "tabindex" | "maximum" | "minimum" | "step";
+export type NumTyped = "tabindex" | "max" | "min" | "step";
 
 export const booLabels = ["required", "disabled", "hidden", "readonly"];
 export const numLabels = ["tabindex", "maximum", "minimum", "step"];
@@ -30,7 +30,7 @@ export interface BooTyper {
 export interface NumTyper {
   current: NumTyped;
   tabindex: FieldEssentials;
-  maximum: FieldEssentials;
-  minimum: FieldEssentials;
+  max: FieldEssentials;
+  min: FieldEssentials;
   step: FieldEssentials;
 }

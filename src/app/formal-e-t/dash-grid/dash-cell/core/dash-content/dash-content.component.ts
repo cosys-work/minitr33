@@ -103,28 +103,28 @@ export class DashContentComponent {
     switch (this.strState.current) {
       case FieldId.label:
         this.changes.get.labelStream.pipe(take(1)).subscribe(l => {
-          if (typeof l.value === "string") {
-            this.maInput.nativeElement.value = l.value;
+          if (typeof l === "string") {
+            this.maInput.nativeElement.value = l;
           }
         });
         break;
       case FieldId.placeholder:
         this.changes.get.placeholderStream.pipe(take(1)).subscribe(p => {
-          if (typeof p.value === "string") {
-            this.maInput.nativeElement.value = p.value;
+          if (typeof p === "string") {
+            this.maInput.nativeElement.value = p;
           }
         });
         break;
       case FieldId.description:
         this.changes.get.descriptionStream.pipe(take(1)).subscribe(d => {
-          if (typeof d.value === "string") {
-            this.maInput.nativeElement.value = d.value;
+          if (typeof d === "string") {
+            this.maInput.nativeElement.value = d;
           }});
         break;
       case FieldId.id:
         this.changes.get.idStream.pipe(take(1)).subscribe(i => {
-          if (typeof i.value === "string") {
-            this.maInput.nativeElement.value = i.value
+          if (typeof i === "string") {
+            this.maInput.nativeElement.value = i
           }
         });
         break;

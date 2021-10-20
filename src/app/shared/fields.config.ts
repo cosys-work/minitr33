@@ -1,3 +1,5 @@
+import {BooTyper, NumTyper} from "./logic.model";
+
 export const allTypes: string[] = [
   "input,text",
   "input,number",
@@ -102,5 +104,54 @@ export const optState: OptFieldsState = {
     label: "Attributes",
     placeholder: "Special fields",
     description: "Special attributes go here",
+  }
+}
+
+
+export  const numState: NumTyper = {
+  current: "tabindex",
+  tabindex: {
+    label: "Index",
+    placeholder: "0",
+    description: "Position",
+  },
+  max: {
+    label: "Max",
+    placeholder: "Eg: 1000",
+    description: "Max value",
+  },
+  min: {
+    label: "Min",
+    placeholder: "0",
+    description: "Min value",
+  },
+  step: {
+    label: "Step",
+    placeholder: "0",
+    description: "Increment",
+  }
+};
+
+export const booState: BooTyper = {
+  current: "required",
+  required: {
+    label: "Rule for 'Required'",
+    placeholder: "false",
+    description: "When is this a required field?",
+  },
+  disabled: {
+    label: "Rule for 'Disabled'",
+    placeholder: "false",
+    description: "When is this a disabled field?",
+  },
+  hidden: {
+    label: "Rule for 'Hidden'",
+    placeholder: "false",
+    description: "When is this a hidden field?",
+  },
+  readonly: {
+    label: "Rule for 'Readonly'",
+    placeholder: "false",
+    description: "When is this a readonly field?",
   }
 }

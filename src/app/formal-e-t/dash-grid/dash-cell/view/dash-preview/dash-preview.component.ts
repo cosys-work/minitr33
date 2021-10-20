@@ -99,14 +99,14 @@ export class DashPreviewComponent implements AfterViewInit, OnDestroy {
 
   updateWhenContentUpdates() {
     this.changes.get.labelStream.subscribe(l => {
-      if (typeof l.value === "string") {
-        this.fieldGroup[this.cursor].templateOptions.label = l.value;
-        this.fieldGroup[this.cursor].key = keyMaker(l.value);
+      if (typeof l === "string") {
+        this.fieldGroup[this.cursor].templateOptions.label = l;
+        this.fieldGroup[this.cursor].key = keyMaker(l);
       }
     });
 
     this.changes.get.typeStream.subscribe(t => {
-      const [typeA, typeB] = (t.value as string).trim().split(",");
+      const [typeA, typeB] = (t as string).trim().split(",");
       this.fieldGroup[this.cursor].type = typeA;
       if (typeB) {
         this.fieldGroup[this.cursor].templateOptions.type = typeB;
@@ -114,98 +114,98 @@ export class DashPreviewComponent implements AfterViewInit, OnDestroy {
     });
 
     this.changes.get.placeholderStream.subscribe((p) => {
-      this.fieldGroup[this.cursor].templateOptions.placeholder = (p.value as string).trim();
+      this.fieldGroup[this.cursor].templateOptions.placeholder = (p as string).trim();
     });
 
     this.changes.get.descriptionStream.subscribe((p) => {
-      this.fieldGroup[this.cursor].templateOptions.description = (p.value as string).trim();
+      this.fieldGroup[this.cursor].templateOptions.description = (p as string).trim();
     });
 
     this.changes.get.optionsStream.subscribe((p) => {
-      this.fieldGroup[this.cursor].templateOptions.options = p.value as any[];
+      this.fieldGroup[this.cursor].templateOptions.options = p as any[];
     });
 
     this.changes.get.attributesStream.subscribe((p) => {
-      this.fieldGroup[this.cursor].templateOptions.attributes = p.value as AlKeysAlNumVals;
+      this.fieldGroup[this.cursor].templateOptions.attributes = p as AlKeysAlNumVals;
     });
 
     this.changes.get.patternStream.subscribe((p) => {
-      if (typeof p.value === "string") {
-        this.fieldGroup[this.cursor].templateOptions.pattern = p.value;
+      if (typeof p === "string") {
+        this.fieldGroup[this.cursor].templateOptions.pattern = p;
       }
     });
 
     this.changes.get.hiddenStream.subscribe((p) => {
-      if (typeof p.value === "boolean") {
-        this.fieldGroup[this.cursor].templateOptions.hidden = p.value;
+      if (typeof p === "boolean") {
+        this.fieldGroup[this.cursor].templateOptions.hidden = p;
       }
     });
     this.changes.get.readonlyStream.subscribe((p) => {
-      if (typeof p.value === "boolean") {
-        this.fieldGroup[this.cursor].templateOptions.readonly = p.value;
+      if (typeof p === "boolean") {
+        this.fieldGroup[this.cursor].templateOptions.readonly = p;
       }
     });
     this.changes.get.requiredStream.subscribe((p) => {
-      if (typeof p.value === "boolean") {
-        this.fieldGroup[this.cursor].templateOptions.required = p.value;
+      if (typeof p === "boolean") {
+        this.fieldGroup[this.cursor].templateOptions.required = p;
       }
     });
     this.changes.get.disabledStream.subscribe((a) => {
-      if (typeof a.value === "boolean") {
-        this.fieldGroup[this.cursor].templateOptions.disabled = a.value;
+      if (typeof a === "boolean") {
+        this.fieldGroup[this.cursor].templateOptions.disabled = a;
       }
     });
 
     this.changes.get.maxStream.subscribe((p) => {
-      if (typeof p.value === "number") {
-        this.fieldGroup[this.cursor].templateOptions.max = p.value;
-        this.fieldGroup[this.cursor].templateOptions.maxLength = p.value;
+      if (typeof p === "number") {
+        this.fieldGroup[this.cursor].templateOptions.max = p;
+        this.fieldGroup[this.cursor].templateOptions.maxLength = p;
       }
     });
     this.changes.get.minStream.subscribe((p) => {
-      if (typeof p.value === "number") {
-        this.fieldGroup[this.cursor].templateOptions.min = p.value;
-        this.fieldGroup[this.cursor].templateOptions.minLength = p.value;
+      if (typeof p === "number") {
+        this.fieldGroup[this.cursor].templateOptions.min = p;
+        this.fieldGroup[this.cursor].templateOptions.minLength = p;
       }
     });
     this.changes.get.stepStream.subscribe((p) => {
-      if (typeof p.value === "number") {
-        this.fieldGroup[this.cursor].templateOptions.step = p.value;
-        this.fieldGroup[this.cursor].templateOptions.rows = p.value;
-        this.fieldGroup[this.cursor].templateOptions.cols = p.value;
+      if (typeof p === "number") {
+        this.fieldGroup[this.cursor].templateOptions.step = p;
+        this.fieldGroup[this.cursor].templateOptions.rows = p;
+        this.fieldGroup[this.cursor].templateOptions.cols = p;
       }
     });
     this.changes.get.tabindexStream.subscribe((p) => {
-      if (typeof p.value === "number") {
-        this.fieldGroup[this.cursor].templateOptions.tabindex = p.value;
+      if (typeof p === "number") {
+        this.fieldGroup[this.cursor].templateOptions.tabindex = p;
       }
     });
 
 
     this.changes.get.hiddenRuleStream.subscribe((p) => {
-      this.tOptRuleUpdater("hiddenRule", p.value);
+      this.tOptRuleUpdater("hiddenRule", p);
     });
     this.changes.get.readonlyRuleStream.subscribe((p) => {
-      this.tOptRuleUpdater("readonlyRule", p.value);
+      this.tOptRuleUpdater("readonlyRule", p);
     });
     this.changes.get.requiredRuleStream.subscribe((p) => {
-      this.tOptRuleUpdater("requiredRule", p.value);
+      this.tOptRuleUpdater("requiredRule", p);
     });
     this.changes.get.disabledRuleStream.subscribe((a) => {
-      this.tOptRuleUpdater("disabledRule", a.value);
+      this.tOptRuleUpdater("disabledRule", a);
     });
 
     this.changes.get.maxRuleStream.subscribe((p) => {
-      this.tOptRuleUpdater("maxRule", p.value);
+      this.tOptRuleUpdater("maxRule", p);
     });
     this.changes.get.minRuleStream.subscribe((p) => {
-      this.tOptRuleUpdater("minRule", p.value);
+      this.tOptRuleUpdater("minRule", p);
     });
     this.changes.get.stepRuleStream.subscribe((p) => {
-      this.tOptRuleUpdater("stepRule", p.value);
+      this.tOptRuleUpdater("stepRule", p);
     });
     this.changes.get.tabindexRuleStream.subscribe((p) => {
-      this.tOptRuleUpdater("tabindexRule", p.value);
+      this.tOptRuleUpdater("tabindexRule", p);
     });
   }
 

@@ -33,19 +33,21 @@ export interface ValidationMessageOption {
     | ((error: any, field: FormlyFieldConfig) => string | Observable<string>);
 }
 
+export interface Validation extends FieldRefsAddons {
+  messages?: {
+    [messageProperties: string]: ValidationMessageOption['message'];
+  };
+  show?: boolean;
+
+  [additionalProperties: string]: any;
+}
+
 export interface FormalField {
   key: string;
   type: string;
   className: string;
   id: string;
   templateOptions: TemplateOptions;
-  validation: {
-    messages?: {
-      [messageProperties: string]: ValidationMessageOption['message'];
-    };
-    show?: boolean;
-
-    [additionalProperties: string]: any;
-  } & FieldRefsAddons ;
+  validation: Validation ;
   jump?: FormalField | FormalField[];
 }

@@ -1,16 +1,19 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Observable, Subject} from "rxjs";
-import {FieldType} from "../shared/field.model";
+import {FieldValueType} from "../shared/field.model";
 import {debounceTime, distinctUntilChanged, filter} from "rxjs/operators";
 import {ChangeSettersService} from "./change-setters.service";
+import {FormalField, TemplateOptions, Validation} from "../shared/shared.model";
 
-export function debounceObs(bSub: Observable<FieldType>): Observable < FieldType > {
-  const dummy = (new Subject<FieldType>()).asObservable;
+export type DebounceCandidate = FieldValueType | TemplateOptions | Validation | FormalField | FormalField[];
+
+export function debounceObs(bSub: Observable<DebounceCandidate>): Observable <DebounceCandidate > {
+  const dummy = (new Subject<DebounceCandidate>()).asObservable;
   return bSub ? bSub.pipe(
     debounceTime(300),
     distinctUntilChanged(),
-    filter(v => v.value !== undefined),
-    filter(v => v.value !== ""),
+    filter(v => v !== undefined),
+    filter(v => v !== ""),
   ) : dummy();
 }
 
@@ -31,11 +34,11 @@ export class ChangeGettersService {
   }
 
   get descriptionStream() {
-    return debounceObs(this.cs.descChanges);
+    return debounceObs(this.cs.descriptionChanges);
   }
 
   get placeholderStream() {
-    return debounceObs(this.cs.placeChanges);
+    return debounceObs(this.cs.placeholderChanges);
   }
 
 

@@ -5,17 +5,11 @@ import {MatSlideToggleChange} from '@angular/material/slide-toggle';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {take} from 'rxjs/operators';
 
-import {FieldId, FieldType} from "../../../../../shared/field.model";
-import {
-  booLabels,
-  BooTyped,
-  BooTyper,
-  isNumTyped,
-  numLabels,
-  NumTyped,
-  NumTyper
-} from "../../../../../shared/logic.model";
+import {FieldId} from "../../../../../shared/field.model";
+import {booLabels, BooTyped, isNumTyped, numLabels, NumTyped} from "../../../../../shared/logic.model";
 import {DashChangesService} from "../../../../../store/dash-changes.service";
+import {DebounceCandidate} from "../../../../../store/change-getters.service";
+import {booState, numState} from "../../../../../shared/fields.config";
 
 @Component({
   selector: 'app-dash-logic',
@@ -27,57 +21,12 @@ export class DashLogicComponent {
 
   keyCtrl = new FormControl();
 
-  state: NumTyper = {
-    current: "tabindex",
-    tabindex: {
-      label: "Index",
-      placeholder: "0",
-      description: "Position",
-    },
-    maximum: {
-      label: "Max",
-      placeholder: "Eg: 1000",
-      description: "Max value",
-    },
-    minimum: {
-      label: "Min",
-      placeholder: "0",
-      description: "Min value",
-    },
-    step: {
-      label: "Step",
-      placeholder: "0",
-      description: "Increment",
-    }
-  };
+  numState = numState;
+  booState = booState;
 
-  booState: BooTyper = {
-    current: "required",
-    required: {
-      label: "Rule for 'Required'",
-      placeholder: "false",
-      description: "When is this a required field?",
-    },
-    disabled: {
-      label: "Rule for 'Disabled'",
-      placeholder: "false",
-      description: "When is this a disabled field?",
-    },
-    hidden: {
-      label: "Rule for 'Hidden'",
-      placeholder: "false",
-      description: "When is this a hidden field?",
-    },
-    readonly: {
-      label: "Rule for 'Readonly'",
-      placeholder: "false",
-      description: "When is this a readonly field?",
-    }
-  }
-
-  strLab = new BehaviorSubject(this.state.tabindex.label);
-  strPlace = new BehaviorSubject(this.state.tabindex.placeholder);
-  strDesc = new BehaviorSubject(this.state.tabindex.description);
+  strLab = new BehaviorSubject(this.numState.tabindex.label);
+  strPlace = new BehaviorSubject(this.numState.tabindex.placeholder);
+  strDesc = new BehaviorSubject(this.numState.tabindex.description);
 
   booLabels = booLabels;
   numLabels = numLabels;
@@ -131,13 +80,13 @@ export class DashLogicComponent {
     this.changes.set.readonly = changed.checked;
   }
 
-  nextGet(selector: NumTyped | BooTyped, streams: Observable<FieldType>[]) {
+  nextGet(selector: NumTyped | BooTyped, streams: Observable<DebounceCandidate>[]) {
     const elems = streams.length === 2 ? [this.numInput] : [];
 
     if (isNumTyped(selector)) {
-      this.strLab.next(this.state[selector].label);
-      this.strPlace.next(this.state[selector].placeholder);
-      this.strDesc.next(this.state[selector].description);
+      this.strLab.next(this.numState[selector].label);
+      this.strPlace.next(this.numState[selector].placeholder);
+      this.strDesc.next(this.numState[selector].description);
       elems.push(this.rulInput);
     } else {
       this.booStrLab.next(this.booState[selector].label);
@@ -149,8 +98,8 @@ export class DashLogicComponent {
     streams.forEach((s, i) => {
       s.pipe(take(1))
         .subscribe(s => {
-          if (typeof s.value === "string") {
-            elems[i].nativeElement.value = s.value;
+          if (typeof s === "string") {
+            elems[i].nativeElement.value = s;
           }
         });
     });
@@ -180,17 +129,17 @@ export class DashLogicComponent {
 
   onNumFieldSelect(_: string) {
     const cg = this.changes.get;
-    switch (this.state.current) {
-      case FieldId.tabindex: //"tabindex":
+    switch (this.numState.current) {
+      case FieldId.tabindex:
         this.nextGet(FieldId.tabindex, [cg.tabindexStream, cg.tabindexRuleStream]);
         break;
-      case "maximum": //maximum
+      case FieldId.max:
         this.nextGet(FieldId.max, [cg.maxStream, cg.maxRuleStream]);
         break;
-      case "minimum": //minimum
+      case FieldId.min:
         this.nextGet(FieldId.max, [cg.minStream, cg.minRuleStream]);
         break;
-      case "step": //step
+      case FieldId.step:
         this.nextGet(FieldId.step, [cg.stepStream, cg.stepRuleStream]);
         break;
       default:
@@ -203,23 +152,23 @@ export class DashLogicComponent {
   }
 
   onNumFieldChange(changed: string, unruly = true) {
-    switch (this.state.current) {
-      case "tabindex":
+    switch (this.numState.current) {
+      case FieldId.tabindex:
         unruly ?
           this.changes.set.tabindex = Number(changed) :
           this.changes.set.tabindexRule = changed;
         break;
-      case "maximum":
+      case FieldId.max:
         unruly ?
           this.changes.set.max = Number(changed) :
           this.changes.set.maxRule = changed;
         break;
-      case "minimum":
+      case FieldId.min:
         unruly ?
           this.changes.set.min = Number(changed) :
           this.changes.set.minRule = changed;
         break;
-      case "step":
+      case FieldId.step:
         unruly ?
           this.changes.set.step = Number(changed) :
           this.changes.set.stepRule = changed;
@@ -230,7 +179,7 @@ export class DashLogicComponent {
   }
 
   selectNumField(event: MatRadioChange) {
-    this.state.current = event.source.value;
+    this.numState.current = event.source.value;
     this.onNumFieldSelect(event.value);
   }
 
