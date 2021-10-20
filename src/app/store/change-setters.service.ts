@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {FieldId, FieldType, fieldType} from "../../../../shared/field.model";
+import {FieldId, FieldType, fieldType} from "../shared/field.model";
 import {ReplaySubject} from "rxjs";
 
 @Injectable({

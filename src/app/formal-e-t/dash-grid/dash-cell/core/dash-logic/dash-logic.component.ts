@@ -4,7 +4,7 @@ import {MatRadioChange} from '@angular/material/radio';
 import {MatSlideToggleChange} from '@angular/material/slide-toggle';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {take} from 'rxjs/operators';
-import {DashChangesService} from '../dash-changes.service';
+
 import {FieldId, FieldType} from "../../../../../shared/field.model";
 import {
   booLabels,
@@ -15,6 +15,7 @@ import {
   NumTyped,
   NumTyper
 } from "../../../../../shared/logic.model";
+import {DashChangesService} from "../../../../../store/dash-changes.service";
 
 @Component({
   selector: 'app-dash-logic',

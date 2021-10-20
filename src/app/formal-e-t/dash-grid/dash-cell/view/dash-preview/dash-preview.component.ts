@@ -3,8 +3,9 @@ import {FormGroup} from '@angular/forms';
 import {FormlyFieldConfig} from '@ngx-formly/core';
 import {FormalField} from 'src/app/shared/shared.model';
 import {GrafStore} from 'src/app/store/graf-store.service';
-import {DashChangesService} from '../../core/dash-changes.service';
+
 import {AlKeysAlNumVals, FieldRefsAddons} from "../../../../../shared/field.model";
+import {DashChangesService} from "../../../../../store/dash-changes.service";
 
 const keyMaker = (key: string) => {
   return key.trim().toLowerCase().replace(/ /g, '_');

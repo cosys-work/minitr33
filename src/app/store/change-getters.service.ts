@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {Observable, Subject} from "rxjs";
-import {FieldType} from "../../../../shared/field.model";
+import {FieldType} from "../shared/field.model";
 import {debounceTime, distinctUntilChanged, filter} from "rxjs/operators";
 import {ChangeSettersService} from "./change-setters.service";
 

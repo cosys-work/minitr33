@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
 import {ChangeSettersService} from "./change-setters.service";
 import {ChangeGettersService} from "./change-getters.service";
-import {GrafStore} from "../../../../store/graf-store.service";
-import {FormalField, TemplateOptions} from "../../../../shared/shared.model";
+import {GrafStore} from "./graf-store.service";
+import {FormalField, TemplateOptions} from "../shared/shared.model";
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +14,7 @@ export class DashChangesService {
     public set: ChangeSettersService,
     public get: ChangeGettersService,
   ) {
-    this.grafStore.current.subscribe(cursor => {
+    this.grafStore.current.subscribe((cursor: number) => {
       if (cursor >= 0 && cursor < this.grafStore.nodes.length) {
         const field: FormalField = this.grafStore.nodes[cursor].field;
         const refs: TemplateOptions = field.templateOptions;

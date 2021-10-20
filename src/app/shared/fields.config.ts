@@ -42,12 +42,19 @@ export interface  StrFields {
   id: LPD;
 }
 
-export interface StrFieldsState {
+export interface OptFields {
+  type: LPD;
+  options: LPD;
+  pattern: LPD;
+  attributes: LPD;
+}
+
+export interface StrFieldsState extends StrFields {
   current: keyof StrFields;
-  label: LPD;
-  placeholder: LPD;
-  description: LPD;
-  id: LPD;
+}
+
+export interface OptFieldsState extends OptFields {
+  current: keyof OptFields;
 }
 
 export const strState: StrFieldsState = {
@@ -74,7 +81,7 @@ export const strState: StrFieldsState = {
   }
 }
 
-export const optState = {
+export const optState: OptFieldsState = {
   current: "type",
   type: {
     label: "Type",

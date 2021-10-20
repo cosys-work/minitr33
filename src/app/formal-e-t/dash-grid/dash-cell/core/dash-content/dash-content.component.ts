@@ -6,7 +6,7 @@ import {MatChipInputEvent} from '@angular/material/chips';
 import {MatRadioChange} from '@angular/material/radio';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {map, startWith, take} from 'rxjs/operators';
-import {DashChangesService} from '../dash-changes.service';
+
 import {FieldId} from "../../../../../shared/field.model";
 import {
   allAttributes,
@@ -16,6 +16,7 @@ import {
   strLabels,
   strState
 } from "../../../../../shared/fields.config";
+import {DashChangesService} from "../../../../../store/dash-changes.service";
 
 
 @Component({
@@ -135,29 +136,23 @@ export class DashContentComponent {
   selectOptField(event: MatRadioChange) {
     console.log("selected opt", event);
     this.optState.current = event.source.value;
+    this.oysterLab.next(this.optState[this.optState.current].label);
+    this.oysterPlace.next(this.optState[this.optState.current].placeholder);
+    this.oysterDesc.next(this.optState[this.optState.current].description);
     switch (this.optState.current) {
-      case "type":
-        this.oysterLab.next(this.optState.type.label);
-        this.oysterPlace.next(this.optState.type.placeholder);
-        this.oysterDesc.next(this.optState.type.description);
+      case FieldId.type:
+
         // this.maInput.nativeElement.value = this.changes.label ?? "";
         break;
       case "options":
-        this.oysterLab.next(this.optState.options.label);
-        this.oysterPlace.next(this.optState.options.placeholder);
-        this.oysterDesc.next(this.optState.options.description);
+
         // this.maInput.nativeElement.value = this.changes.placeholder ?? "";
         break;
       case "pattern":
-        this.oysterLab.next(this.optState.pattern.label);
-        this.oysterPlace.next(this.optState.pattern.placeholder);
-        this.oysterDesc.next(this.optState.pattern.description);
         // this.maInput.nativeElement.value = this.changes.description ?? "";
         break;
       case "attributes":
-        this.oysterLab.next(this.optState.attributes.label);
-        this.oysterPlace.next(this.optState.attributes.placeholder);
-        this.oysterDesc.next(this.optState.attributes.description);
+
         // this.maInput.nativeElement.value = this.changes.id ?? "";
         break;
       default:
@@ -168,16 +163,16 @@ export class DashContentComponent {
   onStrFieldDataChange(changed: string) {
     console.log("changed str field data", changed);
     switch (this.strState.current) {
-      case "label":
+      case FieldId.label:
         this.changes.set.label = changed;
         break;
-      case "description":
+      case FieldId.description:
         this.changes.set.description = changed;
         break;
-      case "placeholder":
+      case FieldId.placeholder:
         this.changes.set.placeholder = changed;
         break;
-      case "id":
+      case FieldId.id:
         this.changes.set.id = changed;
         break;
       default:
