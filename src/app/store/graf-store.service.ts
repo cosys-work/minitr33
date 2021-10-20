@@ -1,9 +1,8 @@
-import { E, P } from "@angular/cdk/keycodes";
-import { Injectable } from "@angular/core";
-import { ObservableStore } from "@codewithdan/observable-store";
-import { Observable, Subject } from "rxjs";
-import { FEdge, FGraph, FNode } from "../shared/f-graph.model";
-import { SeedInitService } from "./seed-init.service";
+import {Injectable} from "@angular/core";
+import {ObservableStore} from "@codewithdan/observable-store";
+import {Observable, Subject} from "rxjs";
+import {FEdge, FGraph, FNode} from "../shared/f-graph.model";
+import {SeedInitService} from "./seed-init.service";
 
 enum Actions {
   INIT="INIT_GRAF",
@@ -49,14 +48,14 @@ export class GrafStore extends ObservableStore<FGraph> {
     const edgeToRemoveArr: FEdge[] = this.edges.filter(e => {
       return e.label === fez.label;
     });
-    
+
     if (!edgeToRemoveArr.length) return;
 
     const edgeToRemove = edgeToRemoveArr[0];
     const nodeToRemove = edgeToRemove.origin;
 
 
-    // TODO refactor so as to not assume that the nodes and edges 
+    // TODO refactor so as to not assume that the nodes and edges
     // are guaranteed to remain ordered despite of state changes
     const eIndex = this.edges.findIndex(e => e.origin.id === edgeToRemove.origin.id);
     const nIndex = this.nodes.findIndex(n => n.id === nodeToRemove.id);
@@ -68,13 +67,13 @@ export class GrafStore extends ObservableStore<FGraph> {
 
     const prevEdgeToModify = this.edges[eIndex - 1] ?? null;
     if (prevEdgeToModify) {
-      allEdgesBefore[allEdgesBefore.length - 1].target = nextNode?.id;
+      allEdgesBefore[allEdgesBefore.length - 1].target = nextNode.id;
     }
 
-    // else we are removing the root node, no edits needed 
+    // else we are removing the root node, no edits needed
     // other than yeeting off the current node-edge pair ofc
     // nodes are pruned off automatically by the structure
-    this.newEdges = [...allEdgesBefore, ...allEdgesAfter];    
+    this.newEdges = [...allEdgesBefore, ...allEdgesAfter];
   }
 
   set newGraph(gDef: FGraph) {
@@ -85,8 +84,7 @@ export class GrafStore extends ObservableStore<FGraph> {
   set newEdges(edges: FGraph['edges']) {
     const newState: FGraph = { ...this.state, edges };
     this.setState(newState, Actions.EDIT);
-    const newNods: FNode[] = edges.map(e => e.origin);
-    this.newNodes = newNods;
+    this.newNodes = edges.map(e => e.origin);
     this.actionStream.next(newState);
   }
 
@@ -97,8 +95,7 @@ export class GrafStore extends ObservableStore<FGraph> {
 
   addEdge() {
     const emptyEdge = this.seed.edgeMaker(this.edges.length);
-    const adage = [ ...this.edges, emptyEdge];
-    this.newEdges = adage; // updates stream too
+    this.newEdges = [...this.edges, emptyEdge]; // updates stream too
   }
 
 }

@@ -11,9 +11,10 @@ export interface FNode {
     field: FormalField;
 }
 
+
 /**
- * Each edge contains a `FNode`
-*/
+ * Each edge contains a `FNode` of origin
+ */
 export interface FEdge {
     source: string;
     origin: FNode;

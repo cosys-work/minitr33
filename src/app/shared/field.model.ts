@@ -68,7 +68,6 @@ export enum FieldId {
   minRule = "minRule",
   maxRule = "maxRule",
 
-
   pattern = "pattern",
   options = "options",
   attributes = "attributes"

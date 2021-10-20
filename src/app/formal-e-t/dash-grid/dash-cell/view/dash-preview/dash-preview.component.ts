@@ -5,7 +5,7 @@ import {FormalField} from 'src/app/shared/shared.model';
 import {FormCursorStoreService} from 'src/app/store/form-cursor-store.service';
 import {GrafStore} from 'src/app/store/graf-store.service';
 import {DashChangesService} from '../../core/dash-changes.service';
-import {FieldRefsAddons} from "../../../../../shared/field.model";
+import {AlKeysAlNumVals, FieldRefsAddons} from "../../../../../shared/field.model";
 
 const keyMaker = (key: string) => {
   return key.trim().toLowerCase().replace(/ /g, '_');
@@ -100,12 +100,14 @@ export class DashPreviewComponent implements AfterViewInit, OnDestroy {
 
   updateWhenContentUpdates() {
     this.changes.get.labelStream.subscribe(l => {
-      this.fieldGroup[this.cursor].templateOptions.label = l.value;
-      this.fieldGroup[this.cursor].key = keyMaker(l.value);
+      if (typeof l.value === "string") {
+        this.fieldGroup[this.cursor].templateOptions.label = l.value;
+        this.fieldGroup[this.cursor].key = keyMaker(l.value);
+      }
     });
 
     this.changes.get.typeStream.subscribe(t => {
-      const [typeA, typeB] = t.value.trim().split(",");
+      const [typeA, typeB] = (t.value as string).trim().split(",");
       this.fieldGroup[this.cursor].type = typeA;
       if (typeB) {
         this.fieldGroup[this.cursor].templateOptions.type = typeB;
@@ -113,54 +115,71 @@ export class DashPreviewComponent implements AfterViewInit, OnDestroy {
     });
 
     this.changes.get.placeholderStream.subscribe((p) => {
-      this.fieldGroup[this.cursor].templateOptions.placeholder = p.value.trim();
+      this.fieldGroup[this.cursor].templateOptions.placeholder = (p.value as string).trim();
     });
 
     this.changes.get.descriptionStream.subscribe((p) => {
-      this.fieldGroup[this.cursor].templateOptions.description = p.value.trim();
+      this.fieldGroup[this.cursor].templateOptions.description = (p.value as string).trim();
     });
 
     this.changes.get.optionsStream.subscribe((p) => {
-      this.fieldGroup[this.cursor].templateOptions.options = p.value;
+      this.fieldGroup[this.cursor].templateOptions.options = p.value as any[];
     });
 
     this.changes.get.attributesStream.subscribe((p) => {
-      this.fieldGroup[this.cursor].templateOptions.attributes = p.value;
+      this.fieldGroup[this.cursor].templateOptions.attributes = p.value as AlKeysAlNumVals;
     });
 
     this.changes.get.patternStream.subscribe((p) => {
-      this.fieldGroup[this.cursor].templateOptions.pattern = p.value;
+      if (typeof p.value === "string") {
+        this.fieldGroup[this.cursor].templateOptions.pattern = p.value;
+      }
     });
-
 
     this.changes.get.hiddenStream.subscribe((p) => {
-      this.fieldGroup[this.cursor].templateOptions.hidden = p.value;
+      if (typeof p.value === "boolean") {
+        this.fieldGroup[this.cursor].templateOptions.hidden = p.value;
+      }
     });
     this.changes.get.readonlyStream.subscribe((p) => {
-      this.fieldGroup[this.cursor].templateOptions.readonly = p.value;
+      if (typeof p.value === "boolean") {
+        this.fieldGroup[this.cursor].templateOptions.readonly = p.value;
+      }
     });
     this.changes.get.requiredStream.subscribe((p) => {
-      this.fieldGroup[this.cursor].templateOptions.required = p.value;
+      if (typeof p.value === "boolean") {
+        this.fieldGroup[this.cursor].templateOptions.required = p.value;
+      }
     });
     this.changes.get.disabledStream.subscribe((a) => {
-      this.fieldGroup[this.cursor].templateOptions.disabled = a.value;
+      if (typeof a.value === "boolean") {
+        this.fieldGroup[this.cursor].templateOptions.disabled = a.value;
+      }
     });
 
     this.changes.get.maxStream.subscribe((p) => {
-      this.fieldGroup[this.cursor].templateOptions.max = p.value;
-      this.fieldGroup[this.cursor].templateOptions.maxLength = p.value;
+      if (typeof p.value === "number") {
+        this.fieldGroup[this.cursor].templateOptions.max = p.value;
+        this.fieldGroup[this.cursor].templateOptions.maxLength = p.value;
+      }
     });
     this.changes.get.minStream.subscribe((p) => {
-      this.fieldGroup[this.cursor].templateOptions.min = p.value;
-      this.fieldGroup[this.cursor].templateOptions.minLength = p.value;
+      if (typeof p.value === "number") {
+        this.fieldGroup[this.cursor].templateOptions.min = p.value;
+        this.fieldGroup[this.cursor].templateOptions.minLength = p.value;
+      }
     });
     this.changes.get.stepStream.subscribe((p) => {
-      this.fieldGroup[this.cursor].templateOptions.step = p.value;
-      this.fieldGroup[this.cursor].templateOptions.rows = p.value;
-      this.fieldGroup[this.cursor].templateOptions.cols = p.value;
+      if (typeof p.value === "number") {
+        this.fieldGroup[this.cursor].templateOptions.step = p.value;
+        this.fieldGroup[this.cursor].templateOptions.rows = p.value;
+        this.fieldGroup[this.cursor].templateOptions.cols = p.value;
+      }
     });
     this.changes.get.tabindexStream.subscribe((p) => {
-      this.fieldGroup[this.cursor].templateOptions.tabindex = p.value;
+      if (typeof p.value === "number") {
+        this.fieldGroup[this.cursor].templateOptions.tabindex = p.value;
+      }
     });
 
 

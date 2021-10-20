@@ -7,6 +7,15 @@ import {MatRadioChange} from '@angular/material/radio';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {map, startWith, take} from 'rxjs/operators';
 import {DashChangesService} from '../dash-changes.service';
+import {FieldId} from "../../../../../shared/field.model";
+import {
+  allAttributes,
+  allOptions,
+  allPatterns, allTypes, optLabels,
+  optState,
+  strLabels,
+  strState
+} from "../../../../../shared/fields.config";
 
 
 @Component({
@@ -22,87 +31,19 @@ export class DashContentComponent {
   removable = true;
   separatorKeysCodes: number[] = [ENTER, COMMA];
 
-  allTypes: string[] = [
-    "input,text",
-    "input,number",
-    "input,email",
-    "input,password",
-    "input,time",
-    "input,date",
-    "input,tel",
-    "input,url",
-    "input,datetime-local",
-    "input,month",
-    "input,week",
-    "input,color",
-    'textarea',
-    'checkbox',
-    'radio',
-    'select',
-    'multi-select',
-    'datepicker',
-    'toggle',
-    'slider',
-    'autocomplete'
-  ];
-  allPatterns: string[] = ["Pattern 1", "Pattern 2"];
-  allOptions: string[] = ["Option 1", "Option 2"];
-  allAttributes: string[] = ["Attribute 1", "Attribute 2"];
+  allTypes = allTypes;
+  allPatterns = allPatterns;
+  allOptions = allOptions;
+  allAttributes = allAttributes;
+  strLabels = strLabels;
+  optLabels = optLabels;
 
-  strLabels = ["label", "description", "placeholder", "id"];
-  optLabels = ["type", "pattern", "options", "attributes"];
+  strState = strState;
+  strLab = new BehaviorSubject(this.strState.label.label);
+  strPlace = new BehaviorSubject(this.strState.label.placeholder);
+  strDesc = new BehaviorSubject(this.strState.label.description);
 
-  state = {
-    current: "label",
-    label: {
-      label: "Label",
-      placeholder: "Eg: First Name",
-      description: "Short Name of the Field",
-    },
-    placeholder: {
-      label: "Placeholder",
-      placeholder: "Eg: John Doe",
-      description: "Simple example value",
-    },
-    description: {
-      label: "Description",
-      placeholder: "Eg: Please fill in your first name",
-      description: "Some hints about the field",
-    },
-    id: {
-      label: "Id",
-      placeholder: "Eg: 42",
-      description: "A unique hidden id",
-    }
-  }
-  optState = {
-    current: "type",
-    type: {
-      label: "Type",
-      placeholder: "Input",
-      description: "Type of the field",
-    },
-    options: {
-      label: "Options",
-      placeholder: "Select options",
-      description: "Add options for the field",
-    },
-    pattern: {
-      label: "Pattern",
-      placeholder: "Regex",
-      description: "Add a regex pattern",
-    },
-    attributes: {
-      label: "Attributes",
-      placeholder: "Special fields",
-      description: "Special attributes go here",
-    }
-  }
-
-  strLab = new BehaviorSubject(this.state.label.label);
-  strPlace = new BehaviorSubject(this.state.label.placeholder);
-  strDesc = new BehaviorSubject(this.state.label.description);
-
+  optState = optState;
   oysterLab = new BehaviorSubject(this.optState.type.label);
   oysterPlace = new BehaviorSubject(this.optState.type.placeholder);
   oysterDesc = new BehaviorSubject(this.optState.type.description);
@@ -152,31 +93,39 @@ export class DashContentComponent {
   }
 
   selectStrField(event: MatRadioChange) {
-    this.state.current = event.source.value;
-    switch (this.state.current) {
-      case "label":
-        this.strLab.next(this.state.label.label);
-        this.strPlace.next(this.state.label.placeholder);
-        this.strDesc.next(this.state.label.description);
-        this.changes.get.labelStream.pipe(take(1)).subscribe(l => this.maInput.nativeElement.value = l.value);
+    this.strState.current = event.source.value;
+    this.strLab.next(this.strState[this.strState.current].label);
+    this.strPlace.next(this.strState[this.strState.current].placeholder);
+    this.strDesc.next(this.strState[this.strState.current].description);
+
+    // TODO refactor redundancy
+    switch (this.strState.current) {
+      case FieldId.label:
+        this.changes.get.labelStream.pipe(take(1)).subscribe(l => {
+          if (typeof l.value === "string") {
+            this.maInput.nativeElement.value = l.value;
+          }
+        });
         break;
-      case "placeholder":
-        this.strLab.next(this.state.placeholder.label);
-        this.strPlace.next(this.state.placeholder.placeholder);
-        this.strDesc.next(this.state.placeholder.description);
-        this.changes.get.placeholderStream.pipe(take(1)).subscribe(p =>this.maInput.nativeElement.value = p.value);
+      case FieldId.placeholder:
+        this.changes.get.placeholderStream.pipe(take(1)).subscribe(p => {
+          if (typeof p.value === "string") {
+            this.maInput.nativeElement.value = p.value;
+          }
+        });
         break;
-      case "description":
-        this.strLab.next(this.state.description.label);
-        this.strPlace.next(this.state.description.placeholder);
-        this.strDesc.next(this.state.description.description);
-        this.changes.get.descriptionStream.pipe(take(1)).subscribe(d => this.maInput.nativeElement.value = d.value);
+      case FieldId.description:
+        this.changes.get.descriptionStream.pipe(take(1)).subscribe(d => {
+          if (typeof d.value === "string") {
+            this.maInput.nativeElement.value = d.value;
+          }});
         break;
-      case "id":
-        this.strLab.next(this.state.id.label);
-        this.strPlace.next(this.state.id.placeholder);
-        this.strDesc.next(this.state.id.description);
-        this.changes.get.idStream.pipe(take(1)).subscribe(i => this.maInput.nativeElement.value = i.value);
+      case FieldId.id:
+        this.changes.get.idStream.pipe(take(1)).subscribe(i => {
+          if (typeof i.value === "string") {
+            this.maInput.nativeElement.value = i.value
+          }
+        });
         break;
       default:
         break;
@@ -218,7 +167,7 @@ export class DashContentComponent {
 
   onStrFieldDataChange(changed: string) {
     console.log("changed str field data", changed);
-    switch (this.state.current) {
+    switch (this.strState.current) {
       case "label":
         this.changes.set.label = changed;
         break;

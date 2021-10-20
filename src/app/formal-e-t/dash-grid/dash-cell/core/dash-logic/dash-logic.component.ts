@@ -147,7 +147,11 @@ export class DashLogicComponent {
 
     streams.forEach((s, i) => {
       s.pipe(take(1))
-        .subscribe(s => elems[i].nativeElement.value = s.value);
+        .subscribe(s => {
+          if (typeof s.value === "string") {
+            elems[i].nativeElement.value = s.value;
+          }
+        });
     });
   }
 

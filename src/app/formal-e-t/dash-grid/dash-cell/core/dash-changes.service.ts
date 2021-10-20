@@ -1,9 +1,9 @@
 import {Injectable} from '@angular/core';
-import {FullFieldRefs} from 'src/app/shared/field.model';
-import {FieldRefsStoreService} from 'src/app/store/field-refs-store.service';
 import {FormCursorStoreService} from 'src/app/store/form-cursor-store.service';
 import {ChangeSettersService} from "./change-setters.service";
 import {ChangeGettersService} from "./change-getters.service";
+import {GrafStore} from "../../../../store/graf-store.service";
+import {FormalField, TemplateOptions} from "../../../../shared/shared.model";
 
 @Injectable({
   providedIn: 'root'
@@ -11,21 +11,22 @@ import {ChangeGettersService} from "./change-getters.service";
 export class DashChangesService {
 
   constructor(
-    private fieldRefsStore: FieldRefsStoreService,
+    private grafStore: GrafStore,
     private cursorStore: FormCursorStoreService,
     public set: ChangeSettersService,
     public get: ChangeGettersService,
   ) {
     this.cursorStore.current.subscribe(cursor => {
-      if (cursor >= 0 && cursor <= this.fieldRefsStore.state.length) {
-        const refs: FullFieldRefs = this.fieldRefsStore.state[cursor];
+      if (cursor >= 0 && cursor < this.grafStore.nodes.length) {
+        const field: FormalField = this.grafStore.nodes[cursor].field;
+        const refs: TemplateOptions = field.templateOptions;
         if (refs) {
           this.set.label = refs.label;
           this.set.type = refs.type;
           this.set.description = refs.description;
           this.set.placeholder = refs.placeholder;
 
-          this.set.id = refs.id;
+          this.set.id = field.id;
           this.set.options = refs.options;
           this.set.attributes = refs.attributes;
           this.set.pattern = refs.pattern;
@@ -40,15 +41,17 @@ export class DashChangesService {
           this.set.min = refs.min ?? 0;
           this.set.step = refs.step ?? 1;
 
-          this.set.stepRule = refs.stepRule ?? "";
-          this.set.tabindexRule = refs.tabindexRule ?? "";
-          this.set.maxRule = refs.maxRule ?? "";
-          this.set.minRule = refs.minRule ?? "";
+          const validation = field.validation;
 
-          this.set.requiredRule = refs.requiredRule ?? "";
-          this.set.readonlyRule = refs.readonlyRule ?? "";
-          this.set.hiddenRule = refs.hiddenRule ?? "";
-          this.set.disabledRule = refs.disabledRule ?? "";
+          this.set.stepRule = validation.stepRule ?? "";
+          this.set.tabindexRule = validation.tabindexRule ?? "";
+          this.set.maxRule = validation.maxRule ?? "";
+          this.set.minRule = validation.minRule ?? "";
+
+          this.set.requiredRule = validation.requiredRule ?? "";
+          this.set.readonlyRule = validation.readonlyRule ?? "";
+          this.set.hiddenRule = validation.hiddenRule ?? "";
+          this.set.disabledRule = validation.disabledRule ?? "";
 
           // Object.assign(this.set, refs);
           // Object.keys(refs).forEach((prop) => {
