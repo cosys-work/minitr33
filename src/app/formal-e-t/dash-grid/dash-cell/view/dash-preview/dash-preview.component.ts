@@ -2,7 +2,6 @@ import {AfterViewInit, Component, OnDestroy} from '@angular/core';
 import {FormGroup} from '@angular/forms';
 import {FormlyFieldConfig} from '@ngx-formly/core';
 import {FormalField} from 'src/app/shared/shared.model';
-import {FormCursorStoreService} from 'src/app/store/form-cursor-store.service';
 import {GrafStore} from 'src/app/store/graf-store.service';
 import {DashChangesService} from '../../core/dash-changes.service';
 import {AlKeysAlNumVals, FieldRefsAddons} from "../../../../../shared/field.model";
@@ -36,10 +35,9 @@ export class DashPreviewComponent implements AfterViewInit, OnDestroy {
 
   constructor(
     private changes: DashChangesService,
-    private cursorStore: FormCursorStoreService,
     private grafStore: GrafStore
   ) {
-    this.cursorStore.current.subscribe((c) => (this.cursor = c));
+    this.grafStore.current.subscribe((c) => (this.cursor = c));
     this.coreUpdateMecha();
     this.updateWhenContentUpdates();
     this.updateWhenGraphUpdates();
@@ -47,7 +45,7 @@ export class DashPreviewComponent implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     const form = (this.formlyFormElem = document.querySelector('formly-form')!);
-    this.cursorStore.current.subscribe((c) => {
+    this.grafStore.current.subscribe((c) => {
       const fields = () =>
         form.querySelectorAll('mat-form-field') as NodeListOf<HTMLElement>;
 

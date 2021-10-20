@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import {FEdge, FGraph, FNode} from "../shared/f-graph.model";
+import {FEdge, FNode, ZenFGraph} from "../shared/f-graph.model";
 import {seedEmptyField} from "./seed-init.utils";
 
 
@@ -44,11 +44,12 @@ export class SeedInitService {
       .map((_, i) => this.edgeMaker(i));
   }
 
-  public makeGraph(nodes: any, edges: any): FGraph {
-    return ({ edges, nodes });
+  public makeGraph(nodes: any, edges: any): ZenFGraph {
+    const curNode = 0;
+    return ({ edges, nodes, curNode });
   }
 
-  private makeDefault(): FGraph {
+  private makeDefault(): ZenFGraph {
     const seedEdges = this.seedEdges();
     const seedNodes = seedEdges.map(v => v.origin);
     return this.makeGraph(
@@ -57,7 +58,7 @@ export class SeedInitService {
     );
   }
 
-  get graph(): FGraph {
+  get graph(): ZenFGraph {
     return this.makeDefault();
   }
 

@@ -1,5 +1,4 @@
 import {Injectable} from '@angular/core';
-import {FormCursorStoreService} from 'src/app/store/form-cursor-store.service';
 import {ChangeSettersService} from "./change-setters.service";
 import {ChangeGettersService} from "./change-getters.service";
 import {GrafStore} from "../../../../store/graf-store.service";
@@ -12,11 +11,10 @@ export class DashChangesService {
 
   constructor(
     private grafStore: GrafStore,
-    private cursorStore: FormCursorStoreService,
     public set: ChangeSettersService,
     public get: ChangeGettersService,
   ) {
-    this.cursorStore.current.subscribe(cursor => {
+    this.grafStore.current.subscribe(cursor => {
       if (cursor >= 0 && cursor < this.grafStore.nodes.length) {
         const field: FormalField = this.grafStore.nodes[cursor].field;
         const refs: TemplateOptions = field.templateOptions;

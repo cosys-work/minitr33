@@ -2,7 +2,6 @@ import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
 import {Component} from '@angular/core';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {map, take} from 'rxjs/operators';
-import {FormCursorStoreService} from 'src/app/store/form-cursor-store.service';
 import {GrafStore} from 'src/app/store/graf-store.service';
 
 @Component({
@@ -12,7 +11,7 @@ import {GrafStore} from 'src/app/store/graf-store.service';
 })
 export class DashGridComponent {
 
-  fieldCursor: Observable<number> = this.cursorStore.current;
+  fieldCursor: Observable<number> = this.grafStore.current;
   maxCursor: () => number = () => this.grafStore.edges.length - 1;
 
   /** Based on the screen size, switch from standard to one column per row */
@@ -41,7 +40,6 @@ export class DashGridComponent {
 
   constructor(
     private breakpointObserver: BreakpointObserver,
-    private cursorStore: FormCursorStoreService,
     private grafStore: GrafStore
   ) {}
 
@@ -50,7 +48,7 @@ export class DashGridComponent {
   }
 
   onDelete(_: Event) {
-    this.cursorStore.current.pipe(
+    this.fieldCursor.pipe(
       take(1),
       map(c => this.grafStore.edges[c])
     ).subscribe(edgeToRemove => {
@@ -61,31 +59,31 @@ export class DashGridComponent {
 
   onNext(_: Event) {
     const currentTotal = this.grafStore.edges.length;
-    this.cursorStore.current.pipe(take(1)).subscribe(idx => {
+    this.fieldCursor.pipe(take(1)).subscribe(idx => {
       if (idx + 1 >= currentTotal) {
         this.grafStore.addEdge();
       }
-      this.cursorStore.next();
+      this.grafStore.next();
     });
     this.nexted.next(true);
   }
 
   curseRedeemer(idx: number) {
     if (idx > 0) {
-      this.cursorStore.prev();
+      this.grafStore.prev();
     }
     if (idx === 1) {
       this.nexted.next(false);
     }
   }
 
-  handlePreving() {
-    this.cursorStore.current.pipe(take(1)).subscribe(idx => {
+  handlePrev() {
+    this.fieldCursor.pipe(take(1)).subscribe(idx => {
       this.curseRedeemer(idx);
     });
   }
 
   onPrev(_: Event) {
-    this.handlePreving();
+    this.handlePrev();
   }
 }

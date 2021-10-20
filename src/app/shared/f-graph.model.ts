@@ -26,3 +26,7 @@ export interface FGraph {
     nodes: FNode[];
     edges: FEdge[];
 }
+
+export interface ZenFGraph extends FGraph {
+  curNode: number;
+}

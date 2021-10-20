@@ -1,34 +1,59 @@
 import {Injectable} from "@angular/core";
 import {ObservableStore} from "@codewithdan/observable-store";
-import {Observable, Subject} from "rxjs";
-import {FEdge, FGraph, FNode} from "../shared/f-graph.model";
+import {BehaviorSubject, Observable} from "rxjs";
+import {FEdge, FNode, ZenFGraph} from "../shared/f-graph.model";
 import {SeedInitService} from "./seed-init.service";
+import {map} from "rxjs/operators";
 
 enum Actions {
   INIT="INIT_GRAF",
   REINIT="REINIT_GRAF",
-  EDIT="EDIT_GRAF"
+  EDIT="EDIT_GRAF",
+  NEW_NODES="NEW_NODES",
+  NEW_EDGES="NEW_EDGES",
+  NEXT="NEXT_CRSR_GRAF",
+  PREV="PREV_CRSR_GRAF"
 }
 
 @Injectable({
   providedIn: "root",
 })
-export class GrafStore extends ObservableStore<FGraph> {
+export class GrafStore extends ObservableStore<ZenFGraph> {
 
-  private actionStream = new Subject<FGraph>();
+  private actionStream = new BehaviorSubject<ZenFGraph>(this.seed.graph);
 
   constructor(private seed: SeedInitService) {
     super({ trackStateHistory: true });
-    this.setState(this.seed.graph, Actions.INIT);
+    this.setState(this.actionStream.value, Actions.INIT);
   }
 
-  rxtiv(): Observable<FGraph> {
+  rxtiv(): Observable<ZenFGraph> {
     return this.actionStream.asObservable();
   }
 
-  get state(): FGraph {
-    const { nodes, edges} = this.getState(true);
-    return ({ nodes, edges });
+  private updateCursor(actions: Actions.PREV | Actions.NEXT) {
+    const curGraph = this.state;
+    const curNode = actions === Actions.NEXT ? curGraph.curNode + 1 : curGraph.curNode - 1;
+    const nextedGraph : ZenFGraph = { ...curGraph, curNode };
+    this.setState(nextedGraph, actions);
+    this.actionStream.next(nextedGraph);
+  }
+
+  next() {
+    this.updateCursor(Actions.NEXT);
+  }
+
+  prev() {
+    this.updateCursor(Actions.PREV);
+  }
+
+  get current(): Observable<ZenFGraph['curNode']> {
+    return this.rxtiv().pipe(map(g => g.curNode));
+  }
+
+  get state(): ZenFGraph {
+    const { nodes, edges, curNode} = this.getState(true);
+    return ({ nodes, edges, curNode });
   }
 
   get nodes(): FNode[] {
@@ -76,21 +101,17 @@ export class GrafStore extends ObservableStore<FGraph> {
     this.newEdges = [...allEdgesBefore, ...allEdgesAfter];
   }
 
-  set newGraph(gDef: FGraph) {
-    this.setState(gDef, Actions.REINIT);
-    this.actionStream.next(gDef);
-  }
-
-  set newEdges(edges: FGraph['edges']) {
-    const newState: FGraph = { ...this.state, edges };
-    this.setState(newState, Actions.EDIT);
+  private set newEdges(edges: ZenFGraph['edges']) {
+    const newState: ZenFGraph = { ...this.state, edges };
+    this.setState(newState, Actions.NEW_EDGES);
     this.newNodes = edges.map(e => e.origin);
     this.actionStream.next(newState);
   }
 
-  private set newNodes(nodes: FGraph['nodes']) {
-    const newState: FGraph = { ...this.state, nodes };
-    this.setState(newState, Actions.EDIT);
+  private set newNodes(nodes: ZenFGraph['nodes']) {
+    const newState: ZenFGraph = { ...this.state, nodes };
+    this.setState(newState, Actions.NEW_NODES);
+    this.actionStream.next(newState);
   }
 
   addEdge() {
