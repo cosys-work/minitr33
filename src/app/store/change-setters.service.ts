@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {FieldId, FieldRefsAddons, fieldType} from "../shared/field.model";
 import {GrafStore} from "./graf-store.service";
 import {map} from "rxjs/operators";
-import {FormalField, TemplateOptions} from "../shared/shared.model";
+import {FormalField, TemplateOptions, Validation} from "../shared/shared.model";
 
 @Injectable({
   providedIn: 'root'
@@ -54,44 +54,59 @@ export class ChangeSettersService {
   hiddenRuleChanges = this.valor(FieldId.hiddenRule);
   readonlyRuleChanges = this.valor(FieldId.readonlyRule);
 
-  constructor(private graf: GrafStore) {
+  constructor(private graf: GrafStore) {}
 
+  updateFieldTOpts(templateOptions: TemplateOptions) {
+    const oldField: FormalField = this.graf.curField;
+    const newField: FormalField = {...oldField, templateOptions};
+    this.graf.updateNode(newField);
+  }
+
+  updateFieldVal(validation: Validation) {
+    const oldField: FormalField = this.graf.curField;
+    const newField: FormalField = {...oldField, validation};
+    this.graf.updateNode(newField);
   }
 
   //1
   set max(max: number) {
-    const maxField = fieldType(FieldId.max, max);
-    console.log(maxField);
+    const oldTOpt: TemplateOptions = this.graf.curTemplateOptions;
+    const templateOptions: TemplateOptions = { ...oldTOpt, max};
+    this.updateFieldTOpts(templateOptions);
   }
 
 
-  set maxRule(max: string) {
-    const maxField = fieldType(FieldId.maxRule, max);
-    console.log(maxField);
+  set maxRule(maxRule: string) {
+    const oldV: Validation = this.graf.curValidation;
+    const validation: Validation = {...oldV, maxRule};
+    this.updateFieldVal(validation);
   }
 
   //2
   set min(min: number) {
-    const minField = fieldType(FieldId.min, min);
-    console.log(minField);
+    const oldTOpt: TemplateOptions = this.graf.curTemplateOptions;
+    const templateOptions: TemplateOptions = {...oldTOpt, min};
+    this.updateFieldTOpts(templateOptions);
   }
 
-  set minRule(min: string) {
-    const minField = fieldType(FieldId.minRule, min);
-    console.log(minField);
+  set minRule(minRule: string) {
+    const oldV: Validation = this.graf.curValidation;
+    const validation: Validation = {...oldV, minRule};
+    this.updateFieldVal(validation);
   }
 
   //3
   set label(label: string) {
-    console.log("label called", label);
-    const labelField = fieldType(FieldId.label, label);
-    console.log(labelField);
+    const oldTOpt: TemplateOptions = this.graf.curTemplateOptions;
+    const templateOptions: TemplateOptions = {...oldTOpt, label};
+    this.updateFieldTOpts(templateOptions);
   }
 
   //4
   set type(type: string) {
-    const typeField = fieldType(FieldId.type, type);
-    console.log(typeField);
+    const oldTOpt: TemplateOptions = this.graf.curTemplateOptions;
+    const templateOptions: TemplateOptions = {...oldTOpt, type};
+    this.updateFieldTOpts(templateOptions);
   }
 
   //5
@@ -102,32 +117,40 @@ export class ChangeSettersService {
 
   //6
   set description(description: string) {
-    const descField = fieldType(FieldId.description, description);
-    console.log(descField);
+    const oldTOpt: TemplateOptions = this.graf.curTemplateOptions;
+    const templateOptions: TemplateOptions = {...oldTOpt, description};
+    this.updateFieldTOpts(templateOptions);
   }
 
   //7
   set placeholder(placeholder: string) {
-    const placeField = fieldType(FieldId.placeholder, placeholder);
-    console.log(placeField);
+    const oldTOpt: TemplateOptions = this.graf.curTemplateOptions;
+    const templateOptions: TemplateOptions = {...oldTOpt, placeholder};
+    this.updateFieldTOpts(templateOptions);
   }
 
   //8
   set required(required: boolean) {
-    const requiredField = fieldType(FieldId.required, required);
-    console.log(requiredField);
+    const oldTOpt: TemplateOptions = this.graf.curTemplateOptions;
+    const templateOptions: TemplateOptions = {...oldTOpt, required};
+    this.updateFieldTOpts(templateOptions);
   }
 
-  set requiredRule(required: string) {
-    const requiredField = fieldType(FieldId.requiredRule, required);
-    console.log(requiredField);
+  set requiredRule(requiredRule: string) {
+    const oldV: Validation = this.graf.curValidation;
+    const validation: Validation = {...oldV, requiredRule};
+    this.updateFieldVal(validation);
   }
 
   //9
   set disabled(disabled: boolean) {
-    const disField = fieldType(FieldId.disabled, disabled);
-    console.log(disField);
+    const oldTOpt: TemplateOptions = this.graf.curTemplateOptions;
+    const templateOptions: TemplateOptions = {...oldTOpt, disabled};
+    this.updateFieldTOpts(templateOptions);
   }
+
+
+
 
   set disabledRule(disabled: string) {
     const disField = fieldType(FieldId.disabledRule, disabled);

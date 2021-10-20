@@ -4,6 +4,7 @@ import {BehaviorSubject, Observable} from "rxjs";
 import {FEdge, FNode, ZenFGraph} from "../shared/f-graph.model";
 import {SeedInitService} from "./seed-init.service";
 import {map} from "rxjs/operators";
+import {FormalField} from "../shared/shared.model";
 
 enum Action {
   INIT="INIT_GRAF",
@@ -57,6 +58,10 @@ export class GrafStore extends ObservableStore<ZenFGraph> {
     return this.rxtiv().pipe(map(g => g.curNode));
   }
 
+  get cursor(): number {
+    return this.actionStream.value.curNode;
+  }
+
   get state(): ZenFGraph {
     const { nodes, edges, curNode} = this.getState(true);
     return ({ nodes, edges, curNode });
@@ -104,16 +109,36 @@ export class GrafStore extends ObservableStore<ZenFGraph> {
     // else we are removing the root node, no edits needed
     // other than yeeting off the current node-edge pair ofc
     // nodes are pruned off automatically by the structure
-    this.newEdges = [...allEdgesBefore, ...allEdgesAfter];
+    this.edges = [...allEdgesBefore, ...allEdgesAfter];
   }
 
-  set newEdges(edges: ZenFGraph[Property.EDGES]) {
+  set edges(edges: ZenFGraph[Property.EDGES]) {
     const newState: ZenFGraph = { ...this.state, edges };
     this.setState(newState, Action.NEW_EDGES);
     this.newNodes = edges.map(e => e.origin);
     this.actionStream.next(newState);
   }
 
+  updateNode(field: FormalField) {
+    const oldEdge = this.edges[this.cursor];
+    const oldNode = this.nodes[this.cursor];
+    const origin : FNode = { ...oldNode, field};
+    const newEdge : FEdge = { ...oldEdge, origin};
+    const oldEdges : FEdge[] = this.edges;
+    this.edges = [...oldEdges.slice(0, this.cursor - 1), newEdge, ...oldEdges.slice(this.cursor, oldEdges.length)];
+  }
+
+  get curField() {
+    return this.nodes[this.cursor].field;
+  }
+
+  get curTemplateOptions() {
+    return this.curField.templateOptions;
+  }
+
+  get curValidation() {
+    return this.curField.validation;
+  }
 
   private set newNodes(nodes: ZenFGraph[Property.NODES]) {
     const newState: ZenFGraph = { ...this.state, nodes };
@@ -123,7 +148,7 @@ export class GrafStore extends ObservableStore<ZenFGraph> {
 
   addEdge() {
     const emptyEdge = this.seed.edgeMaker(this.edges.length);
-    this.newEdges = [...this.edges, emptyEdge]; // updates stream too
+    this.edges = [...this.edges, emptyEdge]; // updates stream too
   }
 
 }
