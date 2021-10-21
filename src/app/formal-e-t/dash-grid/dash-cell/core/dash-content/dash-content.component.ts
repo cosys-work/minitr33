@@ -26,8 +26,6 @@ import {DashChangesService} from "../../../../../store/dash-changes.service";
 })
 export class DashContentComponent {
   inpControl = new FormControl('', Validators.required);
-  // selectFormControl = new FormControl('');
-
   selectable = true;
   removable = true;
   separatorKeysCodes: number[] = [ENTER, COMMA];

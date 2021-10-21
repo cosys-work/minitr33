@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {concat, from, mergeMap, Observable, ReplaySubject, takeUntil, tap} from "rxjs";
 
 const OnInitSubject = Symbol('OnInitSubject');
@@ -13,7 +13,7 @@ export type ObservableMap<T> = {
   templateUrl: './statefulness.component.html',
   styleUrls: ['./statefulness.component.scss']
 })
-export class StatefulnessComponent implements OnInit {
+export class StatefulnessComponent implements OnInit, OnDestroy {
 
   private [OnInitSubject] = new ReplaySubject<true>(1);
   private [OnDestroySubject] = new ReplaySubject<true>(1);

@@ -1,9 +1,10 @@
-import { AfterContentInit, Component } from "@angular/core";
-import { ClusterNode, Layout } from "@swimlane/ngx-graph";
-import { FGraph } from "src/app/shared/f-graph.model";
-import { GrafStore } from "src/app/store/graf-store.service";
-import { curveBundle } from "d3-shape";
-import { Subject } from "rxjs";
+import {AfterContentInit, Component} from "@angular/core";
+import {ClusterNode, Layout} from "@swimlane/ngx-graph";
+import {ZenFGraph} from "src/app/shared/f-graph.model";
+import {GrafStore} from "src/app/store/graf-store.service";
+import {curveBundle} from "d3-shape";
+import {Subject} from "rxjs";
+import {distinctUntilChanged, map} from "rxjs/operators";
 
 @Component({
   selector: 'app-dash-overview',
@@ -12,7 +13,7 @@ import { Subject } from "rxjs";
 })
 export class DashOverviewComponent implements AfterContentInit {
 
-  graphData: FGraph = { nodes: [], edges: []};
+  graphData: ZenFGraph = { nodes: [], edges: [], curNode: 0};
 
   layout: string | Layout = 'dagreCluster';
   clusters: ClusterNode[] = [];
@@ -41,21 +42,19 @@ export class DashOverviewComponent implements AfterContentInit {
 
   ngAfterContentInit() {
     this.updateGraph();
-    this.grafStore.rxtiv().subscribe(_ => {
+    this.grafStore.stateChanged.pipe(
+      map((cur: ZenFGraph) => cur.nodes),
+      distinctUntilChanged()
+    ).subscribe(_ => {
       this.updateGraph();
     });
   }
 
   updateGraph() {
-    const {nodes, edges} = this.treeData();
-    this.graphData = { nodes, edges };
+    this.graphData = this.treeData();
   }
 
-  treeData(): FGraph {
-    const { nodes, edges } = this.grafStore.state;
-    return ({
-      nodes,
-      edges
-    });
+  treeData(): ZenFGraph {
+    return  this.grafStore.state;
   }
 }

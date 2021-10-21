@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import {ObservableStore} from "@codewithdan/observable-store";
-import {BehaviorSubject, Observable} from "rxjs";
+import {Observable} from "rxjs";
 import {FEdge, FNode, ZenFGraph} from "../shared/f-graph.model";
 import {SeedInitService} from "./seed-init.service";
 import {map} from "rxjs/operators";
@@ -8,8 +8,6 @@ import {FormalField} from "../shared/shared.model";
 
 enum Action {
   INIT="INIT_GRAF",
-  REINIT="REINIT_GRAF",
-  EDIT="EDIT_GRAF",
   NEW_NODES="NEW_NODES",
   NEW_EDGES="NEW_EDGES",
   NEXT="NEXT_CRSR_GRAF",
@@ -27,15 +25,9 @@ enum Property {
 })
 export class GrafStore extends ObservableStore<ZenFGraph> {
 
-  private actionStream = new BehaviorSubject<ZenFGraph>(this.seed.graph);
-
   constructor(private seed: SeedInitService) {
     super({ trackStateHistory: true });
-    this.setState(this.actionStream.value, Action.INIT);
-  }
-
-  rxtiv(): Observable<ZenFGraph> {
-    return this.actionStream.asObservable();
+    this.setState(this.seed.graph, Action.INIT);
   }
 
   private updateCursor(actions: Action.PREV | Action.NEXT) {
@@ -43,7 +35,6 @@ export class GrafStore extends ObservableStore<ZenFGraph> {
     const curNode = actions === Action.NEXT ? curGraph.curNode + 1 : curGraph.curNode - 1;
     const updatedGraph : ZenFGraph = { ...curGraph, curNode };
     this.setState(updatedGraph, actions);
-    this.actionStream.next(updatedGraph);
   }
 
   next() {
@@ -55,11 +46,11 @@ export class GrafStore extends ObservableStore<ZenFGraph> {
   }
 
   get current(): Observable<ZenFGraph[Property.CUR_NODE]> {
-    return this.rxtiv().pipe(map(g => g.curNode));
+    return this.stateChanged.pipe(map(g => g.curNode));
   }
 
   get cursor(): number {
-    return this.actionStream.value.curNode;
+    return this.state.curNode;
   }
 
   get state(): ZenFGraph {
@@ -68,13 +59,11 @@ export class GrafStore extends ObservableStore<ZenFGraph> {
   }
 
   get nodes(): FNode[] {
-    const { nodes } = this.getStateProperty(Property.NODES, true);
-    return nodes;
+    return  this.state[Property.NODES];
   }
 
   get edges(): FEdge[] {
-    const { edges } = this.getStateProperty(Property.EDGES,true);
-    return edges;
+    return  this.state[Property.EDGES];
   }
 
   set delNodeEdgePair(fez: FEdge) {
@@ -115,17 +104,18 @@ export class GrafStore extends ObservableStore<ZenFGraph> {
   set edges(edges: ZenFGraph[Property.EDGES]) {
     const newState: ZenFGraph = { ...this.state, edges };
     this.setState(newState, Action.NEW_EDGES);
-    this.newNodes = edges.map(e => e.origin);
-    this.actionStream.next(newState);
+    this.nodes = edges.map(e => e.origin);
   }
 
   updateNode(field: FormalField) {
-    const oldEdge = this.edges[this.cursor];
-    const oldNode = this.nodes[this.cursor];
+    const cursor = this.cursor;
+    const oldEdge = this.edges[cursor];
+    const oldNode = this.nodes[cursor];
     const origin : FNode = { ...oldNode, field};
     const newEdge : FEdge = { ...oldEdge, origin};
     const oldEdges : FEdge[] = this.edges;
-    this.edges = [...oldEdges.slice(0, this.cursor - 1), newEdge, ...oldEdges.slice(this.cursor, oldEdges.length)];
+    oldEdges.splice(cursor, 1, newEdge);
+    this.edges = oldEdges;
   }
 
   get curField() {
@@ -140,10 +130,9 @@ export class GrafStore extends ObservableStore<ZenFGraph> {
     return this.curField.validation;
   }
 
-  private set newNodes(nodes: ZenFGraph[Property.NODES]) {
+  private set nodes(nodes: ZenFGraph[Property.NODES]) {
     const newState: ZenFGraph = { ...this.state, nodes };
     this.setState(newState, Action.NEW_NODES);
-    this.actionStream.next(newState);
   }
 
   addEdge() {

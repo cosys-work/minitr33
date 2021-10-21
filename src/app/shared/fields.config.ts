@@ -1,4 +1,7 @@
-import {BooTyper, NumTyper} from "./logic.model";
+export const booLabels = ["required", "disabled", "hidden", "readonly"];
+export const numLabels = ["tabindex", "max", "min", "step"];
+export const strLabels = ["label", "description", "placeholder", "id"];
+export const optLabels = ["type", "pattern", "options", "attributes"];
 
 export const allTypes: string[] = [
   "input,text",
@@ -28,9 +31,6 @@ export const allPatterns: string[] = ["Pattern 1", "Pattern 2"];
 export const allOptions: string[] = ["Option 1", "Option 2"];
 export const allAttributes: string[] = ["Attribute 1", "Attribute 2"];
 
-export const strLabels = ["label", "description", "placeholder", "id"];
-export const optLabels = ["type", "pattern", "options", "attributes"];
-
 export interface LPD {
   label: string;
   placeholder: string;
@@ -51,6 +51,20 @@ export interface OptFields {
   attributes: LPD;
 }
 
+export interface BooTypeField {
+  required: LPD;
+  disabled: LPD;
+  hidden: LPD;
+  readonly: LPD;
+}
+
+export interface NumTypeField {
+  tabindex: LPD;
+  max: LPD;
+  min: LPD;
+  step: LPD;
+}
+
 export interface StrFieldsState extends StrFields {
   current: keyof StrFields;
 }
@@ -58,6 +72,16 @@ export interface StrFieldsState extends StrFields {
 export interface OptFieldsState extends OptFields {
   current: keyof OptFields;
 }
+
+export interface BooTyper extends BooTypeField {
+  current: keyof BooTypeField;
+}
+
+
+export interface NumTyper extends NumTypeField {
+  current: keyof NumTypeField;
+}
+
 
 export const strState: StrFieldsState = {
   current: "label",
@@ -155,3 +179,17 @@ export const booState: BooTyper = {
     description: "When is this a readonly field?",
   }
 }
+
+export type BooTyped = keyof BooTypeField;
+
+export type NumTyped = keyof NumTypeField;
+
+export function isNumTyped(a: string): a is NumTyped {
+  return numLabels.includes(a);
+}
+
+export function isBooTyped(a: string): a is BooTyped {
+  return booLabels.includes(a);
+}
+
+

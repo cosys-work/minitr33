@@ -6,10 +6,17 @@ import {BehaviorSubject, Observable} from 'rxjs';
 import {take} from 'rxjs/operators';
 
 import {FieldId} from "../../../../../shared/field.model";
-import {booLabels, BooTyped, isNumTyped, numLabels, NumTyped} from "../../../../../shared/logic.model";
+import {
+  booLabels,
+  booState,
+  BooTyped,
+  isNumTyped,
+  numLabels,
+  numState,
+  NumTyped
+} from "../../../../../shared/fields.config";
 import {DashChangesService} from "../../../../../store/dash-changes.service";
 import {DebounceCandidate} from "../../../../../store/change-getters.service";
-import {booState, numState} from "../../../../../shared/fields.config";
 
 @Component({
   selector: 'app-dash-logic',
@@ -63,12 +70,10 @@ export class DashLogicComponent {
   }
 
   onBoolReqChange(changed: MatSlideToggleChange) {
-    console.log("boolReqChanger", changed);
     this.changes.set.required = changed.checked;
   }
 
   onBoolDisChange(changed: MatSlideToggleChange) {
-    console.log("boolDisChanger", changed);
     this.changes.set.disabled = changed.checked;
   }
 
@@ -148,7 +153,22 @@ export class DashLogicComponent {
   };
 
   onBooTextChange(changed: string) {
-    console.log("conditional logic", changed);
+    switch (this.booState.current) {
+      case FieldId.required:
+        this.changes.set.tabindexRule = changed;
+        break;
+      case FieldId.disabled:
+        this.changes.set.disabledRule = changed;
+        break;
+      case FieldId.hidden:
+        this.changes.set.hiddenRule = changed;
+        break;
+      case FieldId.readonly:
+        this.changes.set.readonlyRule = changed;
+        break;
+      default:
+        break;
+    }
   }
 
   onNumFieldChange(changed: string, unruly = true) {

@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {FieldId, FieldRefsAddons, fieldType} from "../shared/field.model";
+import {FieldId, FieldRefsAddons} from "../shared/field.model";
 import {GrafStore} from "./graf-store.service";
 import {map} from "rxjs/operators";
 import {FormalField, TemplateOptions, Validation} from "../shared/shared.model";
@@ -9,7 +9,7 @@ import {FormalField, TemplateOptions, Validation} from "../shared/shared.model";
 })
 export class ChangeSettersService {
 
-  rxt = this.graf.rxtiv();
+  rxt = this.graf.stateChanged;
 
   fielder(tmpl: keyof FormalField) {
     return this.rxt.pipe(map(z => z.nodes[z.curNode].field[tmpl]));
@@ -111,8 +111,9 @@ export class ChangeSettersService {
 
   //5
   set id(id: string) {
-    const idField = fieldType(FieldId.id, id);
-    console.log(idField);
+    const oldField: FormalField = this.graf.curField;
+    const newField: FormalField = {...oldField, id};
+    this.graf.updateNode(newField);
   }
 
   //6
@@ -149,74 +150,83 @@ export class ChangeSettersService {
     this.updateFieldTOpts(templateOptions);
   }
 
-
-
-
-  set disabledRule(disabled: string) {
-    const disField = fieldType(FieldId.disabledRule, disabled);
-    console.log(disField);
+  set disabledRule(disabledRule: string) {
+    const oldV: Validation = this.graf.curValidation;
+    const validation: Validation = {...oldV, disabledRule};
+    this.updateFieldVal(validation);
   }
 
   //10
   set hidden(hidden: boolean) {
-    const hideField = fieldType(FieldId.hidden, hidden);
-    console.log(hideField);
+    const oldTOpt: TemplateOptions = this.graf.curTemplateOptions;
+    const templateOptions: TemplateOptions = {...oldTOpt, hidden};
+    this.updateFieldTOpts(templateOptions);
   }
 
-  set hiddenRule(hidden: string) {
-    const hideField = fieldType(FieldId.hiddenRule, hidden);
-    console.log(hideField);
+  set hiddenRule(hiddenRule: string) {
+    const oldV: Validation = this.graf.curValidation;
+    const validation: Validation = {...oldV, hiddenRule};
+    this.updateFieldVal(validation);
   }
 
   //11
   set readonly(readonly: boolean) {
-    const readonlyField = fieldType(FieldId.readonly, readonly);
-    console.log(readonlyField);
+    const oldTOpt: TemplateOptions = this.graf.curTemplateOptions;
+    const templateOptions: TemplateOptions = {...oldTOpt, readonly};
+    this.updateFieldTOpts(templateOptions);
   }
 
-  set readonlyRule(readonly: string) {
-    const readonlyField = fieldType(FieldId.readonlyRule, readonly);
-    console.log(readonlyField);
+  set readonlyRule(readonlyRule: string) {
+    const oldV: Validation = this.graf.curValidation;
+    const validation: Validation = {...oldV, readonlyRule};
+    this.updateFieldVal(validation);
   }
 
   //12
   set tabindex(tabindex: number) {
-    const tabindexField = fieldType(FieldId.tabindex, tabindex);
-    console.log(tabindexField);
+    const oldTOpt: TemplateOptions = this.graf.curTemplateOptions;
+    const templateOptions: TemplateOptions = {...oldTOpt, tabindex};
+    this.updateFieldTOpts(templateOptions);
   }
 
-  set tabindexRule(tabindex: string) {
-    const tabindexField = fieldType(FieldId.tabindexRule, tabindex);
-    console.log(tabindexField);
+  set tabindexRule(tabindexRule: string) {
+    const oldV: Validation = this.graf.curValidation;
+    const validation: Validation = {...oldV, tabindexRule};
+    this.updateFieldVal(validation);
   }
 
   //13
   set step(step: number) {
-    const stepField = fieldType(FieldId.step, step);
-    console.log(stepField);
+    const oldTOpt: TemplateOptions = this.graf.curTemplateOptions;
+    const templateOptions: TemplateOptions = {...oldTOpt, step};
+    this.updateFieldTOpts(templateOptions);
   }
 
-  set stepRule(step: string) {
-    const stepField = fieldType(FieldId.stepRule, step);
-    console.log(stepField);
+  set stepRule(stepRule: string) {
+    const oldV: Validation = this.graf.curValidation;
+    const validation: Validation = {...oldV, stepRule};
+    this.updateFieldVal(validation);
   }
 
   //14
   set pattern(pattern: string | RegExp) {
-    const patField = fieldType(FieldId.pattern, pattern);
-    console.log(patField);
+    const oldTOpt: TemplateOptions = this.graf.curTemplateOptions;
+    const templateOptions: TemplateOptions = {...oldTOpt, pattern};
+    this.updateFieldTOpts(templateOptions);
   }
 
   //15
   set options(options: string[]) {
-    const optField = fieldType(FieldId.options, options);
-    console.log(optField);
+    const oldTOpt: TemplateOptions = this.graf.curTemplateOptions;
+    const templateOptions: TemplateOptions = {...oldTOpt, options};
+    this.updateFieldTOpts(templateOptions);
   }
 
 
   //16
   set attributes(attributes: { [key: string]: string | number }) {
-    const attrField = fieldType(FieldId.attributes, attributes);
-    console.log(attrField);
+    const oldTOpt: TemplateOptions = this.graf.curTemplateOptions;
+    const templateOptions: TemplateOptions = {...oldTOpt, attributes};
+    this.updateFieldTOpts(templateOptions);
   }
 }
