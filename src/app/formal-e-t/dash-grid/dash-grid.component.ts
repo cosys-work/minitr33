@@ -40,7 +40,7 @@ export class DashGridComponent {
 
   constructor(
     private breakpointObserver: BreakpointObserver,
-    private grafStore: GrafStore
+    private grafStore: GrafStore,
   ) {}
 
   onSave(_: Event) {

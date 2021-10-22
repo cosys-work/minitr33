@@ -3,7 +3,7 @@ import {ObservableStore} from "@codewithdan/observable-store";
 import {Observable} from "rxjs";
 import {FEdge, FNode, ZenFGraph} from "../shared/f-graph.model";
 import {SeedInitService} from "./seed-init.service";
-import {map} from "rxjs/operators";
+import {distinctUntilChanged, map} from "rxjs/operators";
 import {FormalField} from "../shared/shared.model";
 
 enum Action {
@@ -46,7 +46,7 @@ export class GrafStore extends ObservableStore<ZenFGraph> {
   }
 
   get current(): Observable<ZenFGraph[Property.CUR_NODE]> {
-    return this.stateChanged.pipe(map(g => g.curNode));
+    return this.stateChanged.pipe(map(g => g.curNode), distinctUntilChanged());
   }
 
   get cursor(): number {
@@ -58,7 +58,7 @@ export class GrafStore extends ObservableStore<ZenFGraph> {
     return ({ nodes, edges, curNode });
   }
 
-  get nodes(): FNode[] {
+  get nodes(): ZenFGraph[Property.NODES] {
     return  this.state[Property.NODES];
   }
 
@@ -130,7 +130,7 @@ export class GrafStore extends ObservableStore<ZenFGraph> {
     return this.curField.validation;
   }
 
-  private set nodes(nodes: ZenFGraph[Property.NODES]) {
+  set nodes(nodes: ZenFGraph[Property.NODES]) {
     const newState: ZenFGraph = { ...this.state, nodes };
     this.setState(newState, Action.NEW_NODES);
   }

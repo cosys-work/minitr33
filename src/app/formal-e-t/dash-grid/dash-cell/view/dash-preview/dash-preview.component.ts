@@ -40,15 +40,10 @@ export class DashPreviewComponent implements AfterViewInit, OnDestroy {
   constructor(
     private changes: DashChangesService,
     private grafStore: GrafStore
-  ) {
-    this.subs.add(this.grafStore.current.subscribe((c) => (this.cursor = c)));
-    this.initialize();
-    this.updateWhenContentUpdates();
-    this.updateWhenGraphUpdates();
-  }
+  ) {}
 
   initialize() {
-    this.fieldGroup = this.grafStore.edges?.map((e) => e.origin.field);
+    this.fieldGroup = this.grafStore.edges.map((e) => e.origin.field);
     if (this.fieldGroup.length) {
       const ns = this.grafStore.nodes;
       [...this.fieldGroup].forEach((_, i) => {
@@ -65,8 +60,8 @@ export class DashPreviewComponent implements AfterViewInit, OnDestroy {
   }
 
   updateWhenGraphUpdates() {
-    this.grafStore.stateChanged.subscribe((z) => {
-      this.fieldGroup = this.grafStore.nodes?.map((e) => e.field);
+    this.subs.add(this.grafStore.stateChanged.subscribe((z) => {
+      this.fieldGroup = this.grafStore.nodes.map((e) => e.field);
       this.fieldGroup[z.curNode].type = z.nodes[z.curNode].field.type.toLowerCase();
       this.fieldGroup[z.curNode].key = keyMaker(z.nodes[z.curNode].field.key);
       this.fieldGroup[z.curNode].templateOptions = z.nodes[z.curNode].field.templateOptions;
@@ -75,13 +70,18 @@ export class DashPreviewComponent implements AfterViewInit, OnDestroy {
 
       this.field.fieldGroup = this.fieldGroup;
       this.fields = [...this.fields];
-    });
+    }));
   }
 
 
   ngAfterViewInit(): void {
+    this.subs.add(this.grafStore.current.subscribe((c) => (this.cursor = c)));
+    this.initialize();
+    this.updateWhenContentUpdates();
+    this.updateWhenGraphUpdates();
+
     const form = (this.formlyFormElem = document.querySelector('formly-form')!);
-    this.grafStore.current.subscribe((c) => {
+    this.subs.add(this.grafStore.current.subscribe((c) => {
       const fields = () =>
         form.querySelectorAll('mat-form-field') as NodeListOf<HTMLElement>;
 
@@ -94,7 +94,7 @@ export class DashPreviewComponent implements AfterViewInit, OnDestroy {
       }
 
       setTimeout(updateFieldMarker, 250);
-    });
+    }));
   }
 
 

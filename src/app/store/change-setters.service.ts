@@ -56,13 +56,13 @@ export class ChangeSettersService {
 
   constructor(private graf: GrafStore) {}
 
-  updateFieldTOpts(templateOptions: TemplateOptions) {
+  private updateFieldTOpts(templateOptions: TemplateOptions) {
     const oldField: FormalField = this.graf.curField;
     const newField: FormalField = {...oldField, templateOptions};
     this.graf.updateNode(newField);
   }
 
-  updateFieldVal(validation: Validation) {
+  private updateFieldVal(validation: Validation) {
     const oldField: FormalField = this.graf.curField;
     const newField: FormalField = {...oldField, validation};
     this.graf.updateNode(newField);

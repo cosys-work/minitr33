@@ -1,22 +1,24 @@
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
-import {Component, ElementRef, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
 import {FormControl, Validators} from '@angular/forms';
 import {MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
 import {MatChipInputEvent} from '@angular/material/chips';
 import {MatRadioChange} from '@angular/material/radio';
-import {BehaviorSubject, Observable} from 'rxjs';
+import {BehaviorSubject, Observable, Subscription, takeUntil} from 'rxjs';
 import {map, startWith, take} from 'rxjs/operators';
 
 import {FieldId} from "../../../../../shared/field.model";
 import {
   allAttributes,
   allOptions,
-  allPatterns, allTypes, optLabels,
-  optState,
+  allPatterns, allTypes, OptFields, optLabels,
+  optState, StrFields,
   strLabels,
   strState
 } from "../../../../../shared/fields.config";
 import {DashChangesService} from "../../../../../store/dash-changes.service";
+import {GrafStore} from "../../../../../store/graf-store.service";
+import {StatefulnessComponent} from "../../../../../shared/statefulness/statefulness.component";
 
 
 @Component({
@@ -24,7 +26,7 @@ import {DashChangesService} from "../../../../../store/dash-changes.service";
   templateUrl: './dash-content.component.html',
   styleUrls: ['./dash-content.component.scss']
 })
-export class DashContentComponent {
+export class DashContentComponent extends StatefulnessComponent implements AfterViewInit {
   inpControl = new FormControl('', Validators.required);
   selectable = true;
   removable = true;
@@ -68,8 +70,10 @@ export class DashContentComponent {
   @ViewChild('attributesInput') attributesInput!: ElementRef<HTMLInputElement>;
   @ViewChild('maInput') maInput!: ElementRef<HTMLInputElement>;
 
-  constructor(private changes: DashChangesService) {
+  subs = new Subscription();
 
+  constructor(private changes: DashChangesService, private grafStore: GrafStore) {
+    super();
     this.filteredTypes = this.typeCtrl.valueChanges.pipe(
       startWith(null),
       map((type: string | null) => type ? this._filterType(type) : this.allTypes.slice())
@@ -91,14 +95,20 @@ export class DashContentComponent {
     );
   }
 
-  selectStrField(event: MatRadioChange) {
-    this.strState.current = event.source.value;
-    this.strLab.next(this.strState[this.strState.current].label);
-    this.strPlace.next(this.strState[this.strState.current].placeholder);
-    this.strDesc.next(this.strState[this.strState.current].description);
+  ngAfterViewInit() {
+    this.grafStore.current.pipe(takeUntil(this.onDestroy$))
+      .subscribe(_ => this.updateFC());
+  }
 
+  private updateFC() {
+    const sTurKey = this.strState.current;
+    //const opTurKey = this.optState.current;
+    this.updateFCStr(sTurKey);
+  }
+
+  updateFCStr(current: keyof StrFields) {
     // TODO refactor redundancy
-    switch (this.strState.current) {
+    switch (current) {
       case FieldId.label:
         this.changes.get.labelStream.pipe(take(1)).subscribe(l => {
           if (typeof l === "string") {
@@ -117,7 +127,8 @@ export class DashContentComponent {
         this.changes.get.descriptionStream.pipe(take(1)).subscribe(d => {
           if (typeof d === "string") {
             this.maInput.nativeElement.value = d;
-          }});
+          }
+        });
         break;
       case FieldId.id:
         this.changes.get.idStream.pipe(take(1)).subscribe(i => {
@@ -131,31 +142,45 @@ export class DashContentComponent {
     }
   }
 
+  updateFCOpt(current: keyof OptFields) {
+    switch (current) {
+      case FieldId.type:
+        // this.maInput.nativeElement.value = this.changes.label ?? "";
+        break;
+      case FieldId.pattern:
+        // this.maInput.nativeElement.value = this.changes.placeholder ?? "";
+        break;
+      case FieldId.options:
+        // this.maInput.nativeElement.value = this.changes.description ?? "";
+        break;
+      case FieldId.attributes:
+        // this.maInput.nativeElement.value = this.changes.id ?? "";
+        break;
+      default:
+        break;
+    }
+  }
+
+  updateStrLPD() {
+    this.strLab.next(this.strState[this.strState.current].label);
+    this.strPlace.next(this.strState[this.strState.current].placeholder);
+    this.strDesc.next(this.strState[this.strState.current].description);
+  }
+
+  selectStrField(event: MatRadioChange) {
+    console.log("selected str", event);
+    this.strState.current = event.source.value;
+    this.updateStrLPD();
+    this.updateFCStr(this.strState.current);
+  }
+
   selectOptField(event: MatRadioChange) {
     console.log("selected opt", event);
     this.optState.current = event.source.value;
     this.oysterLab.next(this.optState[this.optState.current].label);
     this.oysterPlace.next(this.optState[this.optState.current].placeholder);
     this.oysterDesc.next(this.optState[this.optState.current].description);
-    switch (this.optState.current) {
-      case FieldId.type:
 
-        // this.maInput.nativeElement.value = this.changes.label ?? "";
-        break;
-      case "options":
-
-        // this.maInput.nativeElement.value = this.changes.placeholder ?? "";
-        break;
-      case "pattern":
-        // this.maInput.nativeElement.value = this.changes.description ?? "";
-        break;
-      case "attributes":
-
-        // this.maInput.nativeElement.value = this.changes.id ?? "";
-        break;
-      default:
-        break;
-    }
   }
 
   onStrFieldDataChange(changed: string) {
