@@ -1,5 +1,5 @@
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
-import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
+import {AfterContentInit, ChangeDetectionStrategy, Component, ElementRef, ViewChild} from '@angular/core';
 import {FormControl, Validators} from '@angular/forms';
 import {MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
 import {MatChipInputEvent} from '@angular/material/chips';
@@ -7,26 +7,32 @@ import {MatRadioChange} from '@angular/material/radio';
 import {BehaviorSubject, Observable, Subscription, takeUntil} from 'rxjs';
 import {map, startWith, take} from 'rxjs/operators';
 
-import {FieldId} from "../../../../../shared/field.model";
+import {AlKeysAlNumVals, FieldId} from "../../../../../shared/field.model";
 import {
   allAttributes,
   allOptions,
-  allPatterns, allTypes, OptFields, optLabels,
-  optState, StrFields,
+  allPatterns,
+  allTypes,
+  OptFields,
+  optLabels,
+  optState,
+  StrFields,
   strLabels,
   strState
 } from "../../../../../shared/fields.config";
 import {DashChangesService} from "../../../../../store/dash-changes.service";
 import {GrafStore} from "../../../../../store/graf-store.service";
 import {StatefulnessComponent} from "../../../../../shared/statefulness/statefulness.component";
+import {DebounceCandidate} from "../../../../../store/change-getters.service";
 
 
 @Component({
   selector: 'app-dash-content',
   templateUrl: './dash-content.component.html',
-  styleUrls: ['./dash-content.component.scss']
+  styleUrls: ['./dash-content.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DashContentComponent extends StatefulnessComponent implements AfterViewInit {
+export class DashContentComponent extends StatefulnessComponent implements AfterContentInit {
   inpControl = new FormControl('', Validators.required);
   selectable = true;
   removable = true;
@@ -66,14 +72,13 @@ export class DashContentComponent extends StatefulnessComponent implements After
 
   @ViewChild('typeInput') typeInput!: ElementRef<HTMLInputElement>;
   @ViewChild('optionsInput') optionsInput!: ElementRef<HTMLInputElement>;
-  @ViewChild('patternInput') patternInput!: ElementRef<HTMLInputElement>;
-  @ViewChild('attributesInput') attributesInput!: ElementRef<HTMLInputElement>;
   @ViewChild('maInput') maInput!: ElementRef<HTMLInputElement>;
 
   subs = new Subscription();
 
   constructor(private changes: DashChangesService, private grafStore: GrafStore) {
     super();
+    this.updateFC();
     this.filteredTypes = this.typeCtrl.valueChanges.pipe(
       startWith(null),
       map((type: string | null) => type ? this._filterType(type) : this.allTypes.slice())
@@ -95,15 +100,17 @@ export class DashContentComponent extends StatefulnessComponent implements After
     );
   }
 
-  ngAfterViewInit() {
+  ngAfterContentInit() {
     this.grafStore.current.pipe(takeUntil(this.onDestroy$))
       .subscribe(_ => this.updateFC());
   }
 
   private updateFC() {
+    console.log("cursor update triggered");
     const sTurKey = this.strState.current;
-    //const opTurKey = this.optState.current;
+    const opTKey = this.optState.current;
     this.updateFCStr(sTurKey);
+    this.updateFCOpt(opTKey);
   }
 
   updateFCStr(current: keyof StrFields) {
@@ -143,18 +150,31 @@ export class DashContentComponent extends StatefulnessComponent implements After
   }
 
   updateFCOpt(current: keyof OptFields) {
+    const updateFromStream = (l: DebounceCandidate) => {
+      if (typeof l === "string") {
+        this.optionsInput.nativeElement.value = l;
+      }
+    }
     switch (current) {
       case FieldId.type:
-        // this.maInput.nativeElement.value = this.changes.label ?? "";
+        this.changes.get.typeStream.pipe((take(1))).subscribe(l =>
+          this.typeCtrl.setValue(this.curType = l as string)
+        );
         break;
       case FieldId.pattern:
-        // this.maInput.nativeElement.value = this.changes.placeholder ?? "";
+        this.changes.get.patternStream.pipe(take(1)).subscribe(l =>
+          updateFromStream(l)
+        );
         break;
       case FieldId.options:
-        // this.maInput.nativeElement.value = this.changes.description ?? "";
+        this.changes.get.optionsStream.pipe(take(1)).subscribe(l =>
+          updateFromStream(JSON.stringify(l))
+        );
         break;
       case FieldId.attributes:
-        // this.maInput.nativeElement.value = this.changes.id ?? "";
+        this.changes.get.attributesStream.pipe(take(1)).subscribe(l =>
+          updateFromStream(JSON.stringify(l))
+        );
         break;
       default:
         break;
@@ -174,13 +194,17 @@ export class DashContentComponent extends StatefulnessComponent implements After
     this.updateFCStr(this.strState.current);
   }
 
-  selectOptField(event: MatRadioChange) {
-    console.log("selected opt", event);
-    this.optState.current = event.source.value;
+  updateOptStrLPD() {
     this.oysterLab.next(this.optState[this.optState.current].label);
     this.oysterPlace.next(this.optState[this.optState.current].placeholder);
     this.oysterDesc.next(this.optState[this.optState.current].description);
+  }
 
+  selectOptField(event: MatRadioChange) {
+    console.log("selected opt", event);
+    this.optState.current = event.source.value;
+    this.updateOptStrLPD();
+    this.updateFCOpt(this.optState.current);
   }
 
   onStrFieldDataChange(changed: string) {
@@ -207,19 +231,26 @@ export class DashContentComponent extends StatefulnessComponent implements After
   onTypeChange(changed: string) {
     console.log("changed type", changed);
     this.curType = changed;
+    this.typeCtrl.setValue(this.curType);
     this.changes.set.type = changed.toLowerCase();
   };
 
   onPatternChange(changed: string) {
-    console.log("changed pattern", changed);
+    this.curPattern = changed;
+    this.changes.set.pattern = changed;
   };
 
   onAttributeChange(changed: string) {
-    console.log("changed attribute", changed);
+    this.curAttributes = changed;
+    const keyVals = changed.split(",").map(csv => csv.split(":"));
+    const attrObj: AlKeysAlNumVals = {};
+    keyVals.forEach(([k, v]) => attrObj[k] = v);
+    this.changes.set.attributes = attrObj;
   };
 
   onOptionChange(changed: string) {
-    console.log("changed option", changed);
+    this.curOptions = changed;
+    this.changes.set.options = changed.split(",");
   };
 
   addType(event: MatChipInputEvent): void {
@@ -228,7 +259,6 @@ export class DashContentComponent extends StatefulnessComponent implements After
       this.onTypeChange(value);
     }
     event.chipInput!.clear();
-    this.typeCtrl.setValue(null);
   }
 
   removeType(): void {
@@ -238,12 +268,11 @@ export class DashContentComponent extends StatefulnessComponent implements After
   selectedType(event: MatAutocompleteSelectedEvent): void {
     this.onTypeChange(event.option.viewValue);
     this.typeInput.nativeElement.value = '';
-    this.typeCtrl.setValue(null);
-  }
+}
 
   private _filterType(value: string): string[] {
     const filterValue = value.toLowerCase();
-    return this.allTypes.filter(type => type.toLowerCase().includes(filterValue));
+    return this.allTypes.filter(type => !type.toLowerCase().includes(filterValue));
   }
 
   addPattern(event: MatChipInputEvent): void {
@@ -261,8 +290,8 @@ export class DashContentComponent extends StatefulnessComponent implements After
 
   selectedPattern(event: MatAutocompleteSelectedEvent): void {
     this.onPatternChange(event.option.viewValue);
-    this.patternInput.nativeElement.value = '';
-    this.patternCtrl.setValue(null);
+    this.optionsInput.nativeElement.value = event.option.viewValue;
+    this.patternCtrl.setValue(event.option.value);
   }
 
   private _filterPattern(value: string): string[] {
@@ -285,7 +314,7 @@ export class DashContentComponent extends StatefulnessComponent implements After
 
   selectedAttributes(event: MatAutocompleteSelectedEvent): void {
     this.onAttributeChange(event.option.viewValue);
-    this.attributesInput.nativeElement.value = '';
+    this.optionsInput.nativeElement.value = '';
     this.attributesCtrl.setValue(null);
   }
 

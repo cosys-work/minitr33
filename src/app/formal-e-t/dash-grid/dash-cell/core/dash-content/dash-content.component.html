@@ -37,7 +37,7 @@
     </mat-radio-group>
   </mat-grid-tile>
 
-<!--TYPE selection-->
+  <!--TYPE selection-->
   <mat-grid-tile *ngIf="optState.current === 'type'">
     <mat-form-field class="full-width" appearance="fill">
       <mat-chip-list #chipLists aria-label="Type selection">
@@ -66,7 +66,7 @@
         (optionSelected)="selectedType($event)"
       >
         <mat-option *ngFor="let type of filteredTypes | async" [value]="type">
-          {{ type | titlecase }}
+          {{ type }}
         </mat-option>
       </mat-autocomplete>
       <mat-error *ngIf="inpControl.hasError('required')">
@@ -78,128 +78,28 @@
     </mat-form-field>
   </mat-grid-tile>
 
-<!--OPTIONS selection-->
-  <mat-grid-tile *ngIf="optState.current === 'options'">
-    <mat-form-field class="full-width" appearance="fill">
-      <mat-chip-list #chipLists aria-label="Option selection">
-        <mat-chip
-          [selectable]="selectable"
-          [removable]="removable"
-          (removed)="removeOptions()"
-        >
-          {{curOptions}}
-          <mat-icon matChipRemove>autorenew</mat-icon>
-        </mat-chip>
-        <input
-          name="options"
-          required
-          placeholder="Click to pick options..."
-          #optionsInput
-          [formControl]="optionsCtrl"
-          [matAutocomplete]="auto"
-          [matChipInputFor]="chipLists"
-          [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-          (matChipInputTokenEnd)="addOptions($event)"
-        />
-      </mat-chip-list>
+  <!--Non-Type OPTIONS selection-->
+  <mat-grid-tile *ngIf="optState.current !== 'type'">
+    <mat-form-field class="full-width" appearance="standard">
+      <mat-label>{{ oysterLab | async }}</mat-label>
+      <input
+        matInput
+        [placeholder]="(oysterPlace | async)!"
+        #optionsInput
+        (keyup)="onStrFieldDataChange(maInput.value)"
+        [formControl]=" optionsCtrl"
+        [matAutocomplete]="autoOpts"
+      />
       <mat-autocomplete
-        #auto="matAutocomplete"
+        #autoOpts="matAutocomplete"
         (optionSelected)="selectedOptions($event)"
       >
         <mat-option *ngFor="let type of filteredOptions | async" [value]="type">
           {{ type | titlecase }}
         </mat-option>
       </mat-autocomplete>
-      <mat-error *ngIf="optionsCtrl.hasError('required')">
-        Please choose a valid option
-      </mat-error>
-      <mat-hint>
-        Choose options for the form field
-      </mat-hint>
+      <mat-icon matSuffix>outlined_flag</mat-icon>
+      <mat-hint>{{ oysterDesc | async }}</mat-hint>
     </mat-form-field>
   </mat-grid-tile>
-
-<!--PATTERN selection-->
-  <mat-grid-tile *ngIf="optState.current === 'pattern'">
-    <mat-form-field class="full-width" appearance="fill">
-      <mat-chip-list #chipLists aria-label="Pattern selection">
-        <mat-chip
-          [selectable]="selectable"
-          [removable]="removable"
-          (removed)="removePattern()"
-        >
-          {{ curPattern }}
-          <mat-icon matChipRemove>autorenew</mat-icon>
-        </mat-chip>
-        <input
-          name="pattern"
-          required
-          placeholder="Click to pick pattern..."
-          #patternInput
-          [formControl]="patternCtrl"
-          [matAutocomplete]="auto"
-          [matChipInputFor]="chipLists"
-          [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-          (matChipInputTokenEnd)="addPattern($event)"
-        />
-      </mat-chip-list>
-      <mat-autocomplete
-        #auto="matAutocomplete"
-        (optionSelected)="selectedPattern($event)"
-      >
-        <mat-option *ngFor="let type of filteredPatterns | async" [value]="type">
-          {{ type | titlecase }}
-        </mat-option>
-      </mat-autocomplete>
-      <mat-error *ngIf="patternCtrl.hasError('required')">Please choose a type
-      </mat-error>
-      <mat-hint>
-        Choose the pattern for the form input
-      </mat-hint>
-
-    </mat-form-field>
-  </mat-grid-tile>
-
-
-<!--ATTRIBUTES selection-->
-  <mat-grid-tile *ngIf="optState.current === 'attributes'">
-    <mat-form-field class="full-width" appearance="fill">
-      <mat-chip-list #chipLists aria-label="Attributes selection">
-        <mat-chip
-          [selectable]="selectable"
-          [removable]="removable"
-          (removed)="removeAttributes()"
-        >
-          {{curAttributes}}
-          <mat-icon matChipRemove>autorenew</mat-icon>
-        </mat-chip>
-        <input
-          name="type"
-          required
-          placeholder="Click to pick attributes..."
-          #attributesInput
-          [formControl]="attributesCtrl"
-          [matAutocomplete]="auto"
-          [matChipInputFor]="chipLists"
-          [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-          (matChipInputTokenEnd)="addAttributes($event)"
-        />
-      </mat-chip-list>
-      <mat-autocomplete
-        #auto="matAutocomplete"
-        (optionSelected)="selectedAttributes($event)"
-      >
-        <mat-option *ngFor="let type of filteredAttributes | async" [value]="type">
-          {{ type | titlecase }}
-        </mat-option>
-      </mat-autocomplete>
-      <mat-error *ngIf="attributesCtrl.hasError('required')"
-        >Please choose a type</mat-error
-      >
-      <mat-hint>
-        Choose the attributes for the form field
-      </mat-hint>
-    </mat-form-field>
-  </mat-grid-tile>
-
 </mat-grid-list>

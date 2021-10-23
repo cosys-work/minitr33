@@ -40,7 +40,10 @@ export class DashPreviewComponent implements AfterViewInit, OnDestroy {
   constructor(
     private changes: DashChangesService,
     private grafStore: GrafStore
-  ) {}
+  ) {
+    this.subs.add(this.grafStore.current.subscribe((c) => (this.cursor = c)));
+    this.initialize();
+  }
 
   initialize() {
     this.fieldGroup = this.grafStore.edges.map((e) => e.origin.field);
@@ -75,8 +78,7 @@ export class DashPreviewComponent implements AfterViewInit, OnDestroy {
 
 
   ngAfterViewInit(): void {
-    this.subs.add(this.grafStore.current.subscribe((c) => (this.cursor = c)));
-    this.initialize();
+
     this.updateWhenContentUpdates();
     this.updateWhenGraphUpdates();
 
