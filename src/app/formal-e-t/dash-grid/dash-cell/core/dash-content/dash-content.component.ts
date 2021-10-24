@@ -1,6 +1,5 @@
-import {COMMA, ENTER} from '@angular/cdk/keycodes';
 import {AfterContentInit, ChangeDetectionStrategy, Component, ElementRef, ViewChild} from '@angular/core';
-import {FormControl, Validators} from '@angular/forms';
+import {FormControl} from '@angular/forms';
 import {MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
 import {MatChipInputEvent} from '@angular/material/chips';
 import {MatRadioChange} from '@angular/material/radio';
@@ -24,6 +23,7 @@ import {DashChangesService} from "../../../../../store/dash-changes.service";
 import {GrafStore} from "../../../../../store/graf-store.service";
 import {StatefulnessComponent} from "../../../../../shared/statefulness/statefulness.component";
 import {DebounceCandidate} from "../../../../../store/change-getters.service";
+import {MatSelectChange} from "@angular/material/select";
 
 
 @Component({
@@ -33,10 +33,6 @@ import {DebounceCandidate} from "../../../../../store/change-getters.service";
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DashContentComponent extends StatefulnessComponent implements AfterContentInit {
-  inpControl = new FormControl('', Validators.required);
-  selectable = true;
-  removable = true;
-  separatorKeysCodes: number[] = [ENTER, COMMA];
 
   allTypes = allTypes;
   allPatterns = allPatterns;
@@ -155,9 +151,10 @@ export class DashContentComponent extends StatefulnessComponent implements After
     }
     switch (current) {
       case FieldId.type:
-        this.changes.get.typeStream.pipe((take(1))).subscribe(l =>
-          this.typeCtrl.setValue(this.curType = l as string)
-        );
+        this.changes.get.typeStream.pipe((take(1))).subscribe(l => {
+          this.curType = l as string;
+          this.typeCtrl.setValue(this.curType)
+        });
         break;
       case FieldId.pattern:
         this.changes.get.patternStream.pipe(take(1)).subscribe(l =>
@@ -226,11 +223,11 @@ export class DashContentComponent extends StatefulnessComponent implements After
   };
 
 
-  onTypeChange(changed: string) {
+  onTypeChange(changed: MatSelectChange) {
     console.log("changed type", changed);
-    this.curType = changed;
+    this.curType = changed.value;
     this.typeCtrl.setValue(this.curType);
-    this.changes.set.type = changed.toLowerCase();
+    this.changes.set.type = this.curType;
   };
 
   onPatternChange(changed: string) {
@@ -250,23 +247,6 @@ export class DashContentComponent extends StatefulnessComponent implements After
     this.curOptions = changed;
     this.changes.set.options = changed.split(",");
   };
-
-  addType(event: MatChipInputEvent): void {
-    const value = (event.value || '').trim();
-    if (value) {
-      this.onTypeChange(value);
-    }
-    event.chipInput!.clear();
-  }
-
-  removeType(): void {
-    console.log("type removal triggered");
-  }
-
-  selectedType(event: MatAutocompleteSelectedEvent): void {
-    this.onTypeChange(event.option.viewValue);
-    this.typeInput.nativeElement.value = '';
-}
 
   private _filterType(value: string): string[] {
     const filterValue = value.toLowerCase();

@@ -50,7 +50,7 @@ export const strFieldMapArr : [FieldId, string][] = [
   [FieldId.label, "Label_"],
   [FieldId.description, "Description_"],
   [FieldId.placeholder, "Placeholder_"],
-  [FieldId.id, "Id_"],
+  [FieldId.id, "0"],
 ];
 
 export const booFieldMapArr : [FieldId, boolean][] = [
@@ -69,7 +69,7 @@ export const numFieldMapArr : [FieldId, number][] = [
 
 export const optFieldMapArr: [FieldId, string | RegExp | string[] | AlKeyAlNumValObj][] = [
   [FieldId.type, "input"],
-  [FieldId.pattern, ""],
+  [FieldId.pattern, "\\w\\d"],
   [FieldId.options, [""]],
   [FieldId.attributes, {}]
 ];
