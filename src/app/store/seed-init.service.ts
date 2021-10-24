@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import {FEdge, FNode, ZenFGraph} from "../shared/f-graph.model";
-import {seedEmptyField} from "./seed-init.utils";
+import {seedAField} from "./seed-init.utils";
 
 
 @Injectable({
@@ -19,7 +19,7 @@ export class SeedInitService {
     }
     function nodeWithField(iy: number): FNode {
       const ode = node(iy);
-      const field = seedEmptyField(ode.label, ode.tag, ode.title, iy);
+      const field = seedAField(ode.label, ode.tag, ode.title, iy); // Label, Placeholder, Description, Tabindex
       return ({
         ...ode,
         field

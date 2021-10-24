@@ -1,29 +1,4 @@
-import {TemplateOptions} from "./shared.model";
-
-export type AlKeysAlNumVals = { [key: string]: string | number; };
-
-export interface FieldRefs {
-
-  label: string; //1
-  description: string; //2
-  id: string; //3
-  placeholder: string; //4
-  type: string; //5
-
-  pattern: string | RegExp; //6
-  options: string[], //7
-  attributes: AlKeysAlNumVals, //8
-
-  required?: boolean; //9
-  disabled?: boolean; //10
-  hidden?: boolean; //11
-  readonly?: boolean; //12
-
-  tabindex: number; //13
-  max?: number; //14
-  min?: number; //15
-  step?: number; //16
-}
+export type AlKeyAlNumValObj = { [key: string]: string | number; };
 
 export interface FieldRefsAddons {
   requiredRule: string;
@@ -36,10 +11,6 @@ export interface FieldRefsAddons {
   stepRule: string;
   tabindexRule: string;
 }
-
-export type FullFieldRefs = FieldRefs & FieldRefsAddons;
-
-export type FullTemplate = TemplateOptions & FieldRefsAddons;
 
 export enum FieldId {
   label = "label",
@@ -73,52 +44,53 @@ export enum FieldId {
   attributes = "attributes"
 }
 
-export type FieldValueType = string | RegExp | number | boolean | AlKeysAlNumVals | any[] | undefined;
+export type FieldValueType = string | RegExp | number | boolean | AlKeyAlNumValObj | any[] | undefined;
+
+export const strFieldMapArr : [FieldId, string][] = [
+  [FieldId.label, "Label_"],
+  [FieldId.description, "Description_"],
+  [FieldId.placeholder, "Placeholder_"],
+  [FieldId.id, "Id_"],
+];
+
+export const booFieldMapArr : [FieldId, boolean][] = [
+  [FieldId.required, false],
+  [FieldId.disabled, false],
+  [FieldId.hidden, false],
+  [FieldId.readonly, false],
+];
+
+export const numFieldMapArr : [FieldId, number][] = [
+  [FieldId.tabindex, 0],
+  [FieldId.step, 1],
+  [FieldId.min, 0],
+  [FieldId.max, 100_000_000],
+];
+
+export const optFieldMapArr: [FieldId, string | RegExp | string[] | AlKeyAlNumValObj][] = [
+  [FieldId.type, "input"],
+  [FieldId.pattern, ""],
+  [FieldId.options, [""]],
+  [FieldId.attributes, {}]
+];
+
+export const ruleFieldMapArr: [FieldId, string][] = [
+  [FieldId.requiredRule, ""],
+  [FieldId.disabledRule, ""],
+  [FieldId.hiddenRule, ""],
+  [FieldId.readonlyRule, ""],
+
+  [FieldId.tabindexRule, ""],
+  [FieldId.stepRule, ""],
+  [FieldId.minRule, ""],
+  [FieldId.maxRule, ""],
+];
 
 export const fieldMap = new Map<FieldId, FieldValueType >([
-    [FieldId.label, FieldId.label],
-    [FieldId.type, FieldId.type],
-    [FieldId.description, FieldId.description],
-    [FieldId.placeholder, FieldId.placeholder],
-    [FieldId.id, FieldId.id],
-
-    [FieldId.required, FieldId.required],
-    [FieldId.disabled, FieldId.disabled],
-    [FieldId.hidden, FieldId.hidden],
-    [FieldId.readonly, FieldId.readonly],
-
-    [FieldId.requiredRule, FieldId.requiredRule],
-    [FieldId.disabledRule, FieldId.disabledRule],
-    [FieldId.hiddenRule, FieldId.hiddenRule],
-    [FieldId.readonlyRule, FieldId.readonlyRule],
-
-    [FieldId.tabindex, FieldId.tabindex],
-    [FieldId.step, FieldId.step],
-    [FieldId.min, FieldId.min],
-    [FieldId.max, FieldId.max],
-
-    [FieldId.tabindexRule, FieldId.tabindexRule],
-    [FieldId.stepRule, FieldId.stepRule],
-    [FieldId.minRule, FieldId.minRule],
-    [FieldId.maxRule, FieldId.maxRule],
-
-    [FieldId.pattern, FieldId.pattern],
-    [FieldId.options, FieldId.options],
-    [FieldId.attributes, FieldId.attributes]
+    ...strFieldMapArr,
+    ...booFieldMapArr,
+    ...numFieldMapArr,
+    ...optFieldMapArr
   ]
 );
 
-// export const fieldArray = Object.keys(FieldId)
-//   .map(attribName => [attribName, FieldId[attribName]]);
-//
-// export const fieldMap: Map<string, string> = new Map(fieldArray);
-//
-// export const fieldTypeMap: Map<FieldId, string | any> = new Map(fieldMap);
-
-export interface FieldType {
-  id: FieldId;
-  value: FieldValueType;
-}
-
-export const fieldType: (id: FieldId, value: string | any) => FieldType
-  = (id: FieldId, value: string) => ({id, value});

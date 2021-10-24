@@ -4,10 +4,10 @@ import {FormControl, Validators} from '@angular/forms';
 import {MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
 import {MatChipInputEvent} from '@angular/material/chips';
 import {MatRadioChange} from '@angular/material/radio';
-import {BehaviorSubject, Observable, Subscription, takeUntil} from 'rxjs';
+import {BehaviorSubject, Observable, takeUntil} from 'rxjs';
 import {map, startWith, take} from 'rxjs/operators';
 
-import {AlKeysAlNumVals, FieldId} from "../../../../../shared/field.model";
+import {AlKeyAlNumValObj, FieldId} from "../../../../../shared/field.model";
 import {
   allAttributes,
   allOptions,
@@ -73,8 +73,6 @@ export class DashContentComponent extends StatefulnessComponent implements After
   @ViewChild('typeInput') typeInput!: ElementRef<HTMLInputElement>;
   @ViewChild('optionsInput') optionsInput!: ElementRef<HTMLInputElement>;
   @ViewChild('maInput') maInput!: ElementRef<HTMLInputElement>;
-
-  subs = new Subscription();
 
   constructor(private changes: DashChangesService, private grafStore: GrafStore) {
     super();
@@ -242,9 +240,9 @@ export class DashContentComponent extends StatefulnessComponent implements After
 
   onAttributeChange(changed: string) {
     this.curAttributes = changed;
-    const keyVals = changed.split(",").map(csv => csv.split(":"));
-    const attrObj: AlKeysAlNumVals = {};
-    keyVals.forEach(([k, v]) => attrObj[k] = v);
+    const keyValues = changed.split(",").map(csv => csv.split(":"));
+    const attrObj: AlKeyAlNumValObj = {};
+    keyValues.forEach(([k, v]) => attrObj[k] = v);
     this.changes.set.attributes = attrObj;
   };
 
