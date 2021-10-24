@@ -1,23 +1,20 @@
-import {AfterViewInit, Component, OnDestroy} from '@angular/core';
+import {AfterViewInit, Component} from '@angular/core';
 import {FormGroup} from '@angular/forms';
 import {FormlyFieldConfig} from '@ngx-formly/core';
 import {FormalField} from 'src/app/shared/shared.model';
 import {GrafStore} from 'src/app/store/graf-store.service';
 
-import {AlKeysAlNumVals, FieldRefsAddons} from "../../../../../shared/field.model";
+import {AlKeyAlNumValObj, FieldRefsAddons} from "../../../../../shared/field.model";
 import {DashChangesService} from "../../../../../store/dash-changes.service";
-import {Subscription} from "rxjs";
-
-const keyMaker = (key: string) => {
-  return key.trim().toLowerCase().replace(/ /g, '_');
-};
+import {takeUntil} from "rxjs";
+import {StatefulnessComponent} from "../../../../../shared/statefulness/statefulness.component";
 
 @Component({
   selector: 'app-dash-preview',
   templateUrl: './dash-preview.component.html',
   styleUrls: ['./dash-preview.component.scss'],
 })
-export class DashPreviewComponent implements AfterViewInit, OnDestroy {
+export class DashPreviewComponent extends StatefulnessComponent implements AfterViewInit {
   form = new FormGroup({});
   model = {};
 
@@ -35,13 +32,12 @@ export class DashPreviewComponent implements AfterViewInit, OnDestroy {
 
   formlyFormElem!: Element;
 
-  subs = new Subscription();
-
   constructor(
     private changes: DashChangesService,
     private grafStore: GrafStore
   ) {
-    this.subs.add(this.grafStore.current.subscribe((c) => (this.cursor = c)));
+    super();
+    this.grafStore.current.pipe(takeUntil(this.onDestroy$)).subscribe((c) => (this.cursor = c));
     this.initialize();
   }
 
@@ -52,7 +48,7 @@ export class DashPreviewComponent implements AfterViewInit, OnDestroy {
       [...this.fieldGroup].forEach((_, i) => {
         const cur = ns[i].field;
         this.fieldGroup[i].type = cur.type.toLowerCase();
-        this.fieldGroup[i].key = keyMaker(cur.key);
+        this.fieldGroup[i].key = cur.key;
         this.fieldGroup[i].templateOptions = cur.templateOptions;
         this.fieldGroup[i].id = cur.id;
         this.fieldGroup[i].className = cur.className;
@@ -63,17 +59,17 @@ export class DashPreviewComponent implements AfterViewInit, OnDestroy {
   }
 
   updateWhenGraphUpdates() {
-    this.subs.add(this.grafStore.stateChanged.subscribe((z) => {
+    this.grafStore.stateChanged.pipe(takeUntil(this.onDestroy$)).subscribe((z) => {
       this.fieldGroup = this.grafStore.nodes.map((e) => e.field);
-      this.fieldGroup[z.curNode].type = z.nodes[z.curNode].field.type.toLowerCase();
-      this.fieldGroup[z.curNode].key = keyMaker(z.nodes[z.curNode].field.key);
+      this.fieldGroup[z.curNode].type = z.nodes[z.curNode].field.type;
+      this.fieldGroup[z.curNode].key = z.nodes[z.curNode].field.key;
       this.fieldGroup[z.curNode].templateOptions = z.nodes[z.curNode].field.templateOptions;
       this.fieldGroup[z.curNode].id = z.nodes[z.curNode].field.id;
       this.fieldGroup[z.curNode].className = z.nodes[z.curNode].field.className;
 
       this.field.fieldGroup = this.fieldGroup;
       this.fields = [...this.fields];
-    }));
+    });
   }
 
 
@@ -83,7 +79,7 @@ export class DashPreviewComponent implements AfterViewInit, OnDestroy {
     this.updateWhenGraphUpdates();
 
     const form = (this.formlyFormElem = document.querySelector('formly-form')!);
-    this.subs.add(this.grafStore.current.subscribe((c) => {
+    this.grafStore.current.pipe(takeUntil(this.onDestroy$)).subscribe((c) => {
       const fields = () =>
         form.querySelectorAll('mat-form-field') as NodeListOf<HTMLElement>;
 
@@ -96,7 +92,7 @@ export class DashPreviewComponent implements AfterViewInit, OnDestroy {
       }
 
       setTimeout(updateFieldMarker, 250);
-    }));
+    });
   }
 
 
@@ -110,136 +106,133 @@ export class DashPreviewComponent implements AfterViewInit, OnDestroy {
     this.fields = [...this.fields];
   }
 
+  // TODO refactor to use a well-typed stream map
   updateWhenContentUpdates() {
 
-    this.subs.add(this.changes.get.labelStream.subscribe(l => {
+    this.changes.get.labelStream.pipe(takeUntil(this.onDestroy$)).subscribe(l => {
       if (typeof l === "string") {
         this.fieldGroup[this.cursor].templateOptions.label = l;
-        this.fieldGroup[this.cursor].key = keyMaker(l);
+        this.fieldGroup[this.cursor].key = l;
       }
-    }));
+    });
 
-    this.subs.add(this.changes.get.typeStream.subscribe(t => {
+    this.changes.get.typeStream.pipe(takeUntil(this.onDestroy$)).subscribe(t => {
       const [typeA, typeB] = (t as string).trim().split(",");
 
       this.fieldGroup[this.cursor].type = typeA;
       if (typeB) {
         this.fieldGroup[this.cursor].templateOptions.type = typeB;
       }
-    }));
+    });
 
-    this.subs.add(this.changes.get.placeholderStream.subscribe((p) => {
+    this.changes.get.placeholderStream.pipe(takeUntil(this.onDestroy$)).subscribe((p) => {
       this.fieldGroup[this.cursor].templateOptions.placeholder = (p as string).trim();
-    }));
+    });
 
-    this.subs.add(this.changes.get.descriptionStream.subscribe((p) => {
+    this.changes.get.descriptionStream.pipe(takeUntil(this.onDestroy$)).subscribe((p) => {
       this.fieldGroup[this.cursor].templateOptions.description = (p as string).trim();
-    }));
+    });
 
-    this.subs.add(this.changes.get.optionsStream.subscribe((p) => {
+    this.changes.get.optionsStream.pipe(takeUntil(this.onDestroy$)).subscribe((p) => {
       this.fieldGroup[this.cursor].templateOptions.options = p as any[];
-    }));
+    });
 
-    this.subs.add(this.changes.get.attributesStream.subscribe((p) => {
-      this.fieldGroup[this.cursor].templateOptions.attributes = p as AlKeysAlNumVals;
-    }));
+    this.changes.get.attributesStream.pipe(takeUntil(this.onDestroy$)).subscribe((p) => {
+      this.fieldGroup[this.cursor].templateOptions.attributes = p as AlKeyAlNumValObj;
+    });
 
-    this.subs.add(this.changes.get.patternStream.subscribe((p) => {
+    this.changes.get.patternStream.pipe(takeUntil(this.onDestroy$)).subscribe((p) => {
       if (typeof p === "string") {
         this.fieldGroup[this.cursor].templateOptions.pattern = p;
       }
-    }));
+    });
 
-    this.subs.add(this.changes.get.hiddenStream.subscribe((p) => {
+    this.changes.get.hiddenStream.pipe(takeUntil(this.onDestroy$)).subscribe((p) => {
       if (typeof p === "boolean") {
         this.fieldGroup[this.cursor].templateOptions.hidden = p;
       }
-    }));
+    });
 
-    this.subs.add(this.changes.get.readonlyStream.subscribe((p) => {
+    this.changes.get.readonlyStream.pipe(takeUntil(this.onDestroy$)).subscribe((p) => {
       if (typeof p === "boolean") {
         this.fieldGroup[this.cursor].templateOptions.readonly = p;
       }
-    }));
+    });
 
-    this.subs.add(this.changes.get.requiredStream.subscribe((p) => {
+    this.changes.get.requiredStream.pipe(takeUntil(this.onDestroy$)).subscribe((p) => {
       if (typeof p === "boolean") {
         this.fieldGroup[this.cursor].templateOptions.required = p;
       }
-    }));
+    });
 
-    this.subs.add(this.changes.get.disabledStream.subscribe((a) => {
+    this.changes.get.disabledStream.pipe(takeUntil(this.onDestroy$)).subscribe((a) => {
       if (typeof a === "boolean") {
         this.fieldGroup[this.cursor].templateOptions.disabled = a;
       }
-    }));
+    });
 
-    this.subs.add(this.changes.get.maxStream.subscribe((p) => {
+    this.changes.get.maxStream.pipe(takeUntil(this.onDestroy$)).subscribe((p) => {
       if (typeof p === "number") {
         this.fieldGroup[this.cursor].templateOptions.max = p;
         this.fieldGroup[this.cursor].templateOptions.maxLength = p;
       }
-    }));
+    });
 
-    this.subs.add(this.changes.get.minStream.subscribe((p) => {
+    this.changes.get.minStream.pipe(takeUntil(this.onDestroy$)).subscribe((p) => {
       if (typeof p === "number") {
         this.fieldGroup[this.cursor].templateOptions.min = p;
         this.fieldGroup[this.cursor].templateOptions.minLength = p;
       }
-    }));
+    });
 
-    this.subs.add(this.changes.get.stepStream.subscribe((p) => {
+    this.changes.get.stepStream.pipe(takeUntil(this.onDestroy$)).subscribe((p) => {
       if (typeof p === "number") {
         this.fieldGroup[this.cursor].templateOptions.step = p;
         this.fieldGroup[this.cursor].templateOptions.rows = p;
         this.fieldGroup[this.cursor].templateOptions.cols = p;
       }
-    }));
+    });
 
-    this.subs.add(this.changes.get.tabindexStream.subscribe((p) => {
+    this.changes.get.tabindexStream.pipe(takeUntil(this.onDestroy$)).subscribe((p) => {
       if (typeof p === "number") {
         this.fieldGroup[this.cursor].templateOptions.tabindex = p;
       }
-    }));
+    });
 
-    this.subs.add(this.changes.get.hiddenRuleStream.subscribe((p) => {
+    this.changes.get.hiddenRuleStream.pipe(takeUntil(this.onDestroy$)).subscribe((p) => {
       this.tOptRuleUpdater("hiddenRule", p);
-    }));
+    });
 
-    this.subs.add(this.changes.get.readonlyRuleStream.subscribe((p) => {
+    this.changes.get.readonlyRuleStream.pipe(takeUntil(this.onDestroy$)).subscribe((p) => {
       this.tOptRuleUpdater("readonlyRule", p);
-    }));
+    });
 
-    this.subs.add(this.changes.get.requiredRuleStream.subscribe((p) => {
+    this.changes.get.requiredRuleStream.pipe(takeUntil(this.onDestroy$)).subscribe((p) => {
       this.tOptRuleUpdater("requiredRule", p);
-    }));
+    });
 
-    this.subs.add(this.changes.get.disabledRuleStream.subscribe((a) => {
+    this.changes.get.disabledRuleStream.pipe(takeUntil(this.onDestroy$)).subscribe((a) => {
       this.tOptRuleUpdater("disabledRule", a);
-    }));
+    });
 
-    this.subs.add(this.changes.get.maxRuleStream.subscribe((p) => {
+    this.changes.get.maxRuleStream.pipe(takeUntil(this.onDestroy$)).subscribe((p) => {
       this.tOptRuleUpdater("maxRule", p);
-    }));
+    });
 
-    this.subs.add(this.changes.get.minRuleStream.subscribe((p) => {
+    this.changes.get.minRuleStream.pipe(takeUntil(this.onDestroy$)).subscribe((p) => {
       this.tOptRuleUpdater("minRule", p);
-    }));
+    });
 
-    this.subs.add(this.changes.get.stepRuleStream.subscribe((p) => {
+    this.changes.get.stepRuleStream.pipe(takeUntil(this.onDestroy$)).subscribe((p) => {
       this.tOptRuleUpdater("stepRule", p);
-    }));
+    });
 
-    this.subs.add(this.changes.get.tabindexRuleStream.subscribe((p) => {
+    this.changes.get.tabindexRuleStream.pipe(takeUntil(this.onDestroy$)).subscribe((p) => {
       this.tOptRuleUpdater("tabindexRule", p);
-    }));
+    });
   }
 
   onSubmit(model: any) {
     console.log(model, model === this.model, this.model);
-  }
-
-  ngOnDestroy(): void {
-    this.subs.unsubscribe();
   }
 }
