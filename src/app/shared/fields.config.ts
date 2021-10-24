@@ -27,10 +27,6 @@ export const allTypes: string[] = [
   'autocomplete'
 ];
 
-export const allPatterns: string[] = ["Pattern 1", "Pattern 2"];
-export const allOptions: string[] = ["Option 1", "Option 2"];
-export const allAttributes: string[] = ["Attribute 1", "Attribute 2"];
-
 export interface LPD {
   label: string;
   placeholder: string;

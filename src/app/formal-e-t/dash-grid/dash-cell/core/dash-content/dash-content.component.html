@@ -41,6 +41,7 @@
   <mat-grid-tile *ngIf="optState.current === 'type'">
     <mat-form-field class="full-width" appearance="fill">
       <mat-select [formControl]="typeCtrl" (selectionChange)="onTypeChange($event)" required>
+        <mat-option>{{typeCtrl.value}}</mat-option>
         <mat-option *ngFor="let type of allTypes" [value]="type">{{type}}</mat-option>
       </mat-select>
       <mat-label>{{ oysterLab | async }}</mat-label>

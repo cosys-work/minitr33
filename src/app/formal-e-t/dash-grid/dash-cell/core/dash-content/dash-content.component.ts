@@ -1,16 +1,11 @@
 import {AfterContentInit, ChangeDetectionStrategy, Component, ElementRef, ViewChild} from '@angular/core';
 import {FormControl} from '@angular/forms';
-import {MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
-import {MatChipInputEvent} from '@angular/material/chips';
 import {MatRadioChange} from '@angular/material/radio';
 import {BehaviorSubject, Observable, takeUntil} from 'rxjs';
 import {map, startWith, take} from 'rxjs/operators';
 
-import {AlKeyAlNumValObj, FieldId} from "../../../../../shared/field.model";
+import {FieldId} from "../../../../../shared/field.model";
 import {
-  allAttributes,
-  allOptions,
-  allPatterns,
   allTypes,
   OptFields,
   optLabels,
@@ -35,9 +30,6 @@ import {MatSelectChange} from "@angular/material/select";
 export class DashContentComponent extends StatefulnessComponent implements AfterContentInit {
 
   allTypes = allTypes;
-  allPatterns = allPatterns;
-  allOptions = allOptions;
-  allAttributes = allAttributes;
   strLabels = strLabels;
   optLabels = optLabels;
 
@@ -52,19 +44,9 @@ export class DashContentComponent extends StatefulnessComponent implements After
   oysterDesc = new BehaviorSubject(this.optState.type.description);
 
   typeCtrl = new FormControl();
-  patternCtrl = new FormControl();
   optionsCtrl = new FormControl();
-  attributesCtrl = new FormControl();
-
   filteredTypes: Observable<string[]>;
-  filteredPatterns: Observable<string[]>;
-  filteredOptions: Observable<string[]>;
-  filteredAttributes: Observable<string[]>;
-
   curType = "input,text";
-  curOptions = "Opt 1";
-  curAttributes = "Attr 1";
-  curPattern = "Pat 1";
 
   @ViewChild('typeInput') typeInput!: ElementRef<HTMLInputElement>;
   @ViewChild('optionsInput') optionsInput!: ElementRef<HTMLInputElement>;
@@ -77,21 +59,6 @@ export class DashContentComponent extends StatefulnessComponent implements After
       startWith(null),
       map((type: string | null) => type ? this._filterType(type) : this.allTypes.slice())
     );
-
-    this.filteredPatterns = this.patternCtrl.valueChanges.pipe(
-      startWith(null),
-      map((pat: string | null) => pat ? this._filterPattern(pat) : this.allPatterns.slice())
-    );
-
-    this.filteredOptions = this.optionsCtrl.valueChanges.pipe(
-      startWith(null),
-      map((opt: string | null) => opt ? this._filterOptions(opt) : this.allOptions.slice())
-    );
-
-    this.filteredAttributes = this.attributesCtrl.valueChanges.pipe(
-      startWith(null),
-      map((attr: string | null) => attr ? this._filterAttributes(attr) : this.allAttributes.slice())
-    );
   }
 
   ngAfterContentInit() {
@@ -100,7 +67,6 @@ export class DashContentComponent extends StatefulnessComponent implements After
   }
 
   private updateFC() {
-    console.log("cursor update triggered");
     const sTurKey = this.strState.current;
     const opTKey = this.optState.current;
     this.updateFCStr(sTurKey);
@@ -183,7 +149,6 @@ export class DashContentComponent extends StatefulnessComponent implements After
   }
 
   selectStrField(event: MatRadioChange) {
-    console.log("selected str", event);
     this.strState.current = event.source.value;
     this.updateStrLPD();
     this.updateFCStr(this.strState.current);
@@ -196,14 +161,12 @@ export class DashContentComponent extends StatefulnessComponent implements After
   }
 
   selectOptField(event: MatRadioChange) {
-    console.log("selected opt", event);
     this.optState.current = event.source.value;
     this.updateOptStrLPD();
     this.updateFCOpt(this.optState.current);
   }
 
   onStrFieldDataChange(changed: string) {
-    console.log("changed str field data", changed);
     switch (this.strState.current) {
       case FieldId.label:
         this.changes.set.label = changed;
@@ -224,104 +187,13 @@ export class DashContentComponent extends StatefulnessComponent implements After
 
 
   onTypeChange(changed: MatSelectChange) {
-    console.log("changed type", changed);
     this.curType = changed.value;
     this.typeCtrl.setValue(this.curType);
     this.changes.set.type = this.curType;
   };
 
-  onPatternChange(changed: string) {
-    this.curPattern = changed;
-    this.changes.set.pattern = changed;
-  };
-
-  onAttributeChange(changed: string) {
-    this.curAttributes = changed;
-    const keyValues = changed.split(",").map(csv => csv.split(":"));
-    const attrObj: AlKeyAlNumValObj = {};
-    keyValues.forEach(([k, v]) => attrObj[k] = v);
-    this.changes.set.attributes = attrObj;
-  };
-
-  onOptionChange(changed: string) {
-    this.curOptions = changed;
-    this.changes.set.options = changed.split(",");
-  };
-
   private _filterType(value: string): string[] {
     const filterValue = value.toLowerCase();
     return this.allTypes.filter(type => !type.toLowerCase().includes(filterValue));
-  }
-
-  addPattern(event: MatChipInputEvent): void {
-    const value = (event.value || '').trim();
-    if (value) {
-      this.onPatternChange(value);
-    }
-    event.chipInput!.clear();
-    this.patternCtrl.setValue(null);
-  }
-
-  removePattern(): void {
-    console.log("pattern removal triggered");
-  }
-
-  selectedPattern(event: MatAutocompleteSelectedEvent): void {
-    this.onPatternChange(event.option.viewValue);
-    this.optionsInput.nativeElement.value = event.option.viewValue;
-    this.patternCtrl.setValue(event.option.value);
-  }
-
-  private _filterPattern(value: string): string[] {
-    const filterValue = value.toLowerCase();
-    return this.allPatterns.filter(pat => pat.toLowerCase().includes(filterValue));
-  }
-
-  addAttributes(event: MatChipInputEvent): void {
-    const value = event.value.trim() || '';
-    if (value) {
-      this.onAttributeChange(value);
-    }
-    event.chipInput!.clear();
-    this.attributesCtrl.setValue(null);
-  }
-
-  removeAttributes(): void {
-    console.log("attr removal triggered");
-  }
-
-  selectedAttributes(event: MatAutocompleteSelectedEvent): void {
-    this.onAttributeChange(event.option.viewValue);
-    this.optionsInput.nativeElement.value = '';
-    this.attributesCtrl.setValue(null);
-  }
-
-  private _filterAttributes(value: string): string[] {
-    const filterValue = value.toLowerCase();
-    return this.allAttributes.filter(type => type.toLowerCase().includes(filterValue));
-  }
-
-  addOptions(event: MatChipInputEvent): void {
-    const value = (event.value || '').trim();
-    if (value) {
-      this.onOptionChange(value);
-    }
-    event.chipInput!.clear();
-    this.optionsCtrl.setValue(null);
-  }
-
-  removeOptions(): void {
-    console.log("options removal triggered");
-  }
-
-  selectedOptions(event: MatAutocompleteSelectedEvent): void {
-    this.onOptionChange(event.option.viewValue);
-    this.optionsInput.nativeElement.value = '';
-    this.optionsCtrl.setValue(null);
-  }
-
-  private _filterOptions(value: string): string[] {
-    const filterValue = value.toLowerCase();
-    return this.allOptions.filter(opt => opt.toLowerCase().includes(filterValue));
   }
 }
