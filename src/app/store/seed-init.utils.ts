@@ -1,199 +1,47 @@
-import {FieldRefs, FullFieldRefs} from "../shared/field.model";
-import {FormalField, TemplateOptions} from "../shared/shared.model";
+import {FieldId, fieldMap, FieldValueType, ruleFieldMapArr} from "../shared/field.model";
+import {FormalField, TemplateOptions, Validation} from "../shared/shared.model";
 
-export function fieldRefs(
-  label: string,
-  placeholder: string,
-  description: string,
-  type: string,
-  pattern: string | RegExp,
-  options: string[],
-  attributes: { [key: string]: string | number; },
-  tabindex: number,
-  required?: boolean,
-  disabled?: boolean,
-  hidden?: boolean,
-  readonly?: boolean,
-  maximum?: number,
-  minimum?: number,
-  step?: number,
-  id: string = "",
-  tabindexRule: string = "",
-  requiredRule: string = "",
-  disabledRule: string = "",
-  hiddenRule: string = "",
-  readonlyRule: string = "",
-  maxRule: string = "",
-  minRule: string = "",
-  stepRule: string = "",
-): FullFieldRefs {
-
-  return ({
-    label,
-    placeholder,
-    description,
-    type,
-    min: minimum,
-    max: maximum,
-    id,
-    pattern,
-    options,
-    attributes,
-    required,
-    disabled,
-    hidden,
-    readonly,
-    tabindex,
-    step,
-    tabindexRule,
-    requiredRule,
-    disabledRule,
-    hiddenRule,
-    readonlyRule,
-    maxRule,
-    minRule,
-    stepRule,
-  });
+function makeDescriptor(value: FieldValueType): PropertyDescriptor {
+  const enumerable = true;
+  const writable = true;
+  return {
+    value,
+    writable,
+    enumerable
+  }
 }
 
+export function seedAField(label: string, placeholder: string, description: string, id: number): FormalField {
+  const defaultField = fieldMap;
 
-export function refsToFieldHelper(
-  key: string,
-  type: string,
-  label: string,
-  placeholder: string,
-  className: string,
-  description: string,
-  id: string,
-  pattern: string | RegExp,
-  options: string[],
-  attributes: { [key: string]: string | number; },
-  tabindex: number,
-  required?: boolean,
-  disabled?: boolean,
-  hidden?: boolean,
-  readonly?: boolean,
-  max?: number,
-  min?: number,
-  step: number = 1,
-  tabindexRule: string = "",
-  requiredRule: string = "",
-  disabledRule: string = "",
-  hiddenRule: string = "",
-  readonlyRule: string = "",
-  maxRule: string = "",
-  minRule: string = "",
-  stepRule: string = ""
-): Omit<FormalField, "jump"> {
-  const [_, typeAA] = type.split(",");
-  const [minLength, maxLength, rows, cols] = [min, max, step, step];
-  const templateOptions: TemplateOptions = {
-    type: typeAA ?? "text",
-    label,
-    placeholder,
-    pattern,
-    options,
-    attributes,
-    required,
-    disabled,
-    hidden,
-    readonly,
-    tabindex,
-    max,
-    min,
-    step,
-    minLength,
-    maxLength,
-    rows,
-    cols,
-    description
-  };
+  defaultField.set(FieldId.label, label);
+  defaultField.set(FieldId.placeholder, placeholder);
+  defaultField.set(FieldId.description, description);
+  defaultField.set(FieldId.id, id);
+  defaultField.set(FieldId.tabindex, id);
 
-  const validation = {
-    tabindexRule,
-    requiredRule,
-    disabledRule,
-    hiddenRule,
-    readonlyRule,
-    maxRule,
-    minRule,
-    stepRule
-  };
+  const tempOpt = {};
+  [...defaultField.entries()].forEach(([k, v]) => {
+    Object.defineProperty(tempOpt, k, makeDescriptor(v));
+  });
+  const templateOptions: TemplateOptions = tempOpt as TemplateOptions;
 
-  return ({
-    key,
-    type,
-    className,
+  const defaultRules = ruleFieldMapArr;
+  const valTemp = {};
+  defaultRules.forEach(([k, v]) => {
+    Object.defineProperty(valTemp, k, makeDescriptor(v));
+  });
+  const validation: Validation = valTemp as Validation;
+
+  return  {
+    key: fieldMap.get(FieldId.id) as string,
+    type: fieldMap.get(FieldId.type) as string,
+    className: 'flex-1',
+    id: fieldMap.get(FieldId.id) as string,
     templateOptions,
-    id,
     validation
-  });
+  } as FormalField;
 
 }
 
 
-export function seedFieldFromRefs(refs: FieldRefs): FormalField {
-  return refsToFieldHelper(
-    refs.label,
-    refs.type,
-    refs.label,
-    refs.placeholder,
-    'flex-1',
-    refs.description,
-    refs.id,
-    refs.pattern,
-    refs.options,
-    refs.attributes,
-    refs.tabindex,
-    refs.required,
-    refs.disabled,
-    refs.hidden,
-    refs.readonly,
-    refs.max,
-    refs.min,
-    refs.step
-  );
-}
-
-
-export function seedEmptyField(
-  label: string,
-  placeholder: string,
-  description: string,
-  tabindex: number,
-  type: string = "input",
-  pattern: string = "",
-  options: string[] = [],
-  attributes: { [key: string]: string | number; } = {},
-  required?: boolean,
-  disabled?: boolean,
-  hidden?: boolean,
-  readonly?: boolean,
-  maximum?: number,
-  minimum?: number,
-  step?: number,
-  id: string = "",
-): FormalField {
-  return seedFieldFromRefs(fieldRefs(
-    label,
-    placeholder,
-    description,
-    type,
-
-    pattern,
-    options,
-    attributes,
-
-    tabindex,
-
-    required,
-    disabled,
-    hidden,
-    readonly,
-
-    maximum,
-    minimum,
-    step,
-    id
-  ));
-}
