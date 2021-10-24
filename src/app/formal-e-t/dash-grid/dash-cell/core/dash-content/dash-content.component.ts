@@ -48,7 +48,6 @@ export class DashContentComponent extends StatefulnessComponent implements After
   filteredTypes: Observable<string[]>;
   curType = "input,text";
 
-  @ViewChild('typeInput') typeInput!: ElementRef<HTMLInputElement>;
   @ViewChild('optionsInput') optionsInput!: ElementRef<HTMLInputElement>;
   @ViewChild('maInput') maInput!: ElementRef<HTMLInputElement>;
 
