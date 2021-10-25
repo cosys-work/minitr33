@@ -66,14 +66,12 @@ export class DashContentComponent extends StatefulnessComponent implements After
   }
 
   private updateFC() {
-    const sTurKey = this.strState.current;
-    const opTKey = this.optState.current;
-    this.updateFCStr(sTurKey);
-    this.updateFCOpt(opTKey);
+    this.updateFCStr(this.strState.current);
+    this.updateFCOpt(this.optState.current);
   }
 
-  updateFCStr(current: keyof StrFields) {
-    // TODO refactor redundancy
+  private updateFCStr(current: keyof StrFields) {
+    // TO DO refactor redundancy
     switch (current) {
       case FieldId.label:
         this.changes.get.labelStream.pipe(take(1)).subscribe(l => {
@@ -108,7 +106,7 @@ export class DashContentComponent extends StatefulnessComponent implements After
     }
   }
 
-  updateFCOpt(current: keyof OptFields) {
+  private updateFCOpt(current: keyof OptFields) {
     const updateFromStream = (l: DebounceCandidate) => {
       if (typeof l === "string") {
         this.optionsInput.nativeElement.value = l;
@@ -186,7 +184,7 @@ export class DashContentComponent extends StatefulnessComponent implements After
       default:
         break;
     }
-  };
+  }
 
   typeChangeHandler(changed: string) {
     const [coreType, subType] = changed.split(",");
@@ -198,7 +196,7 @@ export class DashContentComponent extends StatefulnessComponent implements After
 
   onTypeChange(changed: MatSelectChange) {
     this.typeChangeHandler(changed.value);
-  };
+  }
 
   private _filterType(value: string): string[] {
     const filterValue = value.toLowerCase();

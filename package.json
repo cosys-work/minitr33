@@ -13,7 +13,8 @@
     "cypress:run": "cypress run",
     "src:map": "ng build --sourceMap=true --namedChunks=true --statsJson",
     "src:viz": "source-map-explorer dist/proforma/main.*.js",
-    "deploy": "ng deploy --base-href=/minitr33/"
+    "deploy": "ng deploy --base-href=/minitr33/",
+    "godpush": "pnpm build && pnpm deploy"
   },
   "private": true,
   "dependencies": {

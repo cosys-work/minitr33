@@ -1,22 +1,23 @@
-import {ChangeDetectionStrategy, Component, ElementRef, ViewChild} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
+import {AfterContentInit, ChangeDetectionStrategy, Component, ElementRef, ViewChild} from '@angular/core';
+import {FormControl} from '@angular/forms';
 import {MatRadioChange} from '@angular/material/radio';
 import {MatSlideToggleChange} from '@angular/material/slide-toggle';
-import {BehaviorSubject, Observable} from 'rxjs';
+import {BehaviorSubject, Observable, takeUntil} from 'rxjs';
 import {take} from 'rxjs/operators';
 
 import {FieldId} from "../../../../../shared/field.model";
 import {
   booLabels,
   booState,
-  BooTyped,
-  isNumTyped,
+  BooTypeField,
   numLabels,
   numState,
-  NumTyped
+  NumTypeField
 } from "../../../../../shared/fields.config";
 import {DashChangesService} from "../../../../../store/dash-changes.service";
 import {DebounceCandidate} from "../../../../../store/change-getters.service";
+import {StatefulnessComponent} from "../../../../../shared/statefulness/statefulness.component";
+import {GrafStore} from "../../../../../store/graf-store.service";
 
 @Component({
   selector: 'app-dash-logic',
@@ -24,133 +25,178 @@ import {DebounceCandidate} from "../../../../../store/change-getters.service";
   styleUrls: ['./dash-logic.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DashLogicComponent {
+export class DashLogicComponent extends StatefulnessComponent implements AfterContentInit {
 
   keyCtrl = new FormControl();
-
-  numState = numState;
-  booState = booState;
-
-  strLab = new BehaviorSubject(this.numState.tabindex.label);
-  strPlace = new BehaviorSubject(this.numState.tabindex.placeholder);
-  strDesc = new BehaviorSubject(this.numState.tabindex.description);
 
   booLabels = booLabels;
   numLabels = numLabels;
 
+  numState = numState;
+  numStrLab = new BehaviorSubject(this.numState.tabindex.label);
+  numStrPlace = new BehaviorSubject(this.numState.tabindex.placeholder);
+  numStrDesc = new BehaviorSubject(this.numState.tabindex.description);
+
+  booState = booState;
   booStrLab = new BehaviorSubject(this.booState.required.label);
   booStrPlace = new BehaviorSubject(this.booState.required.placeholder);
   booStrDesc = new BehaviorSubject(this.booState.required.description);
 
-  formGroup!: FormGroup;
-
+  booBool = false;
+  //@ViewChild('booToggle') booToggle!: ElementRef<HTMLInputElement>;
   @ViewChild('booInput') booInput!: ElementRef<HTMLInputElement>;
   @ViewChild('numInput') numInput!: ElementRef<HTMLInputElement>;
   @ViewChild('rulInput') rulInput!: ElementRef<HTMLInputElement>;
 
   constructor(
-    public changes: DashChangesService,
-    formBuilder: FormBuilder
+    private changes: DashChangesService,
+    private grafStore: GrafStore,
   ) {
-    this.formGroup = formBuilder.group({
-      enableReq: '',
-      enableHid: '',
-      enableDis: '',
-      enableRead: ''
+    super();
+  }
+
+  ngAfterContentInit() {
+    this.grafStore.current.pipe(takeUntil(this.onDestroy$))
+      .subscribe(_ => this.updateFL());
+  }
+
+  private updateFL() {
+    this.updateFLBoo(this.booState.current);
+    this.updateFLNum(this.numState.current);
+  }
+
+  private nextBooSet(booStream: Observable<DebounceCandidate>, ruStream: Observable<DebounceCandidate>) {
+    booStream.pipe(take(1)).subscribe(l => {
+      if (typeof l === "boolean") {
+        this.booBool = l;
+      }
+    });
+    ruStream.pipe(take(1)).subscribe(l => {
+      if (typeof l === "string") {
+        this.booInput.nativeElement.value = l;
+      }
     });
   }
 
-  onFormSubmit() {
-    console.log("submitted logic form", this.formGroup.value);
+  private updateFLBoo(current: keyof BooTypeField) {
+    switch (current) {
+      case FieldId.required:
+        this.nextBooSet(
+          this.changes.get.requiredStream,
+          this.changes.get.requiredRuleStream
+        );
+        break;
+      case FieldId.disabled:
+        this.nextBooSet(
+          this.changes.get.disabledStream,
+          this.changes.get.disabledRuleStream
+        );
+        break;
+      case FieldId.hidden:
+        this.nextBooSet(
+          this.changes.get.hiddenStream,
+          this.changes.get.hiddenRuleStream
+        );
+        break;
+      case FieldId.readonly:
+        this.nextBooSet(
+          this.changes.get.readonlyStream,
+          this.changes.get.readonlyRuleStream
+        )
+        break;
+      default:
+        break;
+    }
+  }
+
+  private nextNumSet(nuStream: Observable<DebounceCandidate>, ruStream: Observable<DebounceCandidate>) {
+    nuStream.pipe(take(1)).subscribe(l => {
+      console.log("next num", l);
+      if (typeof l === "number") {
+        this.numInput.nativeElement.value = l.toString();
+      }
+    });
+    ruStream.pipe(take(1)).subscribe(l => {
+      console.log("next num rule", l);
+      if (typeof l === "string") {
+        this.rulInput.nativeElement.value = l;
+      }
+    });
+  }
+
+  private updateFLNum(current: keyof NumTypeField) {
+    switch (current) {
+      case FieldId.tabindex:
+        this.nextNumSet(
+          this.changes.get.tabindexStream,
+          this.changes.get.tabindexRuleStream
+        );
+        break;
+      case FieldId.max:
+        this.nextNumSet(
+          this.changes.get.maxStream,
+          this.changes.get.maxRuleStream
+        );
+        break;
+      case FieldId.min:
+        this.nextNumSet(
+          this.changes.get.minStream,
+          this.changes.get.minRuleStream
+        );
+        break;
+      case FieldId.step:
+        this.nextNumSet(
+          this.changes.get.stepStream,
+          this.changes.get.stepRuleStream
+        )
+        break;
+      default:
+        break;
+    }
+  }
+
+  updateBooStrLPD() {
+    this.booStrLab.next(this.booState[this.booState.current].label);
+    this.booStrPlace.next(this.booState[this.booState.current].placeholder);
+    this.booStrDesc.next(this.booState[this.booState.current].description);
+  }
+
+  updateNumStrLPD() {
+    this.numStrLab.next(this.numState[this.numState.current].label);
+    this.numStrPlace.next(this.numState[this.numState.current].placeholder);
+    this.numStrDesc.next(this.numState[this.numState.current].description);
   }
 
   selectBoolField(event: MatRadioChange) {
     this.booState.current = event.source.value;
-    this.onBoolFieldSelect(event.source.value);
+    this.updateBooStrLPD();
+    this.updateFLBoo(this.booState.current);
   }
 
-  onBoolReqChange(changed: MatSlideToggleChange) {
-    this.changes.set.required = changed.checked;
+  selectNumField(event: MatRadioChange) {
+    this.numState.current = event.source.value;
+    this.updateNumStrLPD();
+    this.updateFLNum(this.numState.current);
   }
 
-  onBoolDisChange(changed: MatSlideToggleChange) {
-    this.changes.set.disabled = changed.checked;
-  }
-
-  onBoolHidChange(changed: MatSlideToggleChange) {
-    this.changes.set.hidden = changed.checked;
-  }
-
-  onBoolReadChange(changed: MatSlideToggleChange) {
-    this.changes.set.readonly = changed.checked;
-  }
-
-  nextGet(selector: NumTyped | BooTyped, streams: Observable<DebounceCandidate>[]) {
-    const elems = streams.length === 2 ? [this.numInput] : [];
-
-    if (isNumTyped(selector)) {
-      this.strLab.next(this.numState[selector].label);
-      this.strPlace.next(this.numState[selector].placeholder);
-      this.strDesc.next(this.numState[selector].description);
-      elems.push(this.rulInput);
-    } else {
-      this.booStrLab.next(this.booState[selector].label);
-      this.booStrPlace.next(this.booState[selector].placeholder);
-      this.booStrDesc.next(this.booState[selector].description);
-      elems.push(this.booInput);
-    }
-
-    streams.forEach((s, i) => {
-      s.pipe(take(1))
-        .subscribe(s => {
-          if (typeof s === "string") {
-            elems[i].nativeElement.value = s;
-          }
-        });
-    });
-  }
-
-  onBoolFieldSelect(_: string) {
-    const cg = this.changes.get;
+  onBooFieldChange(changed: MatSlideToggleChange) {
     switch (this.booState.current) {
       case FieldId.required:
-        this.nextGet(FieldId.required, [cg.requiredRuleStream]);
+        this.changes.set.required = changed.checked;
         break;
       case FieldId.disabled:
-        this.nextGet(FieldId.disabled, [cg.disabledRuleStream]);
+        this.changes.set.disabled = changed.checked;
         break;
       case FieldId.hidden:
-        this.nextGet(FieldId.hidden, [cg.hiddenRuleStream]);
+        this.changes.set.hidden = changed.checked;
         break;
       case FieldId.readonly:
-        this.nextGet(FieldId.readonly, [cg.readonlyRuleStream]);
+        this.changes.set.readonly = changed.checked;
         break;
       default:
         break;
     }
-
-  };
-
-
-  onNumFieldSelect(_: string) {
-    const cg = this.changes.get;
-    switch (this.numState.current) {
-      case FieldId.tabindex:
-        this.nextGet(FieldId.tabindex, [cg.tabindexStream, cg.tabindexRuleStream]);
-        break;
-      case FieldId.max:
-        this.nextGet(FieldId.max, [cg.maxStream, cg.maxRuleStream]);
-        break;
-      case FieldId.min:
-        this.nextGet(FieldId.max, [cg.minStream, cg.minRuleStream]);
-        break;
-      case FieldId.step:
-        this.nextGet(FieldId.step, [cg.stepStream, cg.stepRuleStream]);
-        break;
-      default:
-        break;
-    }
-  };
+  }
 
   onBooTextChange(changed: string) {
     switch (this.booState.current) {
@@ -171,36 +217,42 @@ export class DashLogicComponent {
     }
   }
 
-  onNumFieldChange(changed: string, unruly = true) {
+  onNumFieldChange(changed: string) {
     switch (this.numState.current) {
       case FieldId.tabindex:
-        unruly ?
-          this.changes.set.tabindex = Number(changed) :
-          this.changes.set.tabindexRule = changed;
+        this.changes.set.tabindex = Number(changed);
         break;
       case FieldId.max:
-        unruly ?
-          this.changes.set.max = Number(changed) :
-          this.changes.set.maxRule = changed;
+        this.changes.set.max = Number(changed);
         break;
       case FieldId.min:
-        unruly ?
-          this.changes.set.min = Number(changed) :
-          this.changes.set.minRule = changed;
+        this.changes.set.min = Number(changed);
         break;
       case FieldId.step:
-        unruly ?
-          this.changes.set.step = Number(changed) :
-          this.changes.set.stepRule = changed;
+        this.changes.set.step = Number(changed);
         break;
       default:
         break;
     }
   }
 
-  selectNumField(event: MatRadioChange) {
-    this.numState.current = event.source.value;
-    this.onNumFieldSelect(event.value);
+  onNumFieldRuleChange(changed: string) {
+    switch (this.numState.current) {
+      case FieldId.tabindex:
+        this.changes.set.tabindexRule = changed;
+        break;
+      case FieldId.max:
+        this.changes.set.maxRule = changed;
+        break;
+      case FieldId.min:
+        this.changes.set.minRule = changed;
+        break;
+      case FieldId.step:
+        this.changes.set.stepRule = changed;
+        break;
+      default:
+        break;
+    }
   }
 
 }

@@ -1,109 +1,76 @@
-<form (ngSubmit)="onFormSubmit()" [formGroup]="formGroup" class="sample-form">
-  <mat-grid-list cols="2" rowHeight="4:1">
-    <mat-grid-tile>
-      <mat-radio-group
-        class="example-chip-list"
-        (change)="selectBoolField($event)"
+<mat-grid-list cols="2" rowHeight="4:1">
+  <mat-grid-tile>
+    <mat-radio-group class="example-chip-list" (change)="selectBoolField($event)">
+      <mat-radio-button
+        *ngFor="let labeled of booLabels"
+        class="example-margin"
+        [value]="labeled"
+        [checked]="labeled === 'required'"
       >
-        <mat-radio-button
-          *ngFor="let labeled of booLabels"
-          class="example-margin"
-          [value]="labeled"
-          [checked]="labeled === 'required'"
-        >
-          <span>{{ labeled | titlecase }}</span>
-        </mat-radio-button>
-      </mat-radio-group>
-    </mat-grid-tile>
-    <mat-grid-tile>
-      <mat-slide-toggle
-        class="comfy"
-        formControlName="enableReq"
-        (change)="onBoolReqChange($event)"
-        *ngIf="booState.current === 'required'"
-      >
-        <span class="saano">Required?</span>
-      </mat-slide-toggle>
+        <span>{{ labeled | titlecase }}</span>
+      </mat-radio-button>
+    </mat-radio-group>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <mat-slide-toggle
+      class="comfy"
+      [checked]="booBool"
+      (change)="onBooFieldChange($event)"
+    >
+      <span class="saano">{{booState.current | titlecase}}?</span>
+    </mat-slide-toggle>
 
-      <mat-slide-toggle
-        class="comfy"
-        formControlName="enableDis"
-        (change)="onBoolDisChange($event)"
-        *ngIf="booState.current === 'disabled'"
+    <mat-form-field class="three-quart-width" appearance="standard">
+      <mat-label>{{ booStrLab | async }}</mat-label>
+      <input
+        matInput
+        type="text"
+        [placeholder]="(booStrPlace | async)!"
+        [formControl]="keyCtrl"
+        #booInput
+        (keyup)="onBooTextChange(booInput.value)"
+      />
+      <mat-icon matSuffix>vpn_key</mat-icon>
+      <mat-hint>{{ booStrDesc | async }}</mat-hint>
+    </mat-form-field>
+  </mat-grid-tile>
+  <mat-grid-tile fxLayout="row" fxLayoutAlign="start center">
+    <mat-radio-group (change)="selectNumField($event)">
+      <mat-radio-button
+        *ngFor="let numF of numLabels"
+        class="example-margin"
+        [value]="numF"
+        [checked]="numF === 'tabindex'"
       >
-        <span class="saano">Disabled?</span>
-      </mat-slide-toggle>
-
-      <mat-slide-toggle
-        class="comfy"
-        formControlName="enableHid"
-        (change)="onBoolHidChange($event)"
-        *ngIf="booState.current === 'hidden'"
-      >
-        <span class="saano">Hidden?</span>
-      </mat-slide-toggle>
-
-      <mat-slide-toggle
-        class="comfy"
-        formControlName="enableRead"
-        (change)="onBoolReadChange($event)"
-        *ngIf="booState.current === 'readonly'"
-      >
-        <span class="saano">Readonly?</span>
-      </mat-slide-toggle>
-
-      <mat-form-field class="three-quart-width" appearance="standard">
-        <mat-label>{{ booStrLab | async }}</mat-label>
-        <input
-          matInput
-          type="text"
-          [placeholder]="(booStrPlace | async)!"
-          [formControl]="keyCtrl"
-          #booInput
-          (keyup)="onBooTextChange(booInput.value)"
-        />
-        <mat-icon matSuffix>vpn_key</mat-icon>
-        <mat-hint>{{ booStrDesc | async }}</mat-hint>
-      </mat-form-field>
-    </mat-grid-tile>
-    <mat-grid-tile fxLayout="row" fxLayoutAlign="start center">
-      <mat-radio-group (change)="selectNumField($event)">
-        <mat-radio-button
-          *ngFor="let numF of numLabels"
-          class="example-margin"
-          [value]="numF"
-          [checked]="numF === 'tabindex'"
-        >
-          <span>{{ numF | titlecase }}</span>
-        </mat-radio-button>
-      </mat-radio-group>
-    </mat-grid-tile>
-    <mat-grid-tile>
-      <mat-form-field class="one-quart-width comfy-num" appearance="standard">
-        <mat-label>{{ strLab | async }}</mat-label>
-        <input
-          matInput
-          type="number"
-          [placeholder]="(strPlace | async)!"
-          [formControl]="keyCtrl"
-          #numInput
-          (keyup)="onNumFieldChange(numInput.value)"
-        />
-        <mat-hint>{{ strDesc | async }}</mat-hint>
-      </mat-form-field>
-      <mat-form-field class="three-quart-width" appearance="standard">
-        <mat-label> Rule for '{{ strLab | async }}'</mat-label>
-        <input
-          matInput
-          type="text"
-          [placeholder]="'Eg: ref + logic ' + (strPlace | async)!"
-          [formControl]="keyCtrl"
-          #rulInput
-          (keyup)="onNumFieldChange(rulInput.value, false)"
-        />
-        <mat-icon matSuffix>vpn_key</mat-icon>
-        <mat-hint> When is this {{ strDesc | async | lowercase }} applicable?</mat-hint>
-      </mat-form-field>
-    </mat-grid-tile>
-  </mat-grid-list>
-</form>
+        <span>{{ numF | titlecase }}</span>
+      </mat-radio-button>
+    </mat-radio-group>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <mat-form-field class="one-quart-width comfy-num" appearance="standard" floatLabel="always">
+      <mat-label>{{ numStrLab | async }}</mat-label>
+      <input
+        matInput
+        type="number"
+        [placeholder]="(numStrPlace | async)!"
+        [formControl]="keyCtrl"
+        #numInput
+        (keyup)="onNumFieldChange(numInput.value)"
+      />
+      <mat-hint>{{ numStrDesc | async }}</mat-hint>
+    </mat-form-field>
+    <mat-form-field class="three-quart-width" appearance="standard">
+      <mat-label> Rule for '{{ numStrLab | async }}'</mat-label>
+      <input
+        matInput
+        type="text"
+        [placeholder]="(numStrPlace | async)!"
+        [formControl]="keyCtrl"
+        #rulInput
+        (keyup)="onNumFieldRuleChange(rulInput.value)"
+      />
+      <mat-icon matSuffix>vpn_key</mat-icon>
+      <mat-hint> When is this {{ numStrDesc | async | lowercase }} applicable?</mat-hint>
+    </mat-form-field>
+  </mat-grid-tile>
+</mat-grid-list>
