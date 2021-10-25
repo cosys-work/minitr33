@@ -23,11 +23,12 @@ export class ChangeSettersService {
     return this.rxt.pipe(map(z => z.nodes[z.curNode].field.templateOptions[opt]));
   }
 
-
   labelChanges = this.templar(FieldId.label);
-  typeChanges = this.templar(FieldId.type);
   descriptionChanges = this.templar(FieldId.description);
   placeholderChanges = this.templar(FieldId.placeholder);
+
+  coreTypeChanges = this.fielder(FieldId.type);
+  typeChanges = this.templar(FieldId.type);
 
   idChanges = this.fielder(FieldId.id);
   optsChanges = this.templar(FieldId.options);
@@ -107,6 +108,12 @@ export class ChangeSettersService {
     const oldTOpt: TemplateOptions = this.graf.curTemplateOptions;
     const templateOptions: TemplateOptions = {...oldTOpt, type};
     this.updateFieldTOpts(templateOptions);
+  }
+
+  set coreType(type: string) {
+    const oldField: FormalField = this.graf.curField;
+    const newField: FormalField = {...oldField, type};
+    this.graf.updateNode(newField);
   }
 
   //5

@@ -25,6 +25,7 @@ export function seedAField(label: string, placeholder: string, description: stri
     Object.defineProperty(tempOpt, k, makeDescriptor(v));
   });
   const templateOptions: TemplateOptions = tempOpt as TemplateOptions;
+  templateOptions.type = (fieldMap.get(FieldId.type)! as string).split(",")[1] ?? "text";
 
   const defaultRules = ruleFieldMapArr;
   const valTemp = {};
@@ -35,7 +36,7 @@ export function seedAField(label: string, placeholder: string, description: stri
 
   return  {
     key: fieldMap.get(FieldId.id) as string,
-    type: fieldMap.get(FieldId.type) as string,
+    type: (fieldMap.get(FieldId.type)! as string).split(",")[0],
     className: 'flex-1',
     id: fieldMap.get(FieldId.id) as string,
     templateOptions,
@@ -43,5 +44,3 @@ export function seedAField(label: string, placeholder: string, description: stri
   } as FormalField;
 
 }
-
-

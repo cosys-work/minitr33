@@ -1,7 +1,7 @@
 import {AfterContentInit, ChangeDetectionStrategy, Component, ElementRef, ViewChild} from '@angular/core';
 import {FormControl} from '@angular/forms';
 import {MatRadioChange} from '@angular/material/radio';
-import {BehaviorSubject, Observable, takeUntil} from 'rxjs';
+import {BehaviorSubject, Observable, takeUntil, zip} from 'rxjs';
 import {map, startWith, take} from 'rxjs/operators';
 
 import {FieldId} from "../../../../../shared/field.model";
@@ -116,8 +116,12 @@ export class DashContentComponent extends StatefulnessComponent implements After
     }
     switch (current) {
       case FieldId.type:
-        this.changes.get.typeStream.pipe((take(1))).subscribe(l => {
-          this.curType = l as string;
+        zip(
+          this.changes.get.coreTypeStream,
+          this.changes.get.typeStream
+        ).pipe((take(1))).subscribe(([c, s]) => {
+          this.curType = s ? `${c},${s}` : `${c}`;
+          console.log("curTypes", this.curType);
           this.typeCtrl.setValue(this.curType)
         });
         break;
@@ -184,11 +188,16 @@ export class DashContentComponent extends StatefulnessComponent implements After
     }
   };
 
+  typeChangeHandler(changed: string) {
+    const [coreType, subType] = changed.split(",");
+    this.curType = changed;
+    this.typeCtrl.setValue(this.curType);
+    this.changes.set.coreType = coreType;
+    if (subType) this.changes.set.type = subType;
+  }
 
   onTypeChange(changed: MatSelectChange) {
-    this.curType = changed.value;
-    this.typeCtrl.setValue(this.curType);
-    this.changes.set.type = this.curType;
+    this.typeChangeHandler(changed.value);
   };
 
   private _filterType(value: string): string[] {

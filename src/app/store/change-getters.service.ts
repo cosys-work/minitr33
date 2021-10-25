@@ -33,6 +33,10 @@ export class ChangeGettersService {
     return debounceObs(this.cs.typeChanges);
   }
 
+  get coreTypeStream() {
+    return debounceObs(this.cs.coreTypeChanges);
+  }
+
   get descriptionStream() {
     return debounceObs(this.cs.descriptionChanges);
   }
