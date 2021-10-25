@@ -27,7 +27,10 @@ import {GrafStore} from "../../../../../store/graf-store.service";
 })
 export class DashLogicComponent extends StatefulnessComponent implements AfterContentInit {
 
-  keyCtrl = new FormControl();
+  booCtrl = new FormControl();
+  numCtrl = new FormControl();
+  numRuleCtrl = new FormControl();
+  booRuleCtrl = new FormControl();
 
   booLabels = booLabels;
   numLabels = numLabels;
@@ -42,7 +45,6 @@ export class DashLogicComponent extends StatefulnessComponent implements AfterCo
   booStrPlace = new BehaviorSubject(this.booState.required.placeholder);
   booStrDesc = new BehaviorSubject(this.booState.required.description);
 
-  booBool = false;
   //@ViewChild('booToggle') booToggle!: ElementRef<HTMLInputElement>;
   @ViewChild('booInput') booInput!: ElementRef<HTMLInputElement>;
   @ViewChild('numInput') numInput!: ElementRef<HTMLInputElement>;
@@ -68,7 +70,7 @@ export class DashLogicComponent extends StatefulnessComponent implements AfterCo
   private nextBooSet(booStream: Observable<DebounceCandidate>, ruStream: Observable<DebounceCandidate>) {
     booStream.pipe(take(1)).subscribe(l => {
       if (typeof l === "boolean") {
-        this.booBool = l;
+        this.booCtrl.setValue(l);
       }
     });
     ruStream.pipe(take(1)).subscribe(l => {
@@ -113,13 +115,13 @@ export class DashLogicComponent extends StatefulnessComponent implements AfterCo
     nuStream.pipe(take(1)).subscribe(l => {
       console.log("next num", l);
       if (typeof l === "number") {
-        this.numInput.nativeElement.value = l.toString();
+        this.numCtrl.setValue(l.toString());
       }
     });
     ruStream.pipe(take(1)).subscribe(l => {
       console.log("next num rule", l);
       if (typeof l === "string") {
-        this.rulInput.nativeElement.value = l;
+        this.numRuleCtrl.setValue(l);
       }
     });
   }
@@ -155,13 +157,13 @@ export class DashLogicComponent extends StatefulnessComponent implements AfterCo
     }
   }
 
-  updateBooStrLPD() {
+  private updateBooStrLPD() {
     this.booStrLab.next(this.booState[this.booState.current].label);
     this.booStrPlace.next(this.booState[this.booState.current].placeholder);
     this.booStrDesc.next(this.booState[this.booState.current].description);
   }
 
-  updateNumStrLPD() {
+  private updateNumStrLPD() {
     this.numStrLab.next(this.numState[this.numState.current].label);
     this.numStrPlace.next(this.numState[this.numState.current].placeholder);
     this.numStrDesc.next(this.numState[this.numState.current].description);
@@ -201,7 +203,7 @@ export class DashLogicComponent extends StatefulnessComponent implements AfterCo
   onBooTextChange(changed: string) {
     switch (this.booState.current) {
       case FieldId.required:
-        this.changes.set.tabindexRule = changed;
+        this.changes.set.requiredRule = changed;
         break;
       case FieldId.disabled:
         this.changes.set.disabledRule = changed;
@@ -254,5 +256,4 @@ export class DashLogicComponent extends StatefulnessComponent implements AfterCo
         break;
     }
   }
-
 }
