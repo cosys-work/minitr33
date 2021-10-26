@@ -6,7 +6,7 @@ import {GrafStore} from 'src/app/store/graf-store.service';
 
 import {AlKeyAlNumValObj, FieldRefsAddons} from "../../../../../shared/field.model";
 import {DashChangesService} from "../../../../../store/dash-changes.service";
-import {takeUntil} from "rxjs";
+import {takeUntil, zip} from "rxjs";
 import {StatefulnessComponent} from "../../../../../shared/statefulness/statefulness.component";
 
 @Component({
@@ -47,7 +47,7 @@ export class DashPreviewComponent extends StatefulnessComponent implements After
       const ns = this.grafStore.nodes;
       [...this.fieldGroup].forEach((_, i) => {
         const cur = ns[i].field;
-        this.fieldGroup[i].type = cur.type.toLowerCase();
+        this.fieldGroup[i].type = cur.type;
         this.fieldGroup[i].key = cur.key;
         this.fieldGroup[i].templateOptions = cur.templateOptions;
         this.fieldGroup[i].id = cur.id;
@@ -106,7 +106,7 @@ export class DashPreviewComponent extends StatefulnessComponent implements After
     this.fields = [...this.fields];
   }
 
-  // TODO refactor to use a well-typed stream map
+  // TO DO refactor to use a well-typed stream map + remove redundancy
   updateWhenContentUpdates() {
 
     this.changes.get.labelStream.pipe(takeUntil(this.onDestroy$)).subscribe(l => {
@@ -116,12 +116,13 @@ export class DashPreviewComponent extends StatefulnessComponent implements After
       }
     });
 
-    this.changes.get.typeStream.pipe(takeUntil(this.onDestroy$)).subscribe(t => {
-      const [typeA, typeB] = (t as string).trim().split(",");
-
-      this.fieldGroup[this.cursor].type = typeA;
+    zip(
+      this.changes.get.coreTypeStream,
+      this.changes.get.typeStream
+    ).pipe((takeUntil(this.onDestroy$))).subscribe(([typeA, typeB]) => {
+      this.fieldGroup[this.cursor].type = typeA as string;
       if (typeB) {
-        this.fieldGroup[this.cursor].templateOptions.type = typeB;
+        this.fieldGroup[this.cursor].templateOptions.type = typeB as string;
       }
     });
 
@@ -233,6 +234,6 @@ export class DashPreviewComponent extends StatefulnessComponent implements After
   }
 
   onSubmit(model: any) {
-    console.log(model, model === this.model, this.model);
+    console.log("submittable: ", model);
   }
 }

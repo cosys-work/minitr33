@@ -114,13 +114,11 @@ export class DashLogicComponent extends StatefulnessComponent implements AfterCo
 
   private nextNumSet(nuStream: Observable<DebounceCandidate>, ruStream: Observable<DebounceCandidate>) {
     nuStream.pipe(take(1)).subscribe(l => {
-      console.log("next num", l);
       if (typeof l === "number") {
         this.numCtrl.setValue(l.toString());
       }
     });
     ruStream.pipe(take(1)).subscribe(l => {
-      console.log("next num rule", l);
       if (typeof l === "string") {
         this.numRuleCtrl.setValue(l);
       }

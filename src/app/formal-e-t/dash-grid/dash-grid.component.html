@@ -45,8 +45,8 @@
           >
             <mat-icon matSuffix>delete</mat-icon>
           </button>
-          <button mat-mini-fab class="leftest-button" color="disabled">
-            <mat-icon matSuffix>autorenew</mat-icon>
+          <button *ngIf="i === 1" mat-mini-fab class="leftest-button" color="disabled">
+            <mat-icon matSuffix>save</mat-icon>
           </button>
         </mat-card-footer>
       </mat-card>

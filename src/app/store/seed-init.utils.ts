@@ -36,7 +36,7 @@ export function seedAField(label: string, placeholder: string, description: stri
 
   return  {
     key: fieldMap.get(FieldId.id) as string,
-    type: (fieldMap.get(FieldId.type)! as string).split(",")[0],
+    type: (fieldMap.get(FieldId.type)! as string).split(",")[0] ?? "input",
     className: 'flex-1',
     id: fieldMap.get(FieldId.id) as string,
     templateOptions,

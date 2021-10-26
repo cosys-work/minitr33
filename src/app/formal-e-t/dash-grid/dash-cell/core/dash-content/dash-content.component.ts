@@ -115,7 +115,7 @@ export class DashContentComponent extends StatefulnessComponent implements After
         break;
       case FieldId.pattern:
         this.changes.get.patternStream.pipe(take(1)).subscribe(l =>
-          updateFromStream(JSON.stringify(l))
+          updateFromStream(l)
         );
         break;
       case FieldId.options:
@@ -170,6 +170,29 @@ export class DashContentComponent extends StatefulnessComponent implements After
         break;
       case FieldId.id:
         this.changes.set.id = changed;
+        break;
+      default:
+        break;
+    }
+  }
+
+  onOptFieldDataChange(changed: string) {
+    switch (this.optState.current) {
+      case FieldId.type:
+        //should not happen as there is already a special handler - however
+        this.typeChangeHandler(changed);
+        break;
+      case FieldId.pattern:
+        this.changes.set.pattern = changed;
+        break;
+      case FieldId.options:
+        this.changes.set.options = changed.split(",");
+        break;
+      case FieldId.attributes:
+        if (changed.includes(",") && changed.includes(":")) { // TO DO add better validation layer later
+          const kvPairs: string[][] = changed.split(",").map(pair => pair.split(":"));
+          this.changes.set.attributes = Object.fromEntries(new Map<string, any>(kvPairs as [string, string][]));
+        }
         break;
       default:
         break;
