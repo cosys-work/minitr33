@@ -75,15 +75,15 @@ export const optFieldMapArr: [FieldId, string | RegExp | string[] | AlKeyAlNumVa
 ];
 
 export const ruleFieldMapArr: [FieldId, string][] = [
-  [FieldId.requiredRule, ""],
-  [FieldId.disabledRule, ""],
-  [FieldId.hiddenRule, ""],
-  [FieldId.readonlyRule, ""],
+  [FieldId.requiredRule, "-"],
+  [FieldId.disabledRule, "-"],
+  [FieldId.hiddenRule, "-"],
+  [FieldId.readonlyRule, "-"],
 
-  [FieldId.tabindexRule, ""],
-  [FieldId.stepRule, ""],
-  [FieldId.minRule, ""],
-  [FieldId.maxRule, ""],
+  [FieldId.tabindexRule, "-"],
+  [FieldId.stepRule, "-"],
+  [FieldId.minRule, "-"],
+  [FieldId.maxRule, "-"],
 ];
 
 export const fieldMap = new Map<FieldId, FieldValueType >([

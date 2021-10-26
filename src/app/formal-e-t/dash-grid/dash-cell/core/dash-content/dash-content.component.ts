@@ -70,36 +70,27 @@ export class DashContentComponent extends StatefulnessComponent implements After
     this.updateFCOpt(this.optState.current);
   }
 
+  private nextStrSet(strStream: Observable<DebounceCandidate>) {
+    strStream.pipe(take(1)).subscribe(l => {
+      if (typeof l === "string") {
+        this.maInput.nativeElement.value = l;
+      }
+    });
+  }
+
   private updateFCStr(current: keyof StrFields) {
-    // TO DO refactor redundancy
     switch (current) {
       case FieldId.label:
-        this.changes.get.labelStream.pipe(take(1)).subscribe(l => {
-          if (typeof l === "string") {
-            this.maInput.nativeElement.value = l;
-          }
-        });
+        this.nextStrSet(this.changes.get.labelStream);
         break;
       case FieldId.placeholder:
-        this.changes.get.placeholderStream.pipe(take(1)).subscribe(p => {
-          if (typeof p === "string") {
-            this.maInput.nativeElement.value = p;
-          }
-        });
+        this.nextStrSet(this.changes.get.placeholderStream);
         break;
       case FieldId.description:
-        this.changes.get.descriptionStream.pipe(take(1)).subscribe(d => {
-          if (typeof d === "string") {
-            this.maInput.nativeElement.value = d;
-          }
-        });
+        this.nextStrSet(this.changes.get.descriptionStream);
         break;
       case FieldId.id:
-        this.changes.get.idStream.pipe(take(1)).subscribe(i => {
-          if (typeof i === "string") {
-            this.maInput.nativeElement.value = i
-          }
-        });
+        this.nextStrSet(this.changes.get.idStream);
         break;
       default:
         break;
@@ -119,13 +110,12 @@ export class DashContentComponent extends StatefulnessComponent implements After
           this.changes.get.typeStream
         ).pipe((take(1))).subscribe(([c, s]) => {
           this.curType = s ? `${c},${s}` : `${c}`;
-          console.log("curTypes", this.curType);
           this.typeCtrl.setValue(this.curType)
         });
         break;
       case FieldId.pattern:
         this.changes.get.patternStream.pipe(take(1)).subscribe(l =>
-          updateFromStream(l)
+          updateFromStream(JSON.stringify(l))
         );
         break;
       case FieldId.options:

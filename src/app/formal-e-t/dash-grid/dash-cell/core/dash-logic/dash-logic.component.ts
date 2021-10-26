@@ -55,6 +55,7 @@ export class DashLogicComponent extends StatefulnessComponent implements AfterCo
     private grafStore: GrafStore,
   ) {
     super();
+    this.updateFL();
   }
 
   ngAfterContentInit() {
