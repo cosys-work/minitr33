@@ -7,7 +7,7 @@
     >
       <mat-card class="dashboard-card">
         <mat-card-header>
-          <button *ngIf="i === 1" mat-mini-fab class="leftest-button" color="disabled">
+          <button mat-mini-fab class="rightest-top-button" color="disabled">
             <mat-icon matSuffix>save</mat-icon>
           </button>
           <mat-card-title *ngIf="i !== 1">
@@ -23,7 +23,7 @@
           </mat-card-title>
           <button
             mat-mini-fab
-            class="righter-top-button"
+            class="right-top-button"
             *ngIf="nexted | async"
             (click)="onPrev($event)"
             color="link"
@@ -32,7 +32,7 @@
           </button>
           <button
             mat-mini-fab
-            class="rightest-top-button"
+            class="righter-top-button"
             color="link"
             (click)="onNext($event)"
           >
