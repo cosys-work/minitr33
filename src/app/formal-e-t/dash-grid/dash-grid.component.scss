@@ -34,20 +34,24 @@
   right: 55px;
 }
 
-.rightest-top-button:hover, .righter-top-button:hover {
+.rightest-top-button:hover {
+  box-shadow: 0 3px 10px green;
+}
+
+.right-top-button:hover, .righter-top-button:hover {
   box-shadow: 0 3px 10px orange;
 }
 
 .rightest-button:hover {
-  box-shadow: 0 3px 10px red;
+  box-shadow: 0 3px 10px orangered;
 }
-
 
 .right-top-button {
   position: absolute;
   top: 5px;
   right: 100px;
 }
+
 
 
 .leftest-button {

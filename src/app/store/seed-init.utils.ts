@@ -38,7 +38,7 @@ export function seedAField(label: string, placeholder: string, description: stri
     key: fieldMap.get(FieldId.id) as string,
     type: (fieldMap.get(FieldId.type)! as string).split(",")[0] ?? "input",
     className: 'flex-1',
-    id: fieldMap.get(FieldId.id) as string,
+    id: Math.random().toString(36).substr(2) + "_" + Date.now(),
     templateOptions,
     validation
   } as FormalField;

@@ -66,38 +66,32 @@ export class GrafStore extends ObservableStore<ZenFGraph> {
     return  this.state[Property.EDGES];
   }
 
+  // 0th index elem is never removed, size 1 graph is never reduced
   set delNodeEdgePair(fez: FEdge) {
     if (!fez) return;
-    if (!this.edges.length) return;
+    const edges = this.edges;
+    if (!edges.length) return;
 
-    const edgeToRemoveArr: FEdge[] = this.edges.filter(e => {
-      return e.label === fez.label;
+    const edgeToRemoveArr: FEdge[] = edges.filter(e => {
+      return e.origin.id === fez.origin.id;
     });
 
     if (!edgeToRemoveArr.length) return;
 
     const edgeToRemove = edgeToRemoveArr[0];
-    const nodeToRemove = edgeToRemove.origin;
 
-
-    // TODO refactor so as to not assume that the nodes and edges
-    // are guaranteed to remain ordered despite of state changes
     const eIndex = this.edges.findIndex(e => e.origin.id === edgeToRemove.origin.id);
-    const nIndex = this.nodes.findIndex(n => n.id === nodeToRemove.id);
 
-    const nextNode = this.nodes[nIndex + 1] ?? null;
+    if (edges.length <= 1 || eIndex < 1) return; // 0th index || size 1 have special treatment
 
     const allEdgesBefore = this.edges.slice(0, eIndex);
-    const allEdgesAfter = this.edges.slice(eIndex + 1);
+    const allEdgesAfter = this.edges.slice(eIndex + 1, this.edges.length);
 
-    const prevEdgeToModify = this.edges[eIndex - 1] ?? null;
-    if (prevEdgeToModify) {
-      allEdgesBefore[allEdgesBefore.length - 1].target = nextNode.id;
+    const lastFromBefore = allEdgesBefore[allEdgesBefore.length - 1];
+    if (lastFromBefore) {
+      lastFromBefore.target = allEdgesAfter[0]?.origin?.id ?? lastFromBefore.target;
     }
 
-    // else we are removing the root node, no edits needed
-    // other than yeeting off the current node-edge pair ofc
-    // nodes are pruned off automatically by the structure
     this.edges = [...allEdgesBefore, ...allEdgesAfter];
   }
 
