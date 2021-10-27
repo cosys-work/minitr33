@@ -29,4 +29,5 @@ export interface FGraph {
 
 export interface ZenFGraph extends FGraph {
   curNode: number;
+  curName?: string;
 }

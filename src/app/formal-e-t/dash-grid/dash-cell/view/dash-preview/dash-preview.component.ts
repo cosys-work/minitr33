@@ -30,8 +30,6 @@ export class DashPreviewComponent extends StatefulnessComponent implements After
   cursor: number = 0;
   change: any = {id: 0};
 
-  formlyFormElem!: Element;
-
   constructor(
     private changes: DashChangesService,
     private grafStore: GrafStore
@@ -78,7 +76,7 @@ export class DashPreviewComponent extends StatefulnessComponent implements After
     this.updateWhenContentUpdates();
     this.updateWhenGraphUpdates();
 
-    const form = (this.formlyFormElem = document.querySelector('formly-form')!);
+    const form = document.querySelector('formly-form')!;
     this.grafStore.current.pipe(takeUntil(this.onDestroy$)).subscribe((c) => {
       const fields = () =>
         form.querySelectorAll('mat-form-field') as NodeListOf<HTMLElement>;
@@ -94,7 +92,6 @@ export class DashPreviewComponent extends StatefulnessComponent implements After
       setTimeout(updateFieldMarker, 250);
     });
   }
-
 
 
   tOptRuleUpdater(opt: keyof FieldRefsAddons, val: any) {

@@ -23,6 +23,8 @@ export class ChangeSettersService {
     return this.rxt.pipe(map(z => z.nodes[z.curNode].field.templateOptions[opt]));
   }
 
+  nameChanges = this.rxt.pipe(map(z => z.curName));
+
   labelChanges = this.templar(FieldId.label);
   descriptionChanges = this.templar(FieldId.description);
   placeholderChanges = this.templar(FieldId.placeholder);

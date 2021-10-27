@@ -24,6 +24,9 @@ export class ChangeGettersService {
 
   constructor(private cs: ChangeSettersService) { }
 
+  get nameStream() {
+    return debounceObs(this.cs.nameChanges);
+  }
 
   get labelStream() {
     return debounceObs(this.cs.labelChanges);

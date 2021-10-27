@@ -1,18 +1,26 @@
 import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
-import {Component} from '@angular/core';
-import {BehaviorSubject, Observable} from 'rxjs';
-import {map, take} from 'rxjs/operators';
+import {Component, ElementRef, ViewChild} from '@angular/core';
+import {BehaviorSubject, Observable, Subject, takeUntil} from 'rxjs';
+import {debounceTime, distinctUntilChanged, map, take} from 'rxjs/operators';
 import {GrafStore} from 'src/app/store/graf-store.service';
+import {StatefulnessComponent} from "../../shared/statefulness/statefulness.component";
+import {DashChangesService} from "../../store/dash-changes.service";
 
 @Component({
   selector: 'app-dash-grid',
   templateUrl: './dash-grid.component.html',
   styleUrls: ['./dash-grid.component.scss']
 })
-export class DashGridComponent {
+export class DashGridComponent extends StatefulnessComponent {
 
   fieldCursor: Observable<number> = this.grafStore.current;
   maxCursor: () => number = () => this.grafStore.edges.length - 1;
+
+  curName: string = "Untiled Form";
+
+  keyUp = new Subject<KeyboardEvent>();
+
+  @ViewChild('formNameInput') formNameInput!: ElementRef<HTMLInputElement>;
 
   /** Based on the screen size, switch from standard to one column per row */
   cards = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
@@ -20,7 +28,7 @@ export class DashGridComponent {
       if (matches) {
         return [
           { title: 'Field Content', cols: 2, rows: 2 },
-          { title: 'Form Preview', cols: 2, rows: 2 },
+          { title: this.curName, cols: 2, rows: 2 },
           { title: 'Field Logic', cols: 2, rows: 2 },
           { title: 'Form Overview', cols: 2, rows: 2 },
         ];
@@ -28,23 +36,42 @@ export class DashGridComponent {
 
       return [
         { title: 'Field Content', cols: 1, rows: 1 },
-        { title: 'Untitled Form', cols: 1, rows: 2 },
+        { title: this.curName, cols: 1, rows: 2 },
         { title: 'Field Logic', cols: 1, rows: 1 },
         { title: 'Form Overview', cols: 2, rows: 1 },
       ];
     })
   );
 
-  saved = new BehaviorSubject(false);
   nexted = new BehaviorSubject(false);
 
   constructor(
     private breakpointObserver: BreakpointObserver,
     private grafStore: GrafStore,
-  ) {}
+    private changes: DashChangesService,
+  ) {
+    super();
+    this.updateFL();
+    this.keyUp.pipe(
+      takeUntil(this.onDestroy$),
+      map(event => (<HTMLInputElement>event.target).value)
+    ).subscribe(name => this.curName = name);
+  }
+
+  updateFL() {
+    this.changes.get.nameStream.pipe(
+      takeUntil(this.onDestroy$),
+      debounceTime(1000),
+      distinctUntilChanged(),
+    ).subscribe(l => {
+      if (typeof l === "string") {
+        this.formNameInput.nativeElement.value = l;
+      }
+    });
+  }
 
   onSave(_: Event) {
-    this.saved.next(true);
+    this.grafStore.updateName(this.curName);
   }
 
   onDelete(_: Event) {
@@ -81,10 +108,6 @@ export class DashGridComponent {
     this.fieldCursor.pipe(take(1)).subscribe(idx => {
       this.curseRedeemer(idx);
     });
-  }
-
-  onFormNameChange(changed: string) {
-    console.log("save name", changed)
   }
 
   onPrev(_: Event) {

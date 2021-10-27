@@ -7,7 +7,12 @@
     >
       <mat-card class="dashboard-card">
         <mat-card-header>
-          <button mat-mini-fab class="rightest-top-button" color="disabled">
+          <button
+            mat-mini-fab
+            class="rightest-top-button"
+            color="disabled"
+            (click)="onSave($event)"
+          >
             <mat-icon matSuffix>save</mat-icon>
           </button>
           <mat-card-title *ngIf="i !== 1">
@@ -15,10 +20,12 @@
           </mat-card-title>
           <mat-card-title *ngIf="i === 1">
               <input
+                id="name"
                 matInput
+                autofocus
                 [placeholder]="card.title"
                 #formNameInput
-                (keyup)="onFormNameChange(formNameInput.value)"
+                (keyup)="keyUp.next($event)"
               />
           </mat-card-title>
           <button

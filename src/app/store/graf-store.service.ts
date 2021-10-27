@@ -11,7 +11,8 @@ enum Action {
   NEW_NODES="NEW_NODES",
   NEW_EDGES="NEW_EDGES",
   NEXT="NEXT_CRSR_GRAF",
-  PREV="PREV_CRSR_GRAF"
+  PREV="PREV_CRSR_GRAF",
+  NEW_NAME="NEW_NAME"
 }
 
 enum Property {
@@ -20,6 +21,7 @@ enum Property {
   CUR_NODE = "curNode"
 }
 
+// using set to prevent chaining
 @Injectable({
   providedIn: "root",
 })
@@ -110,6 +112,12 @@ export class GrafStore extends ObservableStore<ZenFGraph> {
     const oldEdges : FEdge[] = this.edges;
     oldEdges.splice(cursor, 1, newEdge);
     this.edges = oldEdges;
+  }
+
+  updateName(curName: string) {
+    console.log("saving in the name of", curName);
+    const newState: ZenFGraph = { ...this.state, curName };
+    this.setState(newState, Action.NEW_NAME);
   }
 
   get curField() {
