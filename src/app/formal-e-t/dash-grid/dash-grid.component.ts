@@ -28,7 +28,7 @@ export class DashGridComponent {
 
       return [
         { title: 'Field Content', cols: 1, rows: 1 },
-        { title: 'Form Preview', cols: 1, rows: 2 },
+        { title: 'Untitled Form', cols: 1, rows: 2 },
         { title: 'Field Logic', cols: 1, rows: 1 },
         { title: 'Form Overview', cols: 2, rows: 1 },
       ];
@@ -81,6 +81,10 @@ export class DashGridComponent {
     this.fieldCursor.pipe(take(1)).subscribe(idx => {
       this.curseRedeemer(idx);
     });
+  }
+
+  onFormNameChange(changed: string) {
+    console.log("save name", changed)
   }
 
   onPrev(_: Event) {

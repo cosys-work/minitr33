@@ -7,8 +7,19 @@
     >
       <mat-card class="dashboard-card">
         <mat-card-header>
-          <mat-card-title>
+          <button *ngIf="i === 1" mat-mini-fab class="leftest-button" color="disabled">
+            <mat-icon matSuffix>save</mat-icon>
+          </button>
+          <mat-card-title *ngIf="i !== 1">
             {{ card.title }}
+          </mat-card-title>
+          <mat-card-title *ngIf="i === 1">
+              <input
+                matInput
+                [placeholder]="card.title"
+                #formNameInput
+                (keyup)="onFormNameChange(formNameInput.value)"
+              />
           </mat-card-title>
           <button
             mat-mini-fab
@@ -45,9 +56,7 @@
           >
             <mat-icon matSuffix>delete</mat-icon>
           </button>
-          <button *ngIf="i === 1" mat-mini-fab class="leftest-button" color="disabled">
-            <mat-icon matSuffix>save</mat-icon>
-          </button>
+
         </mat-card-footer>
       </mat-card>
     </mat-grid-tile>
