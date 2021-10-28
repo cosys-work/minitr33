@@ -36,6 +36,7 @@ specifiers:
   '@types/d3-timer': ^3.0.0
   '@types/jest': 27.0.2
   '@types/node': ^12.20.26
+  '@types/pouchdb-adapter-idb': ^6.1.4
   '@types/three': ^0.131.1
   '@types/vis': ^4.21.22
   angular-cli-ghpages: 1.0.0-rc.2
@@ -43,6 +44,7 @@ specifiers:
   d3-dsv: ^3.0.1
   d3-shape: ^3.0.1
   jest: 27.2.1
+  pouchdb-adapter-idb: ^7.2.2
   rxdb: ^10.1.0
   rxjs: ~7.4.0
   rxjs-watcher: ^1.1.3
@@ -75,6 +77,7 @@ dependencies:
   '@swimlane/ngx-graph': 7.2.0_e33a1773b9f6b995b3e037c9b3e2d0e3
   d3-dsv: 3.0.1
   d3-shape: 3.0.1
+  pouchdb-adapter-idb: 7.2.2
   rxdb: 10.1.0_rxjs@7.4.0
   rxjs: 7.4.0
   tslib: 2.3.1
@@ -97,6 +100,7 @@ devDependencies:
   '@types/d3-timer': 3.0.0
   '@types/jest': 27.0.2
   '@types/node': 12.20.26
+  '@types/pouchdb-adapter-idb': 6.1.4
   '@types/three': 0.131.1
   '@types/vis': 4.21.22
   angular-cli-ghpages: 1.0.0-rc.2_e55e206f1124e776bfc3b86a3e83449f
@@ -2548,7 +2552,6 @@ packages:
     resolution: {integrity: sha512-9AonUzyTjXXhEOa0DnqpzZi6VHlqKMswga9EXjpXnnqxwLtdvPPtlO8evrI5D9S6asFRCQ6v+wpiUKbw+vKqyg==}
     dependencies:
       '@types/ms': 0.7.31
-    dev: false
 
   /@types/deep-equal/1.0.1:
     resolution: {integrity: sha512-mMUu4nWHLBlHtxXY17Fg6+ucS/MnndyOWyOe7MmwkoMYxvfQU2ajtRaEvqSUv+aVkMqH/C0NCI8UoVfRNQ10yg==}
@@ -2644,7 +2647,6 @@ packages:
 
   /@types/ms/0.7.31:
     resolution: {integrity: sha512-iiUgKzV9AuaEkZqkOLDIvlQiL6ltuZd9tGcW3gwpnX8JbuiuhFlEGmmFXEXkN50Cvq7Os88IY2v0dkDqXYWVgA==}
-    dev: false
 
   /@types/node/12.20.26:
     resolution: {integrity: sha512-gIt+h4u2uTho2bsH1K250fUv5fHU71ET1yWT7bM4523zV/XrFb9jlWBOV4DO8FpscY+Sz/WEr1EEjIP2H4yumQ==}
@@ -2661,18 +2663,22 @@ packages:
     resolution: {integrity: sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==}
     dev: true
 
+  /@types/pouchdb-adapter-idb/6.1.4:
+    resolution: {integrity: sha512-KIAXbkF4uYUz0ZwfNEFLtEkK44mEWopAsD76UhucH92XnJloBysav+TjI4FFfYQyTjoW3S1s6V+Z14CUJZ0F6w==}
+    dependencies:
+      '@types/pouchdb-core': 7.0.8
+    dev: true
+
   /@types/pouchdb-core/7.0.8:
     resolution: {integrity: sha512-99pGWgoxW/m1jLpnWQAfy7QGwXK3uCDSy+VtOG8sjuutjNJzX6nmOesbBq7ZpkquMH+X9vnT9CpWPunBpepEGg==}
     dependencies:
       '@types/debug': 4.1.7
       '@types/pouchdb-find': 6.3.7
-    dev: false
 
   /@types/pouchdb-find/6.3.7:
     resolution: {integrity: sha512-b2dr9xoZRK5Mwl8UiRA9l5j9mmCxNfqXuu63H1KZHwJLILjoIIz7BntCvM0hnlnl7Q8P8wORq0IskuaMq5Nnnw==}
     dependencies:
       '@types/pouchdb-core': 7.0.8
-    dev: false
 
   /@types/prettier/2.3.2:
     resolution: {integrity: sha512-eI5Yrz3Qv4KPUa/nSIAi0h+qX0XyewOliug5F2QAtuRg6Kjg6jfmxe1GIwoIRhZspD1A0RP8ANrPwvEXXtRFog==}
@@ -9605,6 +9611,29 @@ packages:
       pouchdb-utils: 7.2.2
     dev: false
 
+  /pouchdb-adapter-idb/7.2.2:
+    resolution: {integrity: sha512-swSVQFm/p5CPKP0zyOmtv/hFpTyjtDlPAKTpxH4gEm9V+K30kDZ8ciAHaCkGEBSfWfZFYUI8/VOnAL2L0WIIeA==}
+    dependencies:
+      pouchdb-adapter-utils: 7.2.2
+      pouchdb-binary-utils: 7.2.2
+      pouchdb-collections: 7.2.2
+      pouchdb-errors: 7.2.2
+      pouchdb-json: 7.2.2
+      pouchdb-merge: 7.2.2
+      pouchdb-utils: 7.2.2
+    dev: false
+
+  /pouchdb-adapter-utils/7.2.2:
+    resolution: {integrity: sha512-2CzZkTyTyHZkr3ePiWFMTiD5+56lnembMjaTl8ohwegM0+hYhRyJux0biAZafVxgIL4gnCUC4w2xf6WVztzKdg==}
+    dependencies:
+      pouchdb-binary-utils: 7.2.2
+      pouchdb-collections: 7.2.2
+      pouchdb-errors: 7.2.2
+      pouchdb-md5: 7.2.2
+      pouchdb-merge: 7.2.2
+      pouchdb-utils: 7.2.2
+    dev: false
+
   /pouchdb-all-dbs/1.1.1:
     resolution: {integrity: sha512-UUnsdmcnRSQ8MAOYSJjfTwKkQNb/6fvOfd/f7dNNivWZ2YDYVuMfgw1WQdL634yEtcXTxAENZ/EyLRdzPCB41A==}
     dependencies:
@@ -9688,6 +9717,12 @@ packages:
     dependencies:
       pouchdb-collate: 7.2.2
       pouchdb-md5: 7.2.2
+    dev: false
+
+  /pouchdb-json/7.2.2:
+    resolution: {integrity: sha512-3b2S2ynN+aoB7aCNyDZc/4c0IAdx/ir3nsHB+/RrKE9cM3QkQYbnnE3r/RvOD1Xvr6ji/KOCBie+Pz/6sxoaug==}
+    dependencies:
+      vuvuzela: 1.0.3
     dev: false
 
   /pouchdb-mapreduce-utils/7.2.2:
@@ -11517,6 +11552,10 @@ packages:
       uuid: ^3.4.0 || ^7.0.0 || ^8.0.0
       vis-data: ^7.0.0
       vis-util: ^5.0.1
+    dev: false
+
+  /vuvuzela/1.0.3:
+    resolution: {integrity: sha1-O+FF5YJxxzylUnndhR8SpoIRSws=}
     dev: false
 
   /w3c-hr-time/1.0.2:
