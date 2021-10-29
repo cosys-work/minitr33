@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {addPouchPlugin, createRxDatabase, getRxStoragePouch} from "rxdb";
 
 import * as IDB from 'pouchdb-adapter-idb';
+import {idb} from "../shared/db.model";
 
 addPouchPlugin(IDB);
 
@@ -11,8 +12,8 @@ addPouchPlugin(IDB);
 export class GrafDbService {
 
   database = createRxDatabase({
-    name: 'formalGraph',
-    storage: getRxStoragePouch('idb')
+    name: 'formalGraphDB',
+    storage: getRxStoragePouch(idb)
   });
 
   schema = {
@@ -22,5 +23,5 @@ export class GrafDbService {
     primaryKey: 'id',
     type: 'object'
   }
-  
+
 }
