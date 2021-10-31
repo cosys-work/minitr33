@@ -1,5 +1,5 @@
 export const booLabels = ["required", "disabled", "hidden", "readonly"];
-export const numLabels = ["tabindex", "max", "min", "step"];
+export const numLabels: string[] = ["tabindex", "max", "min", "step"];
 export const strLabels = ["label", "description", "placeholder", "id"];
 export const optLabels = ["type", "pattern", "options", "attributes"];
 
@@ -33,7 +33,7 @@ export interface LPD {
   description: string;
 }
 
-export interface  StrFields {
+export interface StrFields {
   label: LPD;
   placeholder: LPD;
   description: LPD;
@@ -128,7 +128,7 @@ export const optState: OptFieldsState = {
 }
 
 
-export  const numState: NumTyper = {
+export const numState: NumTyper = {
   current: "tabindex",
   tabindex: {
     label: "Index",
@@ -180,12 +180,12 @@ export type BooTyped = keyof BooTypeField;
 
 export type NumTyped = keyof NumTypeField;
 
-export function isNumTyped(a: string): a is NumTyped {
-  return numLabels.includes(a);
-}
+// export function isNumTyped(a: string): a is NumTyped {
+//   return numLabels.includes(a);
+// }
 
-export function isBooTyped(a: string): a is BooTyped {
-  return booLabels.includes(a);
-}
+// export function isBooTyped(a: string): a is BooTyped {
+//   return booLabels.includes(a);
+// }
 
 

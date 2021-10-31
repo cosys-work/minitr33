@@ -1,0 +1,263 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "nodes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/FNode"
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/FEdge"
+      }
+    },
+    "curNode": {
+      "type": "number"
+    },
+    "curName": {
+      "type": "string"
+    },
+    "id": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "curNode",
+    "edges",
+    "nodes"
+  ],
+  "additionalProperties": false,
+  "definitions": {
+    "FNode": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "tag": {
+          "type": "string"
+        },
+        "field": {
+          "$ref": "#/definitions/FormalField"
+        }
+      },
+      "required": [
+        "id",
+        "label",
+        "title",
+        "tag",
+        "field"
+      ],
+      "additionalProperties": false
+    },
+    "FormalField": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "className": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "templateOptions": {
+          "$ref": "#/definitions/TemplateOptions"
+        },
+        "validation": {
+          "$ref": "#/definitions/Validation"
+        },
+        "jump": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/FormalField"
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/FormalField"
+              }
+            }
+          ]
+        }
+      },
+      "required": [
+        "key",
+        "type",
+        "className",
+        "id",
+        "templateOptions",
+        "validation"
+      ],
+      "additionalProperties": false
+    },
+    "TemplateOptions": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "placeholder": {
+          "type": "string"
+        },
+        "disabled": {
+          "type": "boolean"
+        },
+        "options": {
+          "type": "array",
+          "items": {}
+        },
+        "rows": {
+          "type": "number"
+        },
+        "cols": {
+          "type": "number"
+        },
+        "description": {
+          "type": "string"
+        },
+        "hidden": {
+          "type": "boolean"
+        },
+        "max": {
+          "type": "number"
+        },
+        "min": {
+          "type": "number"
+        },
+        "minLength": {
+          "type": "number"
+        },
+        "maxLength": {
+          "type": "number"
+        },
+        "pattern": {
+          "type": "string"
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "tabindex": {
+          "type": "number"
+        },
+        "readonly": {
+          "type": "boolean"
+        },
+        "attributes": {
+          "type": "object",
+          "additionalProperties": {
+            "type": [
+              "string",
+              "number"
+            ]
+          }
+        },
+        "step": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "type",
+        "label",
+        "placeholder",
+        "options",
+        "rows",
+        "cols",
+        "description",
+        "pattern",
+        "tabindex",
+        "attributes",
+        "step"
+      ],
+      "additionalProperties": false
+    },
+    "Validation": {
+      "type": "object",
+      "properties": {
+        "requiredRule": {
+          "type": "string"
+        },
+        "disabledRule": {
+          "type": "string"
+        },
+        "hiddenRule": {
+          "type": "string"
+        },
+        "readonlyRule": {
+          "type": "string"
+        },
+        "maxRule": {
+          "type": "string"
+        },
+        "minRule": {
+          "type": "string"
+        },
+        "stepRule": {
+          "type": "string"
+        },
+        "tabindexRule": {
+          "type": "string"
+        },
+        "messages": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "show": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "disabledRule",
+        "hiddenRule",
+        "maxRule",
+        "minRule",
+        "readonlyRule",
+        "requiredRule",
+        "stepRule",
+        "tabindexRule"
+      ]
+    },
+    "FEdge": {
+      "type": "object",
+      "properties": {
+        "source": {
+          "type": "string"
+        },
+        "origin": {
+          "$ref": "#/definitions/FNode"
+        },
+        "target": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "source",
+        "origin",
+        "target",
+        "label"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

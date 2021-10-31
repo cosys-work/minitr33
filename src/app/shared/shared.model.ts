@@ -1,6 +1,6 @@
-import {FormlyFieldConfig} from '@ngx-formly/core';
-import {Observable} from 'rxjs';
-import {FieldRefsAddons} from "./field.model";
+// import { FormlyFieldConfig } from '@ngx-formly/core';
+// import { Observable } from 'rxjs';
+import { FieldRefsAddons } from "./field.model";
 
 export interface TemplateOptions {
   type: string; //1
@@ -16,7 +16,7 @@ export interface TemplateOptions {
   min: number | undefined; //11
   minLength: number | undefined; //12
   maxLength: number | undefined; //13
-  pattern: string | RegExp; //14
+  pattern: string; //14
   required: boolean | undefined; //15
   tabindex: number; //16
   readonly: boolean | undefined; //17
@@ -29,13 +29,13 @@ export interface TemplateOptions {
 export interface ValidationMessageOption {
   name: string;
   message:
-    | string
-    | ((error: any, field: FormlyFieldConfig) => string | Observable<string>);
+  | string;
+  // | ((error: any, field: FormlyFieldConfig) => string | Observable<string>);
 }
 
 export interface Validation extends FieldRefsAddons {
   messages?: {
-    [messageProperties: string]: ValidationMessageOption['message'];
+    [messageProperties: string]: string;
   };
   show?: boolean;
 
@@ -48,6 +48,5 @@ export interface FormalField {
   className: string;
   id: string;
   templateOptions: TemplateOptions;
-  validation: Validation ;
-  jump?: FormalField | FormalField[];
+  validation: Validation;
 }

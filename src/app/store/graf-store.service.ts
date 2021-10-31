@@ -5,6 +5,7 @@ import {FEdge, FNode, ZenFGraph} from "../shared/f-graph.model";
 import {SeedInitService} from "./seed-init.service";
 import {distinctUntilChanged, map} from "rxjs/operators";
 import {FormalField} from "../shared/shared.model";
+import {GrafDbService} from "./graf-db.service";
 
 enum Action {
   INIT="INIT_GRAF",
@@ -27,9 +28,10 @@ enum Property {
 })
 export class GrafStore extends ObservableStore<ZenFGraph> {
 
-  constructor(private seed: SeedInitService) {
+  constructor(private seed: SeedInitService, private grafDb: GrafDbService) {
     super({ trackStateHistory: true });
     this.setState(this.seed.graph, Action.INIT);
+    this.stateChanged.subscribe(zG => grafDb.saveNewCommit(zG));
   }
 
   private updateCursor(actions: Action.PREV | Action.NEXT) {

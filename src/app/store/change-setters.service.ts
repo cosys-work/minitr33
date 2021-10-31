@@ -218,7 +218,7 @@ export class ChangeSettersService {
   }
 
   //14
-  set pattern(pattern: string | RegExp) {
+  set pattern(pattern: string) {
     const oldTOpt: TemplateOptions = this.graf.curTemplateOptions;
     const templateOptions: TemplateOptions = {...oldTOpt, pattern};
     this.updateFieldTOpts(templateOptions);

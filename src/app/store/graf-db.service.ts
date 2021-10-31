@@ -1,8 +1,10 @@
 import {Injectable} from '@angular/core';
-import {addPouchPlugin, createRxDatabase, getRxStoragePouch} from "rxdb";
+import {addPouchPlugin} from "rxdb";
 
 import * as IDB from 'pouchdb-adapter-idb';
-import {idb} from "../shared/db.model";
+import {createDB, schema} from "../shared/schema";
+import {ZenFGraph} from "../shared/f-graph.model";
+import {from} from "rxjs";
 
 addPouchPlugin(IDB);
 
@@ -11,17 +13,23 @@ addPouchPlugin(IDB);
 })
 export class GrafDbService {
 
-  database = createRxDatabase({
-    name: 'formalGraphDB',
-    storage: getRxStoragePouch(idb)
-  });
+  private schema = schema;
 
-  schema = {
-    keyCompression: true,
-    version: 0,
-    title: 'Formal Graphs',
-    primaryKey: 'id',
-    type: 'object'
+  private db = from(createDB());
+
+  constructor() {
+    this.addGraphCollection();
+  }
+
+  addGraphCollection() {
+    this.db.subscribe(db => db.addCollections({
+      graphs: {
+        schema: this.schema
+      }}));
+  }
+
+  saveNewCommit(zG: ZenFGraph) {
+    this.db.subscribe(db => db.graphs.upsert(zG));
   }
 
 }
