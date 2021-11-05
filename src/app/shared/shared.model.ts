@@ -28,8 +28,7 @@ export interface TemplateOptions {
 
 export interface ValidationMessageOption {
   name: string;
-  message:
-  | string;
+  message: string;
   // | ((error: any, field: FormlyFieldConfig) => string | Observable<string>);
 }
 

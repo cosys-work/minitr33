@@ -50,7 +50,13 @@
               "dagre",
               "webcola",
               "ngraph.forcelayout",
-              "ngraph.graph"
+              "ngraph.graph",
+              "crypto-js/aes",
+              "crypto-js/enc-utf8",
+              "modifyjs",
+              "immediate",
+              "is-my-json-valid",
+              "deep-equal"
             ],
             "serviceWorker": true,
             "ngswConfigPath": "ngsw-config.json"

@@ -32,9 +32,3 @@ export interface ZenFGraph extends FGraph {
   curName?: string;
   id?: string;
 }
-
-export interface ZenTest {
-  curNode: number;
-  curName?: string;
-  id?: string;
-}

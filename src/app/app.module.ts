@@ -19,7 +19,6 @@ import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {NaviModule} from './navi/navi.module';
 import {SharedModule} from './shared/shared.module';
-import {NgxRxdbModule} from "@ngx-odm/rxdb";
 
 ObservableStore.globalSettings = {
   trackStateHistory: true
@@ -55,9 +54,6 @@ ObservableStore.addExtension(
     SharedModule,
     FormlyMaterialModule,
     RouterModule,
-    NgxRxdbModule.forRoot({options: {
-
-      }})
   ],
   providers: [],
   bootstrap: [AppComponent]
