@@ -1,27 +1,26 @@
-# Proforma
+# Dev Env Setup
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 12.2.2.
+Install the following:
 
-## Development server
+1. Visual Studio Code or Webstorm/Ultimate
+2. pnpm
+3. Angular CLI (`pnpm i -g @angular/cli@13`)
+4. Switch to the cloned/unzipped project folder. From within the project root, run `pnpm i`.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+# NB
 
-## Code scaffolding
+1. We use `pnpm` as the package manager.
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+- Please use `ng config -g cli.packageManager pnpm` (or without the global flag) to configure your project CLI.
+- Please use `pnx` instead of `nx` in the monorepo. In your shell config or shortcut config
+  add `alias pnx="pnpm run nx --"`
 
-## Build
+# Dev Server Setup
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+1. Run the UI using one of these two:
 
-## Running unit tests
+* `pnpm start`
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+3. Open the following in your browser:
 
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+* `localhost:4200`
