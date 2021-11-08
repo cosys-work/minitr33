@@ -8,8 +8,9 @@ describe('FormEtaComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ FormEtaComponent ]
-    })
+    declarations: [FormEtaComponent],
+    teardown: { destroyAfterEach: false }
+})
     .compileComponents();
   });
 

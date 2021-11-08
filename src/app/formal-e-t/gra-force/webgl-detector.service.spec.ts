@@ -6,7 +6,7 @@ describe('WebglDetectorService', () => {
   let service: WebglDetectorService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({ teardown: { destroyAfterEach: false } });
     service = TestBed.inject(WebglDetectorService);
   });
 

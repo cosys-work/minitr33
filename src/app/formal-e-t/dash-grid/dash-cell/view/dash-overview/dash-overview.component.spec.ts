@@ -8,8 +8,9 @@ describe('DashOverviewComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ DashOverviewComponent ]
-    })
+    declarations: [DashOverviewComponent],
+    teardown: { destroyAfterEach: false }
+})
     .compileComponents();
   });
 

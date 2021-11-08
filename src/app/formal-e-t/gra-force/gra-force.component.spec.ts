@@ -8,8 +8,9 @@ describe('GraForceComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ GraForceComponent ]
-    })
+    declarations: [GraForceComponent],
+    teardown: { destroyAfterEach: false }
+})
     .compileComponents();
   });
 

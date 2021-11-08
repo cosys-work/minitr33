@@ -8,8 +8,9 @@ describe('FormlyAutocompleteComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ FormlyAutocompleteComponent ]
-    })
+    declarations: [FormlyAutocompleteComponent],
+    teardown: { destroyAfterEach: false }
+})
     .compileComponents();
   });
 

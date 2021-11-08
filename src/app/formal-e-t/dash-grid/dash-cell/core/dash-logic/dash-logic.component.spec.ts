@@ -8,8 +8,9 @@ describe('DashLogicComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ DashLogicComponent ]
-    })
+    declarations: [DashLogicComponent],
+    teardown: { destroyAfterEach: false }
+})
     .compileComponents();
   });
 
